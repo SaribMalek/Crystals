@@ -1,238 +1,299 @@
-import React, { useState } from 'react'
-import { Search, ShoppingCart, User, Menu, X } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
+import { Search, ShoppingCart, User, Menu, X, ChevronDown } from 'lucide-react'
+import { Link, useLocation } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
   const { cartCount } = useCart()
+  const location = useLocation()
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20)
+    }
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  const navLinks = [
+    { name: 'HOME', path: '/' },
+    { name: 'SHOP', path: '/shop', dropdown: ['7 Chakra Products', 'Bracelets', 'Pendants', 'Malas', 'Rudraksha', 'Angels', 'Tumble Stones', 'Crystal Pencils', 'Pyramids', 'Balls', 'Dowser', 'Orgone', 'Crystal Trees', 'Feng Shui'] },
+    { name: 'REMEDIES', path: '/remedies', dropdown: ['Wealth', 'Health', 'Protection', 'Relationship', 'Root Chakra', 'Self-Confidence', 'Education'] },
+    { name: 'HEALING STONES', path: '/healing-stones', dropdown: ['Rose Quartz', 'Clear Quartz', 'Amethyst', 'Black Tourmaline', 'Lapis Lazuli', 'Citrine', 'Selenite', 'Pyrite'] },
+    { name: 'TRAININGS', path: '/trainings' },
+    { name: 'CONTACT', path: '/contact' },
+  ]
 
   return (
-    <header className="header">
-      <div className="announcement-bar">
-        Free International Shipping on orders over $150
+    <header className={`header ${isScrolled ? 'header-scrolled' : ''}`}>
+      <div className="top-bar">
+        <span>Free Shipping on Orders Over $150</span>
+        <span className="top-bar-sep">|</span>
+        <span>Secure Manifestation Tools</span>
       </div>
 
-      <div className="container header-container">
-        <button className="mobile-menu-btn" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-          {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+      <div className="container main-header">
+        <Link to="/" className="logo-container">
+          <div className="logo-text">
+            <span className="brand-name">AS CRYSTALS</span>
+            <span className="brand-tagline">Purity & Energy</span>
+          </div>
+        </Link>
 
-        <nav className={`nav ${isMenuOpen ? 'nav-open' : ''}`}>
-          <ul>
-            <li className="has-dropdown">
-              <Link to="/shop" onClick={() => setIsMenuOpen(false)}>Shop</Link>
-              <div className="dropdown">
-                <div className="dropdown-section">
-                  <h4>By Crystal</h4>
-                  <Link to="/shop?category=Clustered Crystals" onClick={() => setIsMenuOpen(false)}>Clusters</Link>
-                  <Link to="/shop?category=Points %26 Wands" onClick={() => setIsMenuOpen(false)}>Points & Towers</Link>
-                  <Link to="/shop?category=Tumbled Stones" onClick={() => setIsMenuOpen(false)}>Tumbled Stones</Link>
-                  <Link to="/shop?category=Palm Stones" onClick={() => setIsMenuOpen(false)}>Palm Stones</Link>
-                </div>
-                <div className="dropdown-section">
-                  <h4>By Intention</h4>
-                  <Link to="/shop?category=Protection Stones" onClick={() => setIsMenuOpen(false)}>Protection</Link>
-                  <Link to="/shop?category=Wealth Stones" onClick={() => setIsMenuOpen(false)}>Abundance</Link>
-                  <Link to="/shop?category=Healing Stones" onClick={() => setIsMenuOpen(false)}>Healing</Link>
-                  <Link to="/shop?category=Love Stones" onClick={() => setIsMenuOpen(false)}>Love</Link>
-                </div>
-                <div className="dropdown-section">
-                  <h4>Jewelry</h4>
-                  <Link to="/shop?category=Bracelets" onClick={() => setIsMenuOpen(false)}>Bracelets</Link>
-                  <Link to="/shop?category=Necklaces" onClick={() => setIsMenuOpen(false)}>Necklaces</Link>
-                  <Link to="/shop?category=Rings" onClick={() => setIsMenuOpen(false)}>Rings</Link>
-                </div>
-              </div>
-            </li>
-            <li><Link to="/shop" onClick={() => setIsMenuOpen(false)}>Best Sellers</Link></li>
-            <li><Link to="/about" onClick={() => setIsMenuOpen(false)}>Our Story</Link></li>
-            <li><Link to="/contact" onClick={() => setIsMenuOpen(false)}>Contact</Link></li>
+        <nav className="desktop-nav">
+          <ul className="nav-list">
+            {navLinks.map((link) => (
+              <li key={link.name} className={`nav-item ${link.dropdown ? 'has-dropdown' : ''}`}>
+                <Link to={link.path} className={`nav-link ${location.pathname === link.path ? 'active' : ''}`}>
+                  {link.name}
+                </Link>
+                {link.dropdown && (
+                  <ul className="mega-menu">
+                    {link.dropdown.map(item => (
+                      <li key={item}>
+                        <Link to={`/shop?category=${item}`}>{item}</Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </li>
+            ))}
           </ul>
         </nav>
 
-        <Link to="/" className="logo">
-          <span className="logo-font"><span className="logo-as">AS</span> Crystals</span>
-        </Link>
-
         <div className="header-actions">
-          <button className="icon-btn"><Search size={20} /></button>
-          <button className="icon-btn"><User size={20} /></button>
+          <button className="icon-btn"><Search size={18} strokeWidth={1.5} /></button>
           <Link to="/cart" className="icon-btn cart-btn">
-            <ShoppingCart size={20} />
+            <ShoppingCart size={18} strokeWidth={1.5} />
             {cartCount > 0 && <span className="cart-count">{cartCount}</span>}
           </Link>
+          <button className="mobile-toggle" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+            {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
       </div>
 
-      <style jsx="true">{`
-        .header {
-          background: var(--white);
-          position: sticky;
-          top: 0;
-          z-index: 1000;
-          box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-        .announcement-bar {
-          background: var(--primary);
-          color: var(--white);
-          text-align: center;
-          padding: 8px;
-          font-size: 0.8rem;
-          font-weight: 500;
-          letter-spacing: 0.5px;
-        }
-        .header-container {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          height: 80px;
-        }
-        .nav ul {
-          display: flex;
-          gap: 30px;
-        }
-        .nav ul li a {
-          font-weight: 500;
-          font-size: 0.95rem;
-          color: var(--text-light);
-        }
-        .nav ul li a:hover {
-          color: var(--primary);
-        }
-        
-        .has-dropdown {
-          position: relative;
-        }
-        .dropdown {
-          position: absolute;
-          top: 100%;
-          left: 0;
-          background: var(--white);
-          min-width: 500px;
-          padding: 30px;
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 30px;
-          box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-          border-radius: 0 0 15px 15px;
-          opacity: 0;
-          visibility: hidden;
-          transform: translateY(10px);
-          transition: var(--transition);
-          z-index: 100;
-        }
-        .has-dropdown:hover .dropdown {
-          opacity: 1;
-          visibility: visible;
-          transform: translateY(0);
-        }
-        .dropdown-section h4 {
-          font-size: 0.8rem;
-          color: var(--primary);
-          text-transform: uppercase;
-          margin-bottom: 15px;
-          letter-spacing: 1px;
-        }
-        .dropdown-section a {
-          display: block;
-          font-size: 0.9rem;
-          color: var(--text-light);
-          margin-bottom: 10px;
-          font-weight: 400;
-        }
-        .dropdown-section a:hover {
-          color: var(--primary);
-          padding-left: 5px;
-        }
-        
-        .logo {
-          transition: var(--transition);
-        }
-        @media (min-width: 993px) {
-          .logo {
-            position: absolute;
-            left: 50%;
-            transform: translateX(-50%);
-          }
-        }
-        .header-actions {
-          display: flex;
-          gap: 15px;
-        }
-        .icon-btn {
-          background: none;
-          border: none;
-          cursor: pointer;
-          color: var(--text);
-          transition: var(--transition);
-          position: relative;
-        }
-        .icon-btn:hover {
-          color: var(--primary);
-        }
-        .cart-count {
-          position: absolute;
-          top: -8px;
-          right: -8px;
-          background: var(--secondary);
-          color: var(--primary);
-          font-size: 10px;
-          font-weight: 700;
-          width: 16px;
-          height: 16px;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-        .mobile-menu-btn {
-          display: none;
-          background: none;
-          border: none;
-          cursor: pointer;
-        }
+      {/* Mobile Nav */}
+      <nav className={`mobile-nav ${isMenuOpen ? 'nav-open' : ''}`}>
+        <ul className="mobile-nav-list">
+          {navLinks.map((link) => (
+            <li key={link.name}>
+              <Link to={link.path} onClick={() => setIsMenuOpen(false)}>{link.name}</Link>
+            </li>
+          ))}
+        </ul>
+      </nav>
 
-        @media (max-width: 992px) {
-          .nav {
-            position: fixed;
-            top: 116px;
-            left: -100%;
-            width: 100%;
-            height: calc(100vh - 116px);
-            background: var(--white);
-            transition: 0.3s;
-            padding: 40px;
-          }
-          .nav-open {
-            left: 0;
-          }
-          .nav ul {
-            flex-direction: column;
-            gap: 20px;
-          }
-          .dropdown {
-            position: static;
-            min-width: 100%;
-            display: block;
-            opacity: 1;
-            visibility: visible;
-            transform: none;
-            box-shadow: none;
-            padding: 15px 0 0 15px;
-          }
-          .dropdown-section {
-            margin-bottom: 20px;
-          }
-          .mobile-menu-btn {
-            display: block;
-          }
-          .logo {
-            margin-right: auto;
-            margin-left: 15px;
-          }
-        }
-      `}</style>
+      <style jsx="true">{`
+                .header {
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    z-index: 2000;
+                    transition: var(--transition);
+                    background: transparent;
+                }
+                .header-scrolled {
+                    background: rgba(255, 255, 255, 0.98);
+                    backdrop-filter: blur(15px);
+                    box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+                }
+                .top-bar {
+                    background: var(--bg-dark);
+                    color: rgba(255,255,255,0.8);
+                    text-align: center;
+                    padding: 8px;
+                    font-size: 0.6rem;
+                    text-transform: uppercase;
+                    letter-spacing: 3px;
+                    display: flex;
+                    justify-content: center;
+                    gap: 20px;
+                    font-weight: 500;
+                }
+                .top-bar-sep { opacity: 0.2; }
+                
+                .main-header {
+                    display: flex !important;
+                    flex-direction: row !important;
+                    align-items: center;
+                    justify-content: space-between;
+                    padding: 30px 0;
+                    transition: var(--transition);
+                }
+                .header-scrolled .main-header { padding: 15px 0; }
+                
+                .logo-container {
+                    text-decoration: none;
+                    flex-shrink: 0;
+                    display: block;
+                }
+                .logo-text {
+                    display: flex;
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+                .brand-name {
+                    font-family: var(--font-serif);
+                    font-size: 1.8rem;
+                    color: var(--primary);
+                    font-weight: 600;
+                    letter-spacing: 2px;
+                    line-height: 1;
+                }
+                .brand-tagline {
+                    font-size: 0.55rem;
+                    text-transform: uppercase;
+                    letter-spacing: 3px;
+                    color: var(--secondary);
+                    margin-top: 4px;
+                    font-weight: 600;
+                }
+                
+                .desktop-nav {
+                    flex-grow: 1;
+                    display: flex;
+                    justify-content: center;
+                }
+                
+                .nav-list {
+                    display: flex;
+                    gap: 30px;
+                    list-style: none;
+                    margin: 0 auto;
+                }
+                .nav-item {
+                    position: relative;
+                }
+                
+                .nav-link {
+                    text-decoration: none;
+                    color: var(--text-main);
+                    font-size: 0.75rem;
+                    font-weight: 500;
+                    letter-spacing: 1.5px;
+                    display: flex;
+                    align-items: center;
+                    gap: 6px;
+                    transition: var(--transition);
+                    position: relative;
+                    text-transform: uppercase;
+                }
+                .nav-link::after {
+                    content: '';
+                    position: absolute;
+                    bottom: -5px;
+                    left: 0;
+                    width: 0;
+                    height: 1px;
+                    background: var(--secondary);
+                    transition: var(--transition);
+                }
+                .nav-link:hover::after, .nav-link.active::after { width: 100%; }
+                .nav-link:hover { color: var(--secondary); }
+                
+                .mega-menu {
+                    position: absolute;
+                    top: calc(100% + 15px);
+                    left: 50%;
+                    transform: translateX(-50%) translateY(10px);
+                    background: white;
+                    min-width: 250px;
+                    padding: 25px 0;
+                    box-shadow: var(--shadow-medium);
+                    opacity: 0;
+                    visibility: hidden;
+                    transition: var(--transition);
+                    list-style: none;
+                    border-radius: 4px;
+                    border-top: 3px solid var(--secondary);
+                    z-index: 100;
+                }
+                .nav-item:hover .mega-menu {
+                    opacity: 1;
+                    visibility: visible;
+                    transform: translateX(-50%) translateY(0);
+                }
+                .mega-menu li a {
+                    display: block;
+                    padding: 10px 25px;
+                    text-decoration: none;
+                    color: var(--text-light);
+                    font-size: 0.8rem;
+                    transition: var(--transition);
+                }
+                .mega-menu li a:hover {
+                    color: var(--secondary);
+                    background: var(--bg-creme);
+                    padding-left: 30px;
+                }
+                
+                .header-actions {
+                    display: flex;
+                    gap: 20px;
+                    align-items: center;
+                    flex-shrink: 0;
+                }
+                .icon-btn {
+                    background: none;
+                    border: none;
+                    cursor: pointer;
+                    color: var(--text-main);
+                    position: relative;
+                    transition: var(--transition);
+                    display: flex;
+                    align-items: center;
+                }
+                .icon-btn:hover { color: var(--secondary); transform: translateY(-2px); }
+                .cart-count {
+                    position: absolute;
+                    top: -8px;
+                    right: -8px;
+                    background: var(--accent);
+                    color: white;
+                    font-size: 0.6rem;
+                    width: 16px;
+                    height: 16px;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-weight: 700;
+                }
+                
+                .mobile-toggle { display: none; }
+                .mobile-nav { display: none; }
+                
+                @media (max-width: 1024px) {
+                    .desktop-nav { display: none; }
+                    .mobile-toggle { display: block; }
+                    .mobile-nav {
+                        display: block;
+                        position: fixed;
+                        top: 0;
+                        right: -100%;
+                        width: 80%;
+                        height: 100vh;
+                        background: white;
+                        transition: var(--transition);
+                        padding: 100px 40px;
+                        z-index: 1000;
+                        box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+                    }
+                    .nav-open { right: 0; }
+                    .mobile-nav-list { list-style: none; }
+                    .mobile-nav-list li { margin-bottom: 25px; }
+                    .mobile-nav-list a {
+                        text-decoration: none;
+                        color: var(--text-main);
+                        font-family: var(--font-serif);
+                        font-size: 2rem;
+                    }
+                }
+            `}</style>
     </header>
   )
 }

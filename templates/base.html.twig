@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>{% block title %}AS Crystals | Premium Healing Crystals & Jewelry{% endblock %}</title>
+        <link rel="icon" type="image/svg+xml" href="/favicon.ico">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+        {% block stylesheets %}
+        {% endblock %}
+    </head>
+    <body>
+        <!-- Main Application Entry Point -->
+        <div id="root"></div>
+
+        <!-- Production Assets Linking -->
+        <link rel="stylesheet" href="/assets/frontend/assets/main-GcUPDhLJ.css">
+        <script type="module" src="/assets/frontend/assets/main-DtKdNmHX.js"></script>
+
+        {% block body %}{% endblock %}
+    </body>
+</html>

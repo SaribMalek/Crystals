@@ -1,173 +1,158 @@
 import React from 'react'
-import { ShoppingCart, Heart } from 'lucide-react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import { ShoppingCart, Eye, Star } from 'lucide-react'
 import { useCart } from '../context/CartContext'
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
-  const navigate = useNavigate();
-
-  const handleAddToCart = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    addToCart(product);
-  };
 
   return (
-    <div className="product-card" onClick={() => navigate(`/product/${product.id}`)}>
-      <div className="product-image-container">
-        <div className="product-badges">
-          {product.isNew && <span className="badge badge-new">New</span>}
-          {product.isSale && <span className="badge badge-sale">Sale</span>}
-        </div>
-        <div className="product-placeholder" style={{ background: product.color || 'var(--primary-light)' }}>
-          {product.image ? (
-            <img src={product.image} alt={product.name} className="product-img-real" />
-          ) : (
-            <div className="placeholder-glow"></div>
-          )}
-        </div>
-        <div className="product-actions">
-          <button className="action-btn" onClick={(e) => { e.stopPropagation(); }}><Heart size={18} /></button>
-          <button className="action-btn" onClick={handleAddToCart}><ShoppingCart size={18} /></button>
+    <div className="luxury-product-card">
+      <div className="product-visual">
+        <img
+          src={product.image && product.image !== 'default.jpg' ? product.image : 'https://via.placeholder.com/400x500/FDFBF9/2C3E50?text=' + encodeURIComponent(product.name)}
+          alt={product.name}
+          className="product-img-main"
+        />
+        {product.is_sale && <span className="luxury-badge">Essence Sale</span>}
+        <div className="product-actions-overlay">
+          <button className="action-circle" onClick={() => addToCart(product)} title="Add to Cart">
+            <ShoppingCart size={18} />
+          </button>
+          <Link to={`/product/${product.id}`} className="action-circle" title="View Details">
+            <Eye size={18} />
+          </Link>
         </div>
       </div>
-      <div className="product-info">
-        <p className="product-category">{product.category}</p>
-        <h3 className="product-name">{product.name}</h3>
-        <div className="product-price">
-          {product.oldPrice && <span className="old-price">${product.oldPrice}</span>}
-          <span className="current-price">${product.price}</span>
+
+      <div className="product-details-luxury">
+        <div className="product-rating-gold">
+          {[...Array(5)].map((_, i) => <Star key={i} size={10} fill="#D4AF37" color="#D4AF37" />)}
+        </div>
+        <h3 className="product-name-serif">
+          <Link to={`/product/${product.id}`}>{product.name}</Link>
+        </h3>
+        <p className="product-cat-tag">{product.category ? product.category.name : 'Curated Crystal'}</p>
+        <div className="product-price-luxury">
+          <span className="price-primary">${product.price}</span>
+          {product.old_price && <span className="price-old">${product.old_price}</span>}
         </div>
       </div>
 
       <style jsx="true">{`
-        .product-card {
-          background: var(--white);
-          border-radius: 15px;
-          overflow: hidden;
-          transition: var(--transition);
-          cursor: pointer;
-          border: 1px solid rgba(0,0,0,0.03);
+        .luxury-product-card {
+           background: transparent;
+           transition: var(--transition);
+           position: relative;
+           overflow: hidden;
         }
-        .product-card:hover {
-          transform: translateY(-8px);
-          box-shadow: 0 15px 30px rgba(0,0,0,0.06);
-        }
-        .product-image-container {
+        .product-visual {
           position: relative;
-          aspect-ratio: 1;
+          aspect-ratio: 4/5;
           overflow: hidden;
-          background: #f9f9f9;
+          background: #F8F4F0;
+          border-radius: 4px;
         }
-        .product-placeholder {
-          width: 100%;
-          height: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          opacity: 0.15;
-          position: relative;
-        }
-        .placeholder-glow {
-          width: 60%;
-          height: 60%;
-          background: white;
-          filter: blur(20px);
-          border-radius: 50%;
-        }
-        .product-img-real {
+        .product-img-main {
           width: 100%;
           height: 100%;
           object-fit: cover;
-          transition: transform 0.5s ease;
+          transition: transform 1.2s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
-        .product-card:hover .product-img-real {
-          transform: scale(1.1);
+        .luxury-product-card:hover .product-img-main {
+          transform: scale(1.08);
         }
-        .product-badges {
+        .luxury-badge {
           position: absolute;
-          top: 15px;
-          left: 15px;
-          display: flex;
-          flex-direction: column;
-          gap: 5px;
-          z-index: 2;
-        }
-        .badge {
-          padding: 4px 10px;
-          font-size: 0.7rem;
-          font-weight: 700;
+          top: 20px;
+          left: 20px;
+          background: var(--bg-dark);
+          color: white;
+          padding: 6px 15px;
+          font-size: 0.6rem;
           text-transform: uppercase;
-          border-radius: 4px;
+          font-weight: 700;
+          letter-spacing: 2px;
+          z-index: 10;
         }
-        .badge-new { background: var(--primary); color: white; }
-        .badge-sale { background: var(--secondary); color: var(--primary); }
-        .product-actions {
+        .product-actions-overlay {
           position: absolute;
-          bottom: -50px;
-          left: 0;
-          width: 100%;
+          bottom: 20px;
+          left: 50%;
+          transform: translateX(-50%) translateY(20px);
           display: flex;
-          justify-content: center;
-          gap: 10px;
-          padding: 15px;
-          background: rgba(255,255,255,0.8);
-          backdrop-filter: blur(5px);
+          gap: 12px;
+          opacity: 0;
           transition: var(--transition);
         }
-        .product-card:hover .product-actions {
-          bottom: 0;
+        .luxury-product-card:hover .product-actions-overlay {
+          opacity: 1;
+          transform: translateX(-50%) translateY(0);
         }
-        .action-btn {
+        .action-circle {
+          background: white;
+          border: none;
           width: 40px;
           height: 40px;
-          background: var(--white);
-          border: none;
           border-radius: 50%;
           display: flex;
           align-items: center;
           justify-content: center;
-          color: var(--text);
-          box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+          color: var(--primary);
           cursor: pointer;
           transition: var(--transition);
+          box-shadow: var(--shadow-soft);
         }
-        .action-btn:hover {
-          background: var(--primary);
-          color: var(--white);
+        .action-circle:hover {
+          background: var(--secondary);
+          color: white;
         }
-        .product-info {
-          padding: 20px;
+        .product-details-luxury {
+          padding: 25px 0;
           text-align: center;
         }
-        .product-category {
-          font-size: 0.75rem;
+        .product-rating-gold {
+            display: flex;
+            justify-content: center;
+            gap: 3px;
+            margin-bottom: 12px;
+        }
+        .product-name-serif {
+          font-size: 1.2rem;
+          margin-bottom: 8px;
+          font-weight: 500;
+          font-family: var(--font-serif);
+        }
+        .product-name-serif a {
+            text-decoration: none;
+            color: var(--primary);
+            transition: var(--transition);
+        }
+        .product-name-serif a:hover {
+          color: var(--secondary);
+        }
+        .product-cat-tag {
+          font-size: 0.65rem;
           color: var(--text-light);
           text-transform: uppercase;
-          letter-spacing: 1px;
-          margin-bottom: 5px;
-        }
-        .product-name {
-          font-size: 1.1rem;
-          margin-bottom: 10px;
+          letter-spacing: 2px;
+          margin-bottom: 15px;
           font-weight: 600;
         }
-        .product-price {
+        .product-price-luxury {
+          font-weight: 600;
+          font-size: 1.1rem;
+          color: var(--primary);
           display: flex;
           justify-content: center;
-          gap: 10px;
-          align-items: center;
+          gap: 15px;
+          letter-spacing: 1px;
         }
-        .current-price {
-          font-weight: 700;
-          color: var(--primary);
-          font-size: 1.1rem;
-        }
-        .old-price {
+        .price-old {
           text-decoration: line-through;
-          color: var(--text-light);
+          color: #BDC3C7;
           font-size: 0.9rem;
+          font-weight: 300;
         }
       `}</style>
     </div>

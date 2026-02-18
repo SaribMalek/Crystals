@@ -4,37 +4,42 @@ import { Heart, Shield, Zap, Sparkles } from 'lucide-react';
 const About = () => {
     return (
         <div className="about-page">
-            <section className="about-hero">
+            <section className="about-hero-boutique">
                 <div className="container">
-                    <h1>Our Story</h1>
-                    <p>Connecting you with the ancient energy of the earth through ethically sourced, hand-selected crystals.</p>
+                    <span className="hero-eyebrow white">The Heritage</span>
+                    <h1 className="hero-title white">A Legacy of Light</h1>
                 </div>
             </section>
 
             <section className="section-padding">
                 <div className="container">
-                    <div className="about-grid">
-                        <div className="about-image" style={{ background: 'var(--primary-light)', borderRadius: '30px', aspectRatio: '1' }}>
-                            <div className="glow"></div>
+                    <div className="boutique-story-layout">
+                        <div className="story-image-panel">
+                            <div className="story-img-main">
+                                <img src="https://images.unsplash.com/photo-1551972873-b7e8754e8e26?q=80&w=1927&auto=format&fit=crop" alt="Crystals Heritage" />
+                            </div>
+                            <div className="story-img-secondary">
+                                <img src="https://images.unsplash.com/photo-1599707334391-5822126cc2af?q=80&w=1932&auto=format&fit=crop" alt="Crystal Energy" />
+                            </div>
                         </div>
-                        <div className="about-text">
-                            <h2 className="section-title">The AS Crystals Journey</h2>
-                            <p>Founded with a passion for holistic healing and the natural beauty of gemstones, AS Crystals began as a small collection and grew into a community of crystal lovers worldwide.</p>
-                            <p>We believe that crystals are more than just beautiful objects; they are tools for mindfulness, transformation, and connecting with our inner selves. Each piece in our collection is hand-selected not just for its physical beauty, but for its unique energetic vibration.</p>
+                        <div className="story-content-panel">
+                            <h2 className="section-title-serif">The Manifestation of AS Crystals</h2>
+                            <p className="boutique-p">Founded with a whisper of intention and a deep reverence for the earth's silent wisdom, AS Crystals is more than a boutique. It is a sanctuary for those who seek to harmonize their inner space with the ancient vibrations of the natural world.</p>
+                            <p className="boutique-p">Every piece in our collection is hand-selected, not merely for its crystalline brilliance, but for the unique energy it carries—a story written in stone over millennia.</p>
 
-                            <div className="values-list">
-                                <div className="value-item">
-                                    <Shield size={24} color="var(--primary)" />
-                                    <div>
-                                        <h3>Ethically Sourced</h3>
-                                        <p>We work closely with mining partners who prioritize sustainability and fairness.</p>
+                            <div className="philosophy-grid">
+                                <div className="philosophy-item">
+                                    <div className="phi-icon"><Shield size={20} strokeWidth={1} /></div>
+                                    <div className="phi-text">
+                                        <h3>Ethical Stewardship</h3>
+                                        <p>We honor the earth by partnering exclusively with artisans who respect the sacred process of mineral extraction.</p>
                                     </div>
                                 </div>
-                                <div className="value-item">
-                                    <Zap size={24} color="var(--primary)" />
-                                    <div>
-                                        <h3>Energy Cleansed</h3>
-                                        <p>Crystals are cleansed with sage and sound before they reach their new home.</p>
+                                <div className="philosophy-item">
+                                    <div className="phi-icon"><Sparkles size={20} strokeWidth={1} /></div>
+                                    <div className="phi-text">
+                                        <h3>Vibrational Purity</h3>
+                                        <p>Before any crystal leaves our hands, it is cleansed with sacred smoke and sound frequencies to ensure it reaches you in its purest state.</p>
                                     </div>
                                 </div>
                             </div>
@@ -43,66 +48,66 @@ const About = () => {
                 </div>
             </section>
 
-            <section className="mission-section section-padding">
+            <section className="vision-statement section-padding">
                 <div className="container text-center">
-                    <h2 className="section-title">Our Mission</h2>
-                    <p className="mission-text">To empower individuals on their spiritual journey by providing high-quality, authentic crystals and educational resources to help them harness the earth's natural healing energy.</p>
+                    <span className="hero-eyebrow">Our Vision</span>
+                    <h2 className="section-title-serif">Elevating the Human Experience</h2>
+                    <blockquote className="boutique-quote">
+                        "To empower the seeker. To clarify the path. To provide the tools for an enlightened existence."
+                    </blockquote>
 
-                    <div className="stats-grid">
-                        <div className="stat-card">
-                            <h3>500+</h3>
-                            <p>Unique Varieties</p>
+                    <div className="boutique-milestones">
+                        <div className="milestone-item">
+                            <span className="m-val">90+</span>
+                            <span className="m-lbl">Sacred Varieties</span>
                         </div>
-                        <div className="stat-card">
-                            <h3>10k+</h3>
-                            <p>Happy Customers</p>
+                        <div className="milestone-item">
+                            <span className="m-val">12k</span>
+                            <span className="m-lbl">Soulful Seekers</span>
                         </div>
-                        <div className="stat-card">
-                            <h3>15+</h3>
-                            <p>Global Partners</p>
+                        <div className="milestone-item">
+                            <span className="m-val">08</span>
+                            <span className="m-lbl">Years of Light</span>
                         </div>
                     </div>
                 </div>
             </section>
 
             <style jsx="true">{`
-                .about-hero {
-                    background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1551972873-b7e8754e8e26?q=80&w=1927&auto=format&fit=crop');
-                    background-size: cover;
-                    background-position: center;
-                    height: 400px;
-                    display: flex;
-                    align-items: center;
-                    text-align: center;
-                    color: white;
-                }
-                .about-hero h1 { font-size: 4rem; margin-bottom: 20px; }
-                .about-hero p { font-size: 1.2rem; max-width: 700px; margin: 0 auto; opacity: 0.9; }
-                
-                .about-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 80px; align-items: center; }
-                .about-image { position: relative; overflow: hidden; height: 500px; }
-                .about-image .glow { position: absolute; width: 80%; height: 80%; background: white; filter: blur(50px); top: 10%; left: 10%; opacity: 0.3; }
-                
-                .about-text p { margin-bottom: 20px; line-height: 1.8; color: var(--text-light); }
-                .values-list { margin-top: 40px; display: flex; flex-direction: column; gap: 25px; }
-                .value-item { display: flex; gap: 20px; align-items: flex-start; }
-                .value-item h3 { font-size: 1.1rem; margin-bottom: 5px; color: var(--primary); }
-                .value-item p { font-size: 0.9rem; margin-bottom: 0; }
-                
-                .mission-section { background: var(--primary-light); }
-                .mission-text { max-width: 800px; margin: 0 auto 60px; font-size: 1.3rem; line-height: 1.6; color: var(--primary); font-style: italic; }
-                
-                .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px; }
-                .stat-card { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
-                .stat-card h3 { font-size: 3rem; color: var(--primary); margin-bottom: 10px; }
-                .stat-card p { font-weight: 700; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px; }
+                .about-hero-boutique { height: 60vh; background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1567225557594-88d73e55f2cb?q=80&w=1974&auto=format&fit=crop'); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; text-align: center; }
+                .hero-eyebrow.white { color: rgba(255,255,255,0.8); }
+                .hero-title.white { color: white; }
 
-                @media (max-width: 992px) {
-                    .about-grid { grid-template-columns: 1fr; }
-                    .about-hero h1 { font-size: 3rem; }
-                }
-                @media (max-width: 768px) {
-                    .stats-grid { grid-template-columns: 1fr; }
+                .boutique-story-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 100px; align-items: center; }
+                .story-image-panel { position: relative; height: 700px; }
+                .story-img-main { position: absolute; width: 80%; height: 80%; top: 0; left: 0; overflow: hidden; }
+                .story-img-secondary { position: absolute; width: 50%; height: 50%; bottom: 0; right: 0; border: 15px solid white; overflow: hidden; z-index: 2; }
+                .story-image-panel img { width: 100%; height: 100%; object-fit: cover; transition: var(--transition); }
+                .story-image-panel:hover img { transform: scale(1.05); }
+
+                .story-content-panel { padding-right: 50px; }
+                .section-title-serif { font-family: var(--font-serif); font-size: 3rem; color: var(--primary); margin-bottom: 40px; }
+                .boutique-p { font-size: 1.1rem; line-height: 1.8; color: var(--text-light); margin-bottom: 30px; font-weight: 300; }
+
+                .philosophy-grid { margin-top: 60px; display: grid; gap: 40px; }
+                .philosophy-item { display: flex; gap: 25px; }
+                .phi-icon { width: 45px; height: 45px; border: 1px solid var(--secondary); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--secondary); flex-shrink: 0; }
+                .phi-text h3 { font-family: var(--font-serif); font-size: 1.4rem; color: var(--primary); margin-bottom: 10px; }
+                .phi-text p { font-size: 0.9rem; color: var(--text-light); line-height: 1.6; }
+
+                .vision-statement { background: var(--bg-creme); border-top: 1px solid #F0EAE5; }
+                .boutique-quote { font-family: var(--font-serif); font-size: 2.2rem; color: var(--primary); max-width: 800px; margin: 40px auto 80px; font-style: italic; line-height: 1.4; }
+                
+                .boutique-milestones { display: flex; justify-content: center; gap: 100px; }
+                .milestone-item { display: flex; flex-direction: column; align-items: center; }
+                .m-val { font-family: var(--font-serif); font-size: 3.5rem; color: var(--secondary); }
+                .m-lbl { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-light); margin-top: 10px; }
+
+                @media (max-width: 1024px) {
+                    .boutique-story-layout { grid-template-columns: 1fr; gap: 60px; }
+                    .story-content-panel { padding-right: 0; }
+                    .story-image-panel { height: 500px; }
+                    .boutique-milestones { flex-wrap: wrap; gap: 50px; }
                 }
             `}</style>
         </div>

@@ -1,146 +1,134 @@
 import React from 'react'
-import { motion } from 'framer-motion'
+import { Link } from 'react-router-dom'
 
 const Hero = () => {
-  const scrollToShop = () => {
-    const section = document.querySelector('.featured-products');
-    if (section) section.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
     <section className="hero">
       <div className="container hero-container">
-        <motion.div
-          className="hero-content"
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          <span className="subtitle">Awaken Your Inner Energy</span>
-          <h1>Beautiful Crystals <br /> For a Balanced Soul</h1>
-          <p>Discover our ethically sourced, hand-picked collection of premium healing crystals and artisan jewelry designed to align your vibration.</p>
-          <div className="hero-btns">
-            <button className="btn btn-primary" onClick={scrollToShop}>Shop Collection</button>
-            <button className="btn btn-outline">Learn About Crystals</button>
+        <div className="hero-content">
+          <span className="hero-eyebrow">Hand-Selected Manifestation Tools</span>
+          <h1 className="hero-title">Elevate Your <br />Inner Radiance</h1>
+          <p className="hero-desc">
+            Discover the profound energy of authentic crystals, ethically sourced and curated for your healing journey.
+          </p>
+          <div className="hero-actions">
+            <Link to="/shop" className="btn-luxury">Discover Collection</Link>
+            <Link to="/about" className="btn-text">Our Philosophy</Link>
           </div>
-        </motion.div>
-
-        <motion.div
-          className="hero-image"
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1 }}
-        >
-          <div className="image-wrapper">
-            <div className="accent-circle"></div>
-            {/* Note: In a real app, use the generated logo or a high-quality product shot here */}
-            <div className="placeholder-image">
-              <img
-                src="https://images.unsplash.com/photo-1520330443056-4bae0244b705?auto=format&fit=crop&q=80"
-                alt="Aesthetic Crystal Display"
-                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 'inherit' }}
-              />
-              <div className="inner-glow"></div>
-            </div>
-          </div>
-        </motion.div>
+        </div>
       </div>
 
       <style jsx="true">{`
         .hero {
-          height: 85vh;
+          height: 100vh;
           display: flex;
           align-items: center;
-          background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+          background: linear-gradient(rgba(255,255,255,0.4), rgba(255,255,255,0.4)), url('https://images.unsplash.com/photo-1551970634-747846a548cb?q=80&w=2070&auto=format&fit=crop');
+          background-size: cover;
+          background-position: center;
+          position: relative;
           overflow: hidden;
         }
-        .hero-container {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          align-items: center;
-          gap: 50px;
-        }
-        .subtitle {
-          color: var(--secondary);
-          text-transform: uppercase;
-          letter-spacing: 2px;
-          font-weight: 600;
-          font-size: 0.9rem;
-          display: block;
-          margin-bottom: 15px;
-        }
-        .hero-content h1 {
-          font-size: 4rem;
-          line-height: 1.1;
-          margin-bottom: 25px;
-          color: var(--primary);
-        }
-        .hero-content p {
-          font-size: 1.1rem;
-          color: var(--text-light);
-          margin-bottom: 35px;
-          max-width: 500px;
-        }
-        .hero-btns {
-          display: flex;
-          gap: 15px;
-        }
-        .hero-image {
-          position: relative;
-          display: flex;
-          justify-content: center;
-        }
-        .image-wrapper {
-          position: relative;
-          width: 450px;
-          height: 450px;
-        }
-        .accent-circle {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          width: 120%;
-          height: 120%;
-          border-radius: 50%;
-          background: radial-gradient(circle, rgba(75,0,130,0.05) 0%, rgba(255,255,255,0) 70%);
-          z-index: 0;
-        }
-        .placeholder-image {
-           width: 100%;
-           height: 100%;
-           border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
-           background: linear-gradient(45deg, var(--primary), var(--secondary));
-           opacity: 0.8;
-           box-shadow: 20px 20px 60px rgba(0,0,0,0.1);
-           position: relative;
-           z-index: 1;
-           animation: morph 8s ease-in-out infinite;
-        }
-        .inner-glow {
+        
+        .hero::before {
+            content: '';
             position: absolute;
-            top: 15%;
-            left: 15%;
-            width: 70%;
-            height: 70%;
-            background: rgba(255,255,255,0.2);
-            filter: blur(40px);
-            border-radius: 50%;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 40% 50%, rgba(253, 251, 249, 0.8) 0%, transparent 60%);
         }
 
-        @keyframes morph {
-          0% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
-          50% { border-radius: 50% 50% 33% 67% / 55% 27% 73% 45%; }
-          100% { border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+        .hero-content {
+          max-width: 600px;
+          position: relative;
+          z-index: 10;
+          animation: fadeInSlide 1.2s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+        
+        .hero-eyebrow {
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-size: 0.7rem;
+            color: var(--secondary);
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .hero-title {
+          font-size: 5rem;
+          line-height: 1;
+          margin-bottom: 30px;
+          color: var(--primary);
+        }
+        
+        .hero-desc {
+          font-size: 1.1rem;
+          color: var(--text-light);
+          margin-bottom: 40px;
+          max-width: 480px;
+          font-weight: 300;
+        }
+        
+        .hero-actions {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .btn-luxury {
+          display: inline-block;
+          padding: 18px 45px;
+          background: var(--primary);
+          color: white;
+          text-decoration: none;
+          font-weight: 600;
+          letter-spacing: 1px;
+          font-size: 0.8rem;
+          text-transform: uppercase;
+          transition: var(--transition);
+          box-shadow: var(--shadow-medium);
+        }
+        
+        .btn-luxury:hover {
+            background: var(--bg-dark);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+        
+        .btn-text {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+        }
+        
+        .btn-text::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 30px;
+            height: 1px;
+            background: var(--secondary);
+            transition: var(--transition);
+        }
+        
+        .btn-text:hover::after { width: 100%; }
+
+        @keyframes fadeInSlide {
+          from { opacity: 0; transform: translateY(40px); }
+          to { opacity: 1; transform: translateY(0); }
         }
 
         @media (max-width: 992px) {
-          .hero { height: auto; padding: 100px 0 60px; }
-          .hero-container { grid-template-columns: 1fr; text-align: center; }
-          .hero-content h1 { font-size: 3rem; }
-          .hero-content p { margin: 0 auto 35px; }
-          .hero-btns { justify-content: center; }
-          .image-wrapper { width: 300px; height: 300px; margin: 40px auto 0; }
+          .hero-title { font-size: 3.5rem; }
+          .hero { height: 80vh; padding-top: 100px; }
         }
       `}</style>
     </section>

@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom';
-import { products } from '../data/products';
 import { useCart } from '../context/CartContext';
 import { Star, Truck, ShieldCheck, RefreshCcw, Plus, Minus, ShoppingBag } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
@@ -11,120 +10,130 @@ const ProductDetails = () => {
     const [product, setProduct] = useState(null);
     const [quantity, setQuantity] = useState(1);
     const [activeTab, setActiveTab] = useState('description');
+    const [loading, setLoading] = useState(true);
+    const [relatedProducts, setRelatedProducts] = useState([]);
 
     useEffect(() => {
-        const foundProduct = products.find(p => p.id === parseInt(id));
-        setProduct(foundProduct);
-        window.scrollTo(0, 0);
+        const fetchProduct = async () => {
+            try {
+                const response = await fetch(`http://127.0.0.1:8000/api/products/${id}`);
+                const data = await response.json();
+                setProduct(data);
+                setLoading(false);
+                window.scrollTo(0, 0);
+
+                // Fetch related products (same category)
+                const relResponse = await fetch(`http://127.0.0.1:8000/api/products`);
+                const allProducts = await relResponse.json();
+                setRelatedProducts(allProducts.filter(p => p.category === data.category && p.id !== data.id).slice(0, 4));
+            } catch (error) {
+                console.error('Error fetching product:', error);
+                setLoading(false);
+            }
+        };
+
+        fetchProduct();
     }, [id]);
 
-    if (!product) return <div className="container section-padding">Loading...</div>;
-
-    const relatedProducts = products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
+    if (loading) return <div className="container section-padding">Loading...</div>;
+    if (!product) return <div className="container section-padding">Product not found.</div>;
 
     return (
         <div className="product-details-page">
             <div className="container section-padding">
-                <nav className="breadcrumb">
-                    <Link to="/">Home</Link> / <Link to="/shop">Shop</Link> / <span>{product.name}</span>
+                <nav className="breadcrumb-luxury">
+                    <Link to="/">Manifest</Link> / <Link to="/shop">Shop</Link> / <span>{product.name}</span>
                 </nav>
 
-                <div className="product-main">
-                    <div className="product-gallery">
-                        <div className="main-image" style={{ background: product.color || 'var(--primary-light)' }}>
-                            {product.image ? (
-                                <img src={product.image} alt={product.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                            ) : (
-                                <div className="glow"></div>
-                            )}
-                        </div>
-                        <div className="thumbnail-grid">
-                            {[1, 2, 3, 4].map(i => (
-                                <div key={i} className="thumbnail" style={{ background: product.color || 'var(--primary-light)', opacity: 0.5, overflow: 'hidden' }}>
-                                    {product.image && <img src={product.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.7 }} />}
-                                </div>
-                            ))}
+                <div className="product-main-luxury">
+                    <div className="product-gallery-luxury">
+                        <div className="main-image-luxury">
+                            <img
+                                src={product.image && product.image !== 'default.jpg' ? product.image : 'https://via.placeholder.com/600x800/FDFBF9/2C3E50?text=' + encodeURIComponent(product.name)}
+                                alt={product.name}
+                            />
                         </div>
                     </div>
 
-                    <div className="product-info-detailed">
-                        <div className="badges">
-                            {product.isNew && <span className="badge badge-new">New Arrival</span>}
-                            {product.isSale && <span className="badge badge-sale">Limited Offer</span>}
+                    <div className="product-info-boutique">
+                        <div className="badges-luxury">
+                            {product.is_sale && <span className="badge-luxury">Divine Sale</span>}
                         </div>
-                        <h1 className="product-title">{product.name}</h1>
-                        <div className="product-rating">
+                        <h1 className="product-title-serif">{product.name}</h1>
+                        <div className="product-rating-gold-large">
                             <div className="stars">
-                                {[1, 2, 3, 4, 5].map(i => <Star key={i} size={16} fill={i <= 4 ? "var(--secondary)" : "none"} stroke="var(--secondary)" />)}
+                                {[1, 2, 3, 4, 5].map(i => <Star key={i} size={14} fill={i <= 4 ? "#D4AF37" : "none"} color="#D4AF37" />)}
                             </div>
-                            <span className="review-count">(24 Customer Reviews)</span>
+                            <span className="review-meta">24 Enlightened Reviews</span>
                         </div>
-                        <div className="product-price-large">
-                            {product.oldPrice && <span className="old-price">${product.oldPrice}</span>}
+                        <div className="product-price-boutique">
+                            {product.old_price && <span className="old-price">${product.old_price}</span>}
                             <span className="current-price">${product.price}</span>
                         </div>
-                        <p className="short-desc">
-                            {product.description.split('.')[0]}. Hand-selected for its unique energy and quality.
+                        <p className="boutique-desc">
+                            {product.description || "A masterfully selected crystal, chosen for its unique energetic imprint and aesthetic purity. A perfect companion for your manifestation journey."}
                         </p>
 
-                        <div className="purchase-actions">
-                            <div className="quantity-selector">
-                                <button onClick={() => setQuantity(q => Math.max(1, q - 1))}><Minus size={18} /></button>
+                        <div className="boutique-actions">
+                            <div className="qty-luxury">
+                                <button onClick={() => setQuantity(q => Math.max(1, q - 1))}><Minus size={16} /></button>
                                 <span>{quantity}</span>
-                                <button onClick={() => setQuantity(q => q + 1)}><Plus size={18} /></button>
+                                <button onClick={() => setQuantity(q => q + 1)}><Plus size={16} /></button>
                             </div>
-                            <button className="btn btn-primary add-to-cart-btn" onClick={() => addToCart(product, quantity)}>
-                                <ShoppingBag size={20} />
-                                Add to Cart
+                            <button className="btn-luxury-add" onClick={() => addToCart(product, quantity)}>
+                                <ShoppingBag size={18} />
+                                Add to Sanctuary
                             </button>
                         </div>
 
-                        <div className="product-features">
-                            <div className="feature">
-                                <Truck size={20} />
+                        <div className="boutique-features">
+                            <div className="feature-item">
+                                <Truck size={18} />
                                 <div>
-                                    <p className="feature-title">Free Shipping</p>
-                                    <p className="feature-desc">On orders over $150</p>
+                                    <p className="f-title">Sacred Delivery</p>
+                                    <p className="f-desc">Free on orders over $150</p>
                                 </div>
                             </div>
-                            <div className="feature">
-                                <ShieldCheck size={20} />
+                            <div className="feature-item">
+                                <ShieldCheck size={18} />
                                 <div>
-                                    <p className="feature-title">Authentic Stones</p>
-                                    <p className="feature-desc">100% natural crystals</p>
+                                    <p className="f-title">Authentic Origin</p>
+                                    <p className="f-desc">100% Earth-born stones</p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div className="product-tabs">
-                    <div className="tab-headers">
-                        <button className={activeTab === 'description' ? 'active' : ''} onClick={() => setActiveTab('description')}>Description</button>
-                        <button className={activeTab === 'benefits' ? 'active' : ''} onClick={() => setActiveTab('benefits')}>Benefits</button>
-                        <button className={activeTab === 'shipping' ? 'active' : ''} onClick={() => setActiveTab('shipping')}>Shipping</button>
+                <div className="details-tabs-luxury">
+                    <div className="tab-headers-boutique">
+                        <button className={activeTab === 'description' ? 'active' : ''} onClick={() => setActiveTab('description')}>The Essence</button>
+                        <button className={activeTab === 'benefits' ? 'active' : ''} onClick={() => setActiveTab('benefits')}>Vibrations</button>
+                        <button className={activeTab === 'shipping' ? 'active' : ''} onClick={() => setActiveTab('shipping')}>Sacred Journey</button>
                     </div>
-                    <div className="tab-content">
+                    <div className="tab-content-boutique">
                         {activeTab === 'description' && (
-                            <div className="description-tab">
+                            <div className="tab-pane-luxury fade-in">
                                 <p>{product.description}</p>
-                                <p>Crystals are natural minerals, each with its own unique personality. Please expect variations in color, size, and shape. These differences are a testament to the natural beauty of the earth.</p>
+                                <p className="nature-notice">Note: Stones are natural minerals. Please embrace minor variance in color and structure as a signature of Earth's artistry.</p>
                             </div>
                         )}
                         {activeTab === 'benefits' && (
-                            <ul className="benefits-list">
-                                {product.benefits && product.benefits.map((b, i) => <li key={i}>{b}</li>)}
-                                <li>Cleanses the aura and environment</li>
-                                <li>Connects you with the earth's healing vibrations</li>
-                            </ul>
+                            <div className="tab-pane-luxury fade-in">
+                                <ul className="benefits-list-luxury">
+                                    {product.benefits && product.benefits.map((b, i) => <li key={i}>{b}</li>)}
+                                    <li>Harmonizes personal energetic fields</li>
+                                    <li>Promotes deep cellular calm and mental clarity</li>
+                                </ul>
+                            </div>
                         )}
                         {activeTab === 'shipping' && (
-                            <div className="shipping-tab">
-                                <p>We take great care in packaging your crystals to ensure they arrive safely.</p>
-                                <ul>
-                                    <li>Standard Shipping: 5-7 business days</li>
-                                    <li>Express Shipping: 2-3 business days</li>
-                                    <li>Free international shipping on orders over $150</li>
+                            <div className="tab-pane-luxury fade-in">
+                                <p>We meticulously package your crystals with intention to ensure they arrive in perfect resonance.</p>
+                                <ul className="benefits-list-luxury">
+                                    <li>Domestic Path: 5-7 business days</li>
+                                    <li>Expedited Path: 2-3 business days</li>
+                                    <li>Global Delivery available for all seekers</li>
                                 </ul>
                             </div>
                         )}
@@ -132,9 +141,12 @@ const ProductDetails = () => {
                 </div>
 
                 {relatedProducts.length > 0 && (
-                    <div className="related-products section-padding">
-                        <h2 className="section-title">You May Also Like</h2>
-                        <div className="products-grid">
+                    <div className="related-section-luxury">
+                        <div className="text-center mb-60">
+                            <span className="hero-eyebrow">Complementary</span>
+                            <h2 className="section-title">Synergistic Pairings</h2>
+                        </div>
+                        <div className="products-grid-luxury">
                             {relatedProducts.map(p => <ProductCard key={p.id} product={p} />)}
                         </div>
                     </div>
@@ -142,61 +154,59 @@ const ProductDetails = () => {
             </div>
 
             <style jsx="true">{`
-                .breadcrumb { margin-bottom: 30px; font-size: 0.9rem; color: var(--text-light); }
-                .breadcrumb a { color: var(--text-light); }
-                .breadcrumb span { color: var(--primary); font-weight: 600; }
+                .breadcrumb-luxury { margin-bottom: 40px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; color: var(--text-light); }
+                .breadcrumb-luxury a { color: var(--text-light); text-decoration: none; }
+                .breadcrumb-luxury span { color: var(--primary); font-weight: 700; }
                 
-                .product-main { display: grid; grid-template-columns: 1.2fr 1fr; gap: 60px; margin-bottom: 80px; }
-                .product-gallery { display: flex; flex-direction: column; gap: 20px; }
-                .main-image { aspect-ratio: 1; border-radius: 20px; position: relative; overflow: hidden; }
-                .main-image .glow { position: absolute; width: 60%; height: 60%; background: white; filter: blur(60px); top: 20%; left: 20%; opacity: 0.4; }
-                .thumbnail-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
-                .thumbnail { aspect-ratio: 1; border-radius: 10px; cursor: pointer; }
+                .product-main-luxury { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; margin-bottom: 100px; }
+                .main-image-luxury { aspect-ratio: 4/5; border-radius: 4px; overflow: hidden; background: var(--bg-creme); }
+                .main-image-luxury img { width: 100%; height: 100%; object-fit: cover; }
                 
-                .product-info-detailed .badges { display: flex; gap: 10px; margin-bottom: 15px; }
-                .badge { padding: 4px 12px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
-                .badge-new { background: var(--primary-light); color: var(--primary); }
-                .badge-sale { background: var(--secondary); color: var(--primary); }
+                .badge-luxury { background: var(--secondary); color: white; padding: 5px 15px; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; display: inline-block; margin-bottom: 20px; }
+                .product-title-serif { font-size: 3.5rem; margin-bottom: 20px; font-family: var(--font-serif); color: var(--primary); }
+                .product-rating-gold-large { display: flex; align-items: center; gap: 15px; margin-bottom: 30px; }
+                .review-meta { font-size: 0.75rem; color: var(--text-light); font-weight: 300; }
                 
-                .product-title { font-size: 2.8rem; margin-bottom: 15px; color: var(--primary); }
-                .product-rating { display: flex; align-items: center; gap: 10px; margin-bottom: 25px; }
-                .review-count { font-size: 0.85rem; color: var(--text-light); }
+                .product-price-boutique { display: flex; align-items: center; gap: 20px; margin-bottom: 35px; }
+                .current-price { font-size: 2.2rem; font-weight: 500; color: var(--primary); font-family: var(--font-serif); }
+                .old-price { font-size: 1.2rem; text-decoration: line-through; color: #BDC3C7; font-weight: 300; }
                 
-                .product-price-large { display: flex; align-items: center; gap: 15px; margin-bottom: 25px; }
-                .current-price { font-size: 2rem; font-weight: 800; color: var(--primary); }
-                .old-price { font-size: 1.4rem; text-decoration: line-through; color: var(--text-light); }
+                .boutique-desc { line-height: 1.8; color: var(--text-light); margin-bottom: 45px; font-size: 1rem; font-weight: 300; }
                 
-                .short-desc { line-height: 1.6; color: var(--text-light); margin-bottom: 35px; font-size: 1.1rem; }
+                .boutique-actions { display: flex; gap: 30px; margin-bottom: 60px; }
+                .qty-luxury { display: flex; align-items: center; border: 1px solid #F0EAE5; padding: 5px; }
+                .qty-luxury button { background: none; border: none; width: 40px; height: 40px; cursor: pointer; color: var(--primary); }
+                .qty-luxury span { width: 40px; text-align: center; font-weight: 600; }
+                .btn-luxury-add { flex: 1; display: flex; align-items: center; justify-content: center; gap: 12px; background: var(--primary); color: white; border: none; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; transition: var(--transition); cursor: pointer; }
+                .btn-luxury-add:hover { background: var(--bg-dark); transform: translateY(-3px); }
                 
-                .purchase-actions { display: flex; gap: 20px; margin-bottom: 40px; }
-                .quantity-selector { display: flex; align-items: center; border: 1px solid #ddd; border-radius: 50px; padding: 5px; }
-                .quantity-selector button { background: none; border: none; width: 40px; height: 40px; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--primary); }
-                .quantity-selector span { width: 40px; text-align: center; font-weight: 700; }
-                .add-to-cart-btn { flex: 1; display: flex; align-items: center; justify-content: center; gap: 10px; border-radius: 50px; font-size: 1rem; font-weight: 700; }
+                .boutique-features { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; padding-top: 40px; border-top: 1px solid #F0EAE5; }
+                .feature-item { display: flex; gap: 15px; align-items: center; color: var(--primary); }
+                .f-title { font-weight: 600; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+                .f-desc { font-size: 0.7rem; color: var(--text-light); font-weight: 300; }
                 
-                .product-features { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding-top: 30px; border-top: 1px solid #eee; }
-                .feature { display: flex; gap: 15px; align-items: center; }
-                .feature-title { font-weight: 700; font-size: 0.95rem; }
-                .feature-desc { font-size: 0.8rem; color: var(--text-light); }
+                .details-tabs-luxury { margin-bottom: 100px; }
+                .tab-headers-boutique { display: flex; gap: 60px; border-bottom: 1px solid #F0EAE5; margin-bottom: 40px; }
+                .tab-headers-boutique button { background: none; border: none; padding: 20px 0; font-size: 0.9rem; font-family: var(--font-serif); text-transform: uppercase; letter-spacing: 2px; color: var(--text-light); cursor: pointer; position: relative; }
+                .tab-headers-boutique button.active { color: var(--primary); }
+                .tab-headers-boutique button.active::after { content: ''; position: absolute; bottom: -1px; left: 0; width: 100%; height: 1px; background: var(--secondary); }
+                .tab-content-boutique { line-height: 2; color: var(--text-light); max-width: 800px; font-weight: 300; }
+                .nature-notice { margin-top: 20px; font-style: italic; font-size: 0.85rem; opacity: 0.7; }
+                .benefits-list-luxury { list-style: circle; padding-left: 20px; }
+                .benefits-list-luxury li { margin-bottom: 10px; }
                 
-                .product-tabs { margin-bottom: 80px; }
-                .tab-headers { display: flex; gap: 40px; border-bottom: 1px solid #eee; margin-bottom: 30px; }
-                .tab-headers button { background: none; border: none; padding: 15px 0; font-size: 1.1rem; font-weight: 600; color: var(--text-light); cursor: pointer; position: relative; }
-                .tab-headers button.active { color: var(--primary); }
-                .tab-headers button.active::after { content: ''; position: absolute; bottom: -1px; left: 0; width: 100%; height: 2px; background: var(--primary); }
-                .tab-content { line-height: 1.8; color: var(--text-light); max-width: 800px; }
-                .benefits-list { padding-left: 20px; }
-                
-                .related-products .products-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 30px; }
+                .products-grid-luxury { display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px; }
+                .mb-60 { margin-bottom: 60px; }
+                .text-center { text-align: center; }
 
                 @media (max-width: 992px) {
-                    .product-main { grid-template-columns: 1fr; gap: 40px; }
-                    .related-products .products-grid { grid-template-columns: repeat(2, 1fr); }
+                    .product-main-luxury { grid-template-columns: 1fr; gap: 40px; }
+                    .products-grid-luxury { grid-template-columns: repeat(2, 1fr); }
                 }
                 @media (max-width: 576px) {
-                    .product-title { font-size: 2rem; }
-                    .purchase-actions { flex-direction: column; }
-                    .product-features { grid-template-columns: 1fr; }
+                    .product-title-serif { font-size: 2.5rem; }
+                    .boutique-actions { flex-direction: column; }
+                    .boutique-features { grid-template-columns: 1fr; }
                 }
             `}</style>
         </div>

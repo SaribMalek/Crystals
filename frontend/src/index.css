@@ -1,14 +1,27 @@
+/* Luxury Design System for AS Crystals */
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
 :root {
-  --primary: #4B0082;
-  --primary-light: #6A1B9A;
+  /* Color Palette - Quiet Luxury */
+  --primary: #2C3E50;
   --secondary: #D4AF37;
-  --secondary-light: #F1D279;
-  --bg: #FBFAFF;
-  --text: #2D2D2D;
-  --text-light: #666666;
+  /* Rose Gold / Burnished Gold */
+  --accent: #E91E63;
+  --bg-creme: #FDFBF9;
+  --bg-dark: #1A1A1A;
+  --text-main: #2C3E50;
+  --text-light: #7F8C8D;
   --white: #FFFFFF;
-  --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  --transition: all 0.3s ease;
+
+  /* Typography */
+  --font-serif: 'Cormorant Garamond', serif;
+  --font-sans: 'Inter', sans-serif;
+
+  /* Spacing & Effects */
+  --container-max: 1280px;
+  --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+  --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.05);
+  --shadow-medium: 0 20px 40px rgba(0, 0, 0, 0.1);
 }
 
 * {
@@ -18,15 +31,23 @@
 }
 
 body {
-  font-family: 'Inter', sans-serif;
-  background-color: var(--bg);
-  color: var(--text);
+  font-family: var(--font-sans);
+  color: var(--text-main);
+  background-color: var(--bg-creme);
   line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
 
-h1, h2, h3, h4, .serif {
-  font-family: 'Playfair Display', serif;
+h1,
+h2,
+h3,
+h4,
+.serif {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
 }
 
 a {
@@ -45,76 +66,114 @@ img {
 }
 
 .container {
-  max-width: 1200px;
+  max-width: var(--container-max);
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 40px;
 }
 
-.btn {
-  display: inline-block;
-  padding: 12px 30px;
-  border-radius: 50px;
+.section-padding {
+  padding: 120px 0;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+  animation: fadeIn 0.8s ease forwards;
+}
+
+/* Reusable Boutique Classes */
+.hero-eyebrow {
+  display: block;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  color: var(--secondary);
+  margin-bottom: 20px;
   font-weight: 600;
-  cursor: pointer;
+}
+
+.hero-title {
+  font-size: 4.5rem;
+  margin-bottom: 30px;
+  color: var(--primary);
+}
+
+.section-title-serif {
+  font-family: var(--font-serif);
+  font-size: 3rem;
+  color: var(--primary);
+  margin-bottom: 40px;
+}
+
+/* Common UI Elements */
+.btn-luxury {
+  display: inline-block;
+  padding: 18px 45px;
+  background: var(--primary);
+  color: var(--white);
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 2px;
   transition: var(--transition);
   border: none;
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  cursor: pointer;
 }
 
-.btn-primary {
-  background-color: var(--primary);
-  color: var(--white);
+.btn-luxury:hover {
+  background: var(--bg-dark);
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-medium);
 }
 
-.btn-primary:hover {
-  background-color: var(--primary-light);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px rgba(75, 0, 130, 0.2);
+/* Category Grid Utility */
+.products-grid-luxury {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 40px;
 }
 
-.btn-outline {
-  background-color: transparent;
-  border: 2px solid var(--primary);
-  color: var(--primary);
+@media (max-width: 1200px) {
+  .products-grid-luxury {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .hero-title {
+    font-size: 3.5rem;
+  }
 }
 
-.btn-outline:hover {
-  background-color: var(--primary);
-  color: var(--white);
+@media (max-width: 992px) {
+  .products-grid-luxury {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .container {
+    padding: 0 25px;
+  }
+
+  .section-padding {
+    padding: 80px 0;
+  }
 }
 
-/* Utilities */
-.text-center { text-align: center; }
-.section-padding { padding: 80px 0; }
-.section-title {
-  font-size: 2.5rem;
-  margin-bottom: 40px;
-  position: relative;
-  display: inline-block;
-}
+@media (max-width: 576px) {
+  .products-grid-luxury {
+    grid-template-columns: 1fr;
+  }
 
-.section-title::after {
-  content: '';
-  position: absolute;
-  bottom: -10px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60px;
-  height: 3px;
-  background-color: var(--secondary);
-}
-
-/* Logo Utility */
-.logo-font {
-  font-family: 'Playfair Display', serif;
-  font-weight: 700;
-  font-size: 1.5rem;
-  color: var(--primary);
-  letter-spacing: 1px;
-}
-
-.logo-as {
-  color: var(--secondary);
+  .hero-title {
+    font-size: 2.5rem;
+  }
 }

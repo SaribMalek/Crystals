@@ -1,156 +1,176 @@
 import React from 'react'
-import { Instagram, Facebook, Twitter, Mail, Phone, MapPin } from 'lucide-react'
+import { Instagram, Facebook, Twitter, Mail, Phone, MapPin, Send } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 const Footer = () => {
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
   return (
-    <footer className="footer">
-      <div className="container footer-grid">
-        <div className="footer-col about-col">
-          <Link to="/" className="logo-font footer-logo" onClick={scrollToTop}><span className="logo-as">AS</span> Crystals</Link>
-          <p>Your sanctuary for premium healing crystals and artisan jewelry. We believe in the power of intention and the natural energy of the earth.</p>
-          <div className="social-links">
-            <a href="#"><Instagram size={20} /></a>
-            <a href="#"><Facebook size={20} /></a>
-            <a href="#"><Twitter size={20} /></a>
+    <footer className="luxury-footer">
+      <div className="container">
+        <div className="footer-main">
+          <div className="footer-brand">
+            <Link to="/" className="luxury-logo-link">
+              <span className="logo-text-footer">AS CRYSTALS</span>
+              <span className="tagline-footer">Purity & Energy</span>
+            </Link>
+            <p className="footer-about">
+              Curating authentic energy tools for the modern healer.
+              Our crystals are hand-selected for their vibrational resonance and ethical origin.
+            </p>
+            <div className="social-luxury">
+              <a href="#"><Instagram size={18} /></a>
+              <a href="#"><Facebook size={18} /></a>
+              <a href="#"><Twitter size={18} /></a>
+            </div>
+          </div>
+
+          <div className="footer-links-grid">
+            <div className="footer-column">
+              <h3>Collections</h3>
+              <ul>
+                <li><Link to="/shop">All Crystals</Link></li>
+                <li><Link to="/remedies">Remedies</Link></li>
+                <li><Link to="/gifts">Gifts</Link></li>
+                <li><Link to="/trainings">Workshops</Link></li>
+              </ul>
+            </div>
+            <div className="footer-column">
+              <h3>Company</h3>
+              <ul>
+                <li><Link to="/about">Our Story</Link></li>
+                <li><Link to="/contact">Contact</Link></li>
+                <li><Link to="/services">Services</Link></li>
+                <li><Link to="/terms">Terms</Link></li>
+              </ul>
+            </div>
+            <div className="footer-column contact-col-luxury">
+              <h3>Connect</h3>
+              <p><Mail size={14} /> hello@ascrystals.com</p>
+              <p><Phone size={14} /> +1 (888) CRYSTAL</p>
+              <p><MapPin size={14} /> Sacred Way, Quartz City</p>
+            </div>
           </div>
         </div>
 
-        <div className="footer-col">
-          <h4>Quick Links</h4>
-          <ul>
-            <li><Link to="/shop">Shop All</Link></li>
-            <li><Link to="/about">About Us</Link></li>
-            <li><Link to="/contact">Contact</Link></li>
-          </ul>
-        </div>
-
-        <div className="footer-col">
-          <h4>Customer Care</h4>
-          <ul>
-            <li><Link to="/contact">Shipping Policy</Link></li>
-            <li><Link to="/contact">Returns & Exchanges</Link></li>
-            <li><Link to="/contact">FAQs</Link></li>
-            <li><Link to="/contact">Contact Us</Link></li>
-          </ul>
-        </div>
-
-        <div className="footer-col contact-col">
-          <h4>Contact Us</h4>
-          <ul>
-            <li><Mail size={18} /> support@ascrystals.com</li>
-            <li><Phone size={18} /> +1 (555) 123-4567</li>
-            <li><MapPin size={18} /> 777 Crystal Lane, Aurora Heights</li>
-          </ul>
-        </div>
-      </div>
-
-      <div className="container footer-bottom">
-        <p>&copy; 2026 AS Crystals. All rights reserved.</p>
-        <div className="payment-icons">
-          {/* Icons could go here */}
-          <span>Visa</span>
-          <span>Mastercard</span>
-          <span>PayPal</span>
+        <div className="footer-legal">
+          <p>&copy; 2026 AS CRYSTALS. Crafted for the Soul.</p>
+          <div className="legal-links">
+            <Link to="/privacy">Privacy</Link>
+            <Link to="/terms">Conditions</Link>
+          </div>
         </div>
       </div>
 
       <style jsx="true">{`
-        .footer {
-          background: #1a1a1a;
-          color: #e0e0e0;
-          padding: 80px 0 30px;
+        .luxury-footer {
+          background: #000;
+          color: white;
+          padding: 100px 0 40px;
         }
-        .footer-grid {
+        .footer-main {
           display: grid;
-          grid-template-columns: 2fr 1fr 1fr 1.5fr;
-          gap: 40px;
-          margin-bottom: 60px;
+          grid-template-columns: 1.5fr 2fr;
+          gap: 100px;
+          margin-bottom: 80px;
         }
-        .footer-logo {
-          color: var(--white);
-          font-size: 2rem;
-          margin-bottom: 20px;
-          display: block;
+        
+        .luxury-logo-link {
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 30px;
         }
-        .footer-col h4 {
-          color: var(--white);
-          margin-bottom: 25px;
-          font-size: 1.2rem;
-          position: relative;
+        .logo-text-footer {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            color: white;
+            letter-spacing: 3px;
+            font-weight: 500;
         }
-        .footer-col h4::after {
-          content: '';
-          position: absolute;
-          bottom: -8px;
-          left: 0;
-          width: 30px;
-          height: 2px;
-          background: var(--secondary);
+        .tagline-footer {
+            font-size: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            color: var(--secondary);
+            margin-top: 5px;
         }
-        .footer-col p {
-          line-height: 1.8;
-          margin-bottom: 25px;
-          color: #aaa;
+        
+        .footer-about {
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.5);
+            line-height: 1.8;
+            max-width: 320px;
+            margin-bottom: 30px;
+            font-weight: 300;
         }
-        .footer-col ul li {
-          margin-bottom: 12px;
+        
+        .social-luxury {
+            display: flex;
+            gap: 20px;
         }
-        .footer-col ul li a, .footer-col ul li {
-          display: flex;
-          align-items: center;
-          gap: 10px;
-          color: #aaa;
-          transition: var(--transition);
+        .social-luxury a {
+            color: rgba(255,255,255,0.6);
+            transition: var(--transition);
         }
-        .footer-col ul li a:hover {
-          color: var(--secondary);
-          transform: translateX(5px);
+        .social-luxury a:hover { color: var(--secondary); }
+        
+        .footer-links-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
         }
-        .social-links {
-          display: flex;
-          gap: 15px;
+        .footer-column h3 {
+            font-family: var(--font-serif);
+            font-size: 1rem;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: white;
         }
-        .social-links a {
-          width: 40px;
-          height: 40px;
-          border: 1px solid #333;
-          border-radius: 50%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: #aaa;
-          transition: var(--transition);
+        .footer-column ul { list-style: none; }
+        .footer-column ul li { margin-bottom: 15px; }
+        .footer-column ul li a {
+            text-decoration: none;
+            color: rgba(255,255,255,0.5);
+            font-size: 0.85rem;
+            transition: var(--transition);
         }
-        .social-links a:hover {
-          background: var(--primary);
-          border-color: var(--primary);
-          color: var(--white);
+        .footer-column ul li a:hover { color: white; padding-left: 5px; }
+        
+        .contact-col-luxury p {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 15px;
+            font-weight: 300;
         }
-        .footer-bottom {
-          padding-top: 30px;
-          border-top: 1px solid #333;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          font-size: 0.9rem;
-          color: #777;
+        
+        .footer-legal {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.4);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-        .payment-icons {
-          display: flex;
-          gap: 15px;
+        .legal-links { display: flex; gap: 30px; }
+        .legal-links a {
+            text-decoration: none;
+            color: inherit;
         }
+        .legal-links a:hover { color: white; }
 
         @media (max-width: 992px) {
-          .footer-grid { grid-template-columns: 1fr 1fr; }
+            .footer-main { grid-template-columns: 1fr; gap: 60px; }
+            .footer-links-grid { grid-template-columns: 1fr 1fr; }
         }
         @media (max-width: 576px) {
-          .footer-grid { grid-template-columns: 1fr; }
-          .footer-bottom { flex-direction: column; gap: 20px; text-align: center; }
+            .footer-links-grid { grid-template-columns: 1fr; }
+            .footer-legal { flex-direction: column; gap: 20px; text-align: center; }
         }
       `}</style>
     </footer>

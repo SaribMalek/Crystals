@@ -1,12 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { products } from '../data/products';
 import ProductCard from '../components/ProductCard';
 import { Filter, ChevronDown } from 'lucide-react';
 
 const Shop = () => {
     const location = useLocation();
     const [activeCategory, setActiveCategory] = useState('All');
+    const [apiProducts, setApiProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const response = await fetch('http://127.0.0.1:8000/api/products');
+                const data = await response.json();
+                setApiProducts(data);
+                setLoading(false);
+            } catch (error) {
+                console.error('Error fetching products:', error);
+                setLoading(false);
+            }
+        };
+
+        fetchProducts();
+    }, []);
 
     useEffect(() => {
         const params = new URLSearchParams(location.search);
@@ -18,146 +35,144 @@ const Shop = () => {
         }
     }, [location]);
 
-    const categories = ['All', ...new Set(products.map(p => p.category))];
+    const categories = ['All', ...new Set(apiProducts.map(p => p.category?.name || 'Curated'))];
 
     const filteredProducts = activeCategory === 'All'
-        ? products
-        : products.filter(p => p.category === activeCategory);
+        ? apiProducts
+        : apiProducts.filter(p => (p.category?.name || 'Curated') === activeCategory);
 
     return (
         <div className="shop-page">
-            <div className="shop-header">
+            <header className="shop-hero">
                 <div className="container">
-                    <h1>Explore Our Collection</h1>
-                    <p>Find the perfect crystal to match your energy and intention.</p>
+                    <span className="hero-eyebrow">The Catalog</span>
+                    <h1 className="hero-title">Discover Your Stone</h1>
+                    <p className="hero-desc">Sourced for purity. Curated for your unique vibration.</p>
                 </div>
-            </div>
+            </header>
 
             <div className="container section-padding">
-                <div className="shop-controls">
-                    <div className="filter-group">
-                        <button className="filter-btn">
-                            <Filter size={18} />
-                            <span>Filters</span>
-                        </button>
-                        <div className="category-pills">
-                            {categories.map(cat => (
-                                <button
-                                    key={cat}
-                                    className={`pill ${activeCategory === cat ? 'active' : ''}`}
-                                    onClick={() => setActiveCategory(cat)}
-                                >
-                                    {cat}
-                                </button>
-                            ))}
+                <div className="shop-layout">
+                    <aside className="shop-sidebar">
+                        <div className="sidebar-section">
+                            <h3 className="sidebar-title">Intentions</h3>
+                            <ul className="category-list-luxury">
+                                {categories.map(cat => (
+                                    <li key={cat}>
+                                        <button
+                                            className={`cat-btn-luxury ${activeCategory === cat ? 'active' : ''}`}
+                                            onClick={() => setActiveCategory(cat)}
+                                        >
+                                            {cat}
+                                        </button>
+                                    </li>
+                                ))}
+                            </ul>
                         </div>
-                    </div>
-                    <div className="sort-group">
-                        <span>Sort by:</span>
-                        <button className="sort-btn">
-                            Featured <ChevronDown size={16} />
-                        </button>
-                    </div>
-                </div>
+                    </aside>
 
-                <div className="products-grid">
-                    {filteredProducts.map(product => (
-                        <ProductCard key={product.id} product={product} />
-                    ))}
+                    <main className="shop-main">
+                        <div className="shop-toolbar">
+                            <span className="results-count">{filteredProducts.length} Gems Found</span>
+                            <div className="toolbar-actions">
+                                <button className="toolbar-btn">Sort <ChevronDown size={14} /></button>
+                                <button className="toolbar-btn"><Filter size={14} /> Filter</button>
+                            </div>
+                        </div>
+
+                        <div className="products-grid-luxury">
+                            {loading ? (
+                                <div className="loading-state">Cleansing energy...</div>
+                            ) : filteredProducts.length > 0 ? (
+                                filteredProducts.map(product => (
+                                    <ProductCard key={product.id} product={product} />
+                                ))
+                            ) : (
+                                <div className="no-results">No matches for this cycle.</div>
+                            )}
+                        </div>
+                    </main>
                 </div>
             </div>
 
             <style jsx="true">{`
-                .shop-header {
-                    background: var(--primary-light);
-                    padding: 80px 0;
+                .shop-hero {
+                    padding: 150px 0 100px;
+                    background: var(--bg-creme);
                     text-align: center;
-                    margin-bottom: 40px;
+                    border-bottom: 1px solid #F0EAE5;
                 }
-                .shop-header h1 {
-                    font-size: 3rem;
+                .shop-layout {
+                    display: grid;
+                    grid-template-columns: 220px 1fr;
+                    gap: 60px;
+                }
+                
+                .sidebar-title {
+                    font-family: var(--font-serif);
+                    font-size: 1.2rem;
+                    margin-bottom: 25px;
+                    text-transform: uppercase;
+                    letter-spacing: 2px;
                     color: var(--primary);
-                    margin-bottom: 15px;
                 }
-                .shop-header p {
+                .category-list-luxury {
+                    list-style: none;
+                }
+                .cat-btn-luxury {
+                    background: none;
+                    border: none;
+                    display: block;
+                    width: 100%;
+                    text-align: left;
+                    padding: 12px 0;
+                    font-size: 0.8rem;
                     color: var(--text-light);
-                    font-size: 1.1rem;
-                    max-width: 600px;
-                    margin: 0 auto;
+                    cursor: pointer;
+                    transition: var(--transition);
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
                 }
-                .shop-controls {
+                .cat-btn-luxury:hover, .cat-btn-luxury.active {
+                    color: var(--secondary);
+                    padding-left: 10px;
+                }
+                
+                .shop-toolbar {
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
                     margin-bottom: 40px;
-                    flex-wrap: wrap;
-                    gap: 20px;
+                    padding-bottom: 20px;
+                    border-bottom: 1px solid #F0EAE5;
                 }
-                .filter-group {
-                    display: flex;
-                    align-items: center;
-                    gap: 20px;
-                }
-                .filter-btn {
-                    display: flex;
-                    align-items: center;
-                    gap: 8px;
-                    background: var(--white);
-                    border: 1px solid #ddd;
-                    padding: 10px 20px;
-                    border-radius: 50px;
-                    font-weight: 600;
-                    cursor: pointer;
-                }
-                .category-pills {
-                    display: flex;
-                    gap: 10px;
-                    overflow-x: auto;
-                    padding-bottom: 5px;
-                }
-                .pill {
+                .results-count { font-size: 0.8rem; color: var(--text-light); }
+                .toolbar-btn {
+                    background: none;
+                    border: 1px solid #F0EAE5;
                     padding: 8px 20px;
-                    background: #f0f0f0;
-                    border: none;
-                    border-radius: 50px;
-                    font-size: 0.9rem;
+                    font-size: 0.75rem;
+                    text-transform: uppercase;
+                    letter-spacing: 1px;
                     cursor: pointer;
-                    white-space: nowrap;
+                    margin-left: 15px;
                     transition: var(--transition);
                 }
-                .pill.active {
-                    background: var(--primary);
-                    color: var(--white);
-                }
-                .sort-group {
-                    display: flex;
-                    align-items: center;
-                    gap: 10px;
-                }
-                .sort-btn {
-                    display: flex;
-                    align-items: center;
-                    gap: 5px;
-                    background: none;
-                    border: none;
-                    font-weight: 600;
-                    cursor: pointer;
-                    color: var(--primary);
-                }
-                .products-grid {
+                .toolbar-btn:hover { border-color: var(--secondary); color: var(--secondary); }
+                
+                .products-grid-luxury {
                     display: grid;
-                    grid-template-columns: repeat(4, 1fr);
-                    gap: 30px;
+                    grid-template-columns: repeat(3, 1fr);
+                    gap: 40px;
                 }
-                @media (max-width: 1200px) {
-                    .products-grid { grid-template-columns: repeat(3, 1fr); }
-                }
-                @media (max-width: 992px) {
-                    .products-grid { grid-template-columns: repeat(2, 1fr); }
+
+                @media (max-width: 1024px) {
+                    .shop-layout { grid-template-columns: 1fr; }
+                    .shop-sidebar { display: none; }
+                    .products-grid-luxury { grid-template-columns: repeat(2, 1fr); }
                 }
                 @media (max-width: 576px) {
-                    .products-grid { grid-template-columns: 1fr; }
-                    .shop-header h1 { font-size: 2.2rem; }
+                    .products-grid-luxury { grid-template-columns: 1fr; }
                 }
             `}</style>
         </div>
