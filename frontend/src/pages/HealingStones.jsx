@@ -8,10 +8,10 @@ const HealingStones = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await fetch('http://127.0.0.1:8000/api/products');
+                const response = await fetch('/api/products');
                 const data = await response.json();
                 setProducts(data.filter(p =>
-                    (p.category && p.category.name === 'Healing Stones') || p.name.toLowerCase().includes('stone')
+                    (p.category && p.category.name === 'Healing Stones')
                 ));
                 setLoading(false);
             } catch (error) {
@@ -24,7 +24,7 @@ const HealingStones = () => {
 
     return (
         <div className="category-page">
-            <header className="shop-hero">
+            <header className="shop-hero luxury-stones-hero">
                 <div className="container">
                     <span className="hero-eyebrow">Ancient Wisdom</span>
                     <h1 className="hero-title">Healing Stones</h1>
@@ -55,9 +55,18 @@ const HealingStones = () => {
             </div>
 
             <style jsx="true">{`
+                .luxury-stones-hero {
+                    background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1610450949015-c231777d5d95?q=80&w=2070&auto=format&fit=crop') !important;
+                    background-size: cover !important;
+                    background-position: center !important;
+                    color: white;
+                }
+                .luxury-stones-hero .hero-title { color: white; }
+                .luxury-stones-hero .hero-eyebrow { color: rgba(255,255,255,0.9); }
+                .luxury-stones-hero .hero-desc { color: rgba(255,255,255,0.9); }
+
                 .shop-hero {
                     padding: 150px 0 100px;
-                    background: var(--bg-creme);
                     text-align: center;
                     border-bottom: 1px solid #F0EAE5;
                 }

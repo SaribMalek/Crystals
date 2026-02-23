@@ -1,0 +1,55 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Order History - {{ customer.fullName ?: customer.email }}{% endblock %}
+
+{% block main %}
+    <div class="admin-recent-panel">
+        <div class="panel-head">
+            <h4>Customer Profile</h4>
+            <a href="{{ ea_url().setController('App\\Controller\\Admin\\CustomerCrudController').setAction('detail').setEntityId(customer.id) }}" class="panel-link">Open Profile</a>
+        </div>
+        <div class="inventory-control-grid">
+            <div class="inventory-control-item"><span class="inventory-label">Email</span><span class="inventory-value">{{ customer.email }}</span></div>
+            <div class="inventory-control-item"><span class="inventory-label">Name</span><span class="inventory-value">{{ customer.fullName ?: '-' }}</span></div>
+            <div class="inventory-control-item"><span class="inventory-label">Status</span><span class="inventory-value">{{ customer.accountStatus|upper }}</span></div>
+            <div class="inventory-control-item"><span class="inventory-label">Group</span><span class="inventory-value">{{ customer.customerGroup|upper }}</span></div>
+        </div>
+    </div>
+
+    <div class="admin-recent-panel">
+        <div class="panel-head">
+            <h4>Orders</h4>
+            <a href="{{ ea_url().setController('App\\Controller\\Admin\\OrderCrudController').setAction('index') }}" class="panel-link">View All Orders</a>
+        </div>
+        {% if orders is empty %}
+            <p class="empty-state">No orders for this customer yet.</p>
+        {% else %}
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Status</th>
+                        <th>Total</th>
+                        <th>Payment</th>
+                        <th>Shipping Address</th>
+                        <th>Created</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for order in orders %}
+                        <tr>
+                            <td>#{{ order.id }}</td>
+                            <td>{{ order.status|upper }}</td>
+                            <td>${{ order.totalAmount|number_format(2, '.', ',') }}</td>
+                            <td>{{ order.paymentMethod ?: '-' }}</td>
+                            <td>{{ order.shippingAddress ?: '-' }}</td>
+                            <td>{{ order.createdAt ? order.createdAt|date('Y-m-d H:i') : '-' }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

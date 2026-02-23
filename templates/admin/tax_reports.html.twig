@@ -1,0 +1,69 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Tax Reports{% endblock %}
+
+{% block main %}
+    <section class="admin-recent-panel">
+        <div class="panel-head">
+            <h4>Tax Summary</h4>
+            <a href="{{ ea_url().setController('App\\Controller\\Admin\\TaxRuleCrudController').setAction('index') }}" class="panel-link">Manage Tax Rules</a>
+        </div>
+        <div class="inventory-control-grid">
+            <div class="inventory-control-item"><span class="inventory-label">Total Orders</span><span class="inventory-value">{{ summary.orders }}</span></div>
+            <div class="inventory-control-item"><span class="inventory-label">Taxable Orders</span><span class="inventory-value">{{ summary.taxable_orders }}</span></div>
+            <div class="inventory-control-item"><span class="inventory-label">Total Tax Collected</span><span class="inventory-value">${{ summary.total_tax|number_format(2, '.', ',') }}</span></div>
+        </div>
+    </section>
+
+    <section class="admin-recent-panel">
+        <div class="panel-head">
+            <h4>Country/State Tax Breakdown</h4>
+        </div>
+        {% if country_stats is empty %}
+            <p class="empty-state">No tax data available yet.</p>
+        {% else %}
+            <div class="table-responsive">
+                <table class="table">
+                    <thead><tr><th>Region</th><th>Orders</th><th>Tax</th></tr></thead>
+                    <tbody>
+                    {% for region, row in country_stats %}
+                        <tr>
+                            <td>{{ region }}</td>
+                            <td>{{ row.orders }}</td>
+                            <td>${{ row.tax|number_format(2, '.', ',') }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </section>
+
+    <section class="admin-recent-panel">
+        <div class="panel-head">
+            <h4>Active Tax Rules</h4>
+        </div>
+        {% if rules is empty %}
+            <p class="empty-state">No active tax rules configured.</p>
+        {% else %}
+            <div class="table-responsive">
+                <table class="table">
+                    <thead><tr><th>Name</th><th>Type</th><th>Country</th><th>State</th><th>Class</th><th>Rate</th><th>Mode</th></tr></thead>
+                    <tbody>
+                    {% for rule in rules %}
+                        <tr>
+                            <td>{{ rule.name }}</td>
+                            <td>{{ rule.taxType|upper }}</td>
+                            <td>{{ rule.country }}</td>
+                            <td>{{ rule.state ?: '-' }}</td>
+                            <td>{{ rule.productTaxClass|upper }}</td>
+                            <td>{{ rule.rate }}%</td>
+                            <td>{{ rule.isInclusive ? 'Inclusive' : 'Exclusive' }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </section>
+{% endblock %}

@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uploaded Product Images</title>
+    <style>
+        #admin-uploads-loader {
+            position: fixed;
+            inset: 0;
+            z-index: 2147483647;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: #f5f7fb;
+            transition: opacity 220ms ease, visibility 220ms ease;
+        }
+        #admin-uploads-loader.is-hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        #admin-uploads-loader .spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid rgba(31, 59, 97, 0.2);
+            border-top-color: #caa45d;
+            border-radius: 50%;
+            animation: uploadsLoaderSpin 0.8s linear infinite;
+        }
+        #admin-uploads-loader .label {
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #1f3b61;
+        }
+        @keyframes uploadsLoaderSpin {
+            to { transform: rotate(360deg); }
+        }
+        body {
+            margin: 0;
+            font-family: "Inter", "Segoe UI", sans-serif;
+            background: #f5f7fb;
+            color: #243142;
+        }
+        .wrap {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .panel {
+            background: #fff;
+            border: 1px solid #e5eaf1;
+            border-radius: 10px;
+            box-shadow: 0 8px 22px rgba(20, 38, 64, 0.05);
+            padding: 20px;
+        }
+        h1 {
+            margin: 0 0 16px;
+            font-size: 1.5rem;
+        }
+        .top-links {
+            margin-bottom: 16px;
+        }
+        .top-links a {
+            color: #1f3b61;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            text-align: left;
+            border-bottom: 1px solid #edf1f6;
+            padding: 12px 10px;
+            vertical-align: middle;
+        }
+        th {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            color: #738195;
+        }
+        td img {
+            width: 64px;
+            height: 64px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid #e5eaf1;
+        }
+    </style>
+</head>
+<body>
+<div id="admin-uploads-loader" role="status" aria-live="polite" aria-label="Loading admin page">
+    <div class="spinner"></div>
+    <div class="label">Loading...</div>
+</div>
+<div class="wrap">
+    <div class="panel">
+        <h1>Uploaded Product Images</h1>
+        <div class="top-links">
+            <a href="/admin">Back to Admin</a>
+        </div>
+        {% if files is empty %}
+            <p>No files found in <code>public/uploads/products</code>.</p>
+        {% else %}
+            <table>
+                <thead>
+                <tr>
+                    <th>Preview</th>
+                    <th>File Name</th>
+                    <th>Size</th>
+                    <th>Modified</th>
+                    <th>Open</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for file in files %}
+                    <tr>
+                        <td><img src="{{ file.url }}" alt="{{ file.name }}"></td>
+                        <td>{{ file.name }}</td>
+                        <td>{{ (file.size / 1024)|number_format(1, '.', ',') }} KB</td>
+                        <td>{{ file.modified|date('Y-m-d H:i') }}</td>
+                        <td><a href="{{ file.url }}" target="_blank" rel="noopener">View</a></td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+</div>
+<script>
+    (function () {
+        var loader = document.getElementById('admin-uploads-loader');
+        if (!loader) return;
+        var hide = function () {
+            loader.classList.add('is-hidden');
+            setTimeout(function () {
+                if (loader.parentNode) loader.parentNode.removeChild(loader);
+            }, 260);
+        };
+        if (document.readyState === 'complete') hide();
+        else window.addEventListener('load', hide, { once: true });
+        setTimeout(hide, 1200);
+    })();
+</script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}My Profile{% endblock %}
+
+{% block main %}
+    <div class="admin-profile-wrap">
+        {% for type, messages in app.flashes %}
+            {% for message in messages %}
+                <div class="alert alert-{{ type == 'danger' ? 'danger' : 'success' }}">{{ message }}</div>
+            {% endfor %}
+        {% endfor %}
+
+        <div class="admin-profile-grid">
+            <section class="admin-profile-card">
+                <h3>Profile Details</h3>
+                <dl>
+                    <div><dt>Email</dt><dd>{{ user.email }}</dd></div>
+                    <div><dt>Roles</dt><dd>{{ user.roles|join(', ') }}</dd></div>
+                    <div><dt>Created</dt><dd>{{ user.createdAt ? user.createdAt|date('M d, Y h:i A') : '-' }}</dd></div>
+                </dl>
+            </section>
+
+            <section class="admin-profile-card">
+                <h3>Update Profile</h3>
+                <form method="post" enctype="multipart/form-data" class="admin-profile-form">
+                    <input type="hidden" name="_token" value="{{ csrf_token('admin_profile_update') }}">
+
+                    <label for="full_name">Full Name</label>
+                    <input id="full_name" type="text" name="full_name" value="{{ user.fullName ?? '' }}" maxlength="120" placeholder="Your name">
+
+                    <label for="profile_image">Profile Image</label>
+                    <input id="profile_image" type="file" name="profile_image" accept="image/*">
+
+                    {% if user.profileImage %}
+                        <div class="profile-image-preview">
+                            <img src="/{{ user.profileImage }}" alt="Profile image">
+                        </div>
+                        <label class="checkbox-row">
+                            <input type="checkbox" name="remove_profile_image" value="1">
+                            Remove current image
+                        </label>
+                    {% endif %}
+
+                    <button type="submit" class="btn btn-primary">Save Profile</button>
+                </form>
+            </section>
+        </div>
+    </div>
+
+    <style>
+        .admin-profile-wrap {
+            max-width: 1100px;
+        }
+        .admin-profile-grid {
+            display: grid;
+            grid-template-columns: 1fr 1.35fr;
+            gap: 22px;
+        }
+        .admin-profile-card {
+            background: #fff;
+            border: 1px solid #dbe4ef;
+            border-radius: 14px;
+            padding: 22px;
+            box-shadow: 0 10px 26px rgba(17, 29, 48, 0.06);
+        }
+        .admin-profile-card h3 {
+            margin: 0 0 14px;
+            font-size: 1.05rem;
+            color: #1e3655;
+        }
+        .admin-profile-card dl {
+            margin: 0;
+        }
+        .admin-profile-card dl > div {
+            display: grid;
+            grid-template-columns: 130px 1fr;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid #eef2f8;
+        }
+        .admin-profile-card dl > div:last-child {
+            border-bottom: none;
+        }
+        .admin-profile-card dt {
+            margin: 0;
+            color: #708095;
+            font-size: 0.82rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .admin-profile-card dd {
+            margin: 0;
+            color: #1e3655;
+            font-weight: 600;
+        }
+        .admin-profile-form {
+            display: grid;
+            gap: 10px;
+        }
+        .admin-profile-form label {
+            color: #4f6075;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            font-weight: 700;
+        }
+        .admin-profile-form input[type="text"],
+        .admin-profile-form input[type="file"] {
+            border: 1px solid #cfd9e6;
+            border-radius: 10px;
+            padding: 11px 12px;
+            width: 100%;
+            background: #fff;
+        }
+        .profile-image-preview {
+            margin-top: 6px;
+            margin-bottom: 4px;
+        }
+        .profile-image-preview img {
+            width: 96px;
+            height: 96px;
+            border-radius: 14px;
+            object-fit: cover;
+            border: 1px solid #dbe4ef;
+        }
+        .checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.84rem;
+            color: #4f6075;
+            text-transform: none !important;
+            letter-spacing: 0 !important;
+        }
+        @media (max-width: 960px) {
+            .admin-profile-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+{% endblock %}

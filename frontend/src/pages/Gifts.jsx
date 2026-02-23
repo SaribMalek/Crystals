@@ -8,7 +8,7 @@ const Gifts = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await fetch('http://127.0.0.1:8000/api/products');
+                const response = await fetch('/api/products');
                 const data = await response.json();
                 setProducts(data.filter(p =>
                     (p.category && p.category.name === 'Gifts') || p.is_featured
@@ -24,7 +24,7 @@ const Gifts = () => {
 
     return (
         <div className="category-page">
-            <header className="shop-hero">
+            <header className="shop-hero luxury-gifts-hero">
                 <div className="container">
                     <span className="hero-eyebrow">Soulful Giving</span>
                     <h1 className="hero-title">Crystal Gift Collections</h1>
@@ -55,9 +55,18 @@ const Gifts = () => {
             </div>
 
             <style jsx="true">{`
+                .luxury-gifts-hero {
+                    background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), url('https://images.unsplash.com/photo-1549465220-1a8b9238cd48?q=80&w=2070&auto=format&fit=crop') !important;
+                    background-size: cover !important;
+                    background-position: center !important;
+                    color: white;
+                }
+                .luxury-gifts-hero .hero-title { color: white; }
+                .luxury-gifts-hero .hero-eyebrow { color: rgba(255,255,255,0.9); }
+                .luxury-gifts-hero .hero-desc { color: rgba(255,255,255,0.9); }
+
                 .shop-hero {
                     padding: 150px 0 100px;
-                    background: var(--bg-creme);
                     text-align: center;
                     border-bottom: 1px solid #F0EAE5;
                 }

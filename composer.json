@@ -10,6 +10,7 @@
         "doctrine/doctrine-bundle": "^2.18",
         "doctrine/doctrine-migrations-bundle": "^3.7",
         "doctrine/orm": "^3.6",
+        "dompdf/dompdf": "2.0",
         "easycorp/easyadmin-bundle": "^4.29",
         "nelmio/cors-bundle": "^2.6",
         "stripe/stripe-php": "^19.3",

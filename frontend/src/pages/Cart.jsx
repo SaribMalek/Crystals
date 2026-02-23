@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { Trash2, Plus, Minus, ArrowLeft, ShieldCheck } from 'lucide-react';
+import { resolveProductImage } from '../utils/productImage';
 
 const Cart = () => {
     const { cartItems, removeFromCart, updateQuantity, cartTotal } = useCart();
@@ -47,7 +48,7 @@ const Cart = () => {
                                 <div className="col-product">
                                     <div className="item-info-boutique">
                                         <div className="item-img-luxury">
-                                            <img src={item.image} alt={item.name} />
+                                            <img src={resolveProductImage(item)} alt={item.name} />
                                         </div>
                                         <div className="item-text">
                                             <h3 className="item-name-serif">{item.name}</h3>

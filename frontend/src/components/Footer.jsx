@@ -9,8 +9,7 @@ const Footer = () => {
         <div className="footer-main">
           <div className="footer-brand">
             <Link to="/" className="luxury-logo-link">
-              <span className="logo-text-footer">AS CRYSTALS</span>
-              <span className="tagline-footer">Purity & Energy</span>
+              <img src="/images/AS_Crystal_logo.png?v=20260219" alt="AS Crystal" className="footer-logo-img" />
             </Link>
             <p className="footer-about">
               Curating authentic energy tools for the modern healer.
@@ -39,20 +38,21 @@ const Footer = () => {
                 <li><Link to="/about">Our Story</Link></li>
                 <li><Link to="/contact">Contact</Link></li>
                 <li><Link to="/services">Services</Link></li>
+                <li><Link to="/orders">My Orders</Link></li>
                 <li><Link to="/terms">Terms</Link></li>
               </ul>
             </div>
             <div className="footer-column contact-col-luxury">
               <h3>Connect</h3>
-              <p><Mail size={14} /> hello@ascrystals.com</p>
-              <p><Phone size={14} /> +1 (888) CRYSTAL</p>
-              <p><MapPin size={14} /> Sacred Way, Quartz City</p>
+              <p><Mail size={14} /> ascrystal0204@gmail.com </p>
+              <p><Phone size={14} /> +91 99097 86552 </p>
+              <p><MapPin size={14} /> Kadival, Laldarvaja Khambhat - 388620 </p>
             </div>
           </div>
         </div>
 
         <div className="footer-legal">
-          <p>&copy; 2026 AS CRYSTALS. Crafted for the Soul.</p>
+          <p>&copy; 2026 REIKI CRYSTALS. Crafted for the Soul.</p>
           <div className="legal-links">
             <Link to="/privacy">Privacy</Link>
             <Link to="/terms">Conditions</Link>
@@ -75,23 +75,16 @@ const Footer = () => {
         
         .luxury-logo-link {
             text-decoration: none;
-            display: flex;
-            flex-direction: column;
+            display: inline-flex;
             margin-bottom: 30px;
+            align-items: center;
         }
-        .logo-text-footer {
-            font-family: var(--font-serif);
-            font-size: 1.5rem;
-            color: white;
-            letter-spacing: 3px;
-            font-weight: 500;
-        }
-        .tagline-footer {
-            font-size: 0.5rem;
-            text-transform: uppercase;
-            letter-spacing: 4px;
-            color: var(--secondary);
-            margin-top: 5px;
+        .footer-logo-img {
+            width: clamp(230px, 28vw, 340px);
+            height: auto;
+            object-fit: contain;
+            object-position: left center;
+            display: block;
         }
         
         .footer-about {
@@ -169,6 +162,10 @@ const Footer = () => {
             .footer-links-grid { grid-template-columns: 1fr 1fr; }
         }
         @media (max-width: 576px) {
+            .footer-logo-img {
+                width: clamp(180px, 64vw, 240px);
+                height: auto;
+            }
             .footer-links-grid { grid-template-columns: 1fr; }
             .footer-legal { flex-direction: column; gap: 20px; text-align: center; }
         }

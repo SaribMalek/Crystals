@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Invoice #{{ order.id }}</title>
+    <style>
+        body { font-family: DejaVu Sans, sans-serif; font-size: 12px; color: #1f2d3d; }
+        h1 { margin: 0 0 10px; font-size: 20px; }
+        .meta { margin-bottom: 16px; }
+        .meta div { margin-bottom: 3px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+        th, td { border: 1px solid #d4dde8; padding: 8px; text-align: left; }
+        th { background: #f4f8fc; }
+        .totals { margin-top: 14px; text-align: right; font-weight: 700; }
+    </style>
+</head>
+<body>
+<h1>Invoice #{{ order.id }}</h1>
+<div class="meta">
+    <div><strong>Date:</strong> {{ order.createdAt ? order.createdAt|date('Y-m-d H:i') : '-' }}</div>
+    <div><strong>Customer:</strong> {{ order.customerEmail }}</div>
+    <div><strong>Status:</strong> {{ order.status|upper }}</div>
+    <div><strong>Payment:</strong> {{ order.paymentMethod ?: '-' }}</div>
+    <div><strong>Shipping Address:</strong> {{ order.shippingAddress ?: '-' }}</div>
+</div>
+
+<table>
+    <thead>
+    <tr>
+        <th>Product</th>
+        <th>Qty</th>
+        <th>Unit Price</th>
+        <th>Line Total</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in order.orderItems %}
+        <tr>
+            <td>{{ item.product ? item.product.name : '-' }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>${{ item.price|number_format(2, '.', ',') }}</td>
+            <td>${{ (item.quantity * item.price)|number_format(2, '.', ',') }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<div class="totals">
+    <div>Total: ${{ order.totalAmount|number_format(2, '.', ',') }}</div>
+    <div>Refunded: ${{ order.refundedAmount|number_format(2, '.', ',') }}</div>
+</div>
+</body>
+</html>

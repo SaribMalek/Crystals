@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Packing Slip #{{ order.id }}</title>
+    <style>
+        body { font-family: DejaVu Sans, sans-serif; font-size: 12px; color: #1f2d3d; }
+        h1 { margin: 0 0 10px; font-size: 20px; }
+        .meta { margin-bottom: 16px; }
+        .meta div { margin-bottom: 3px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+        th, td { border: 1px solid #d4dde8; padding: 8px; text-align: left; }
+        th { background: #f4f8fc; }
+    </style>
+</head>
+<body>
+<h1>Packing Slip #{{ order.id }}</h1>
+<div class="meta">
+    <div><strong>Date:</strong> {{ order.createdAt ? order.createdAt|date('Y-m-d H:i') : '-' }}</div>
+    <div><strong>Ship To:</strong> {{ order.customerEmail }}</div>
+    <div><strong>Address:</strong> {{ order.shippingAddress ?: '-' }}</div>
+</div>
+
+<table>
+    <thead>
+    <tr>
+        <th>Product</th>
+        <th>Quantity</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for item in order.orderItems %}
+        <tr>
+            <td>{{ item.product ? item.product.name : '-' }}</td>
+            <td>{{ item.quantity }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</body>
+</html>

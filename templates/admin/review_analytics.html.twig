@@ -1,0 +1,45 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Rating Analytics{% endblock %}
+
+{% block main %}
+    <section class="admin-recent-panel">
+        <div class="panel-head">
+            <h4>Review Summary</h4>
+            <a href="{{ ea_url().setController('App\\Controller\\Admin\\ProductReviewCrudController').setAction('index') }}" class="panel-link">Manage Reviews</a>
+        </div>
+        <div class="inventory-control-grid">
+            <div class="inventory-control-item"><span class="inventory-label">Total Reviews</span><span class="inventory-value">{{ summary.total }}</span></div>
+            <div class="inventory-control-item"><span class="inventory-label">Average Rating</span><span class="inventory-value">{{ summary.average_rating }}/5</span></div>
+            <div class="inventory-control-item"><span class="inventory-label">Spam Reviews</span><span class="inventory-value">{{ summary.spam_count }}</span></div>
+        </div>
+    </section>
+
+    <section class="admin-recent-panel">
+        <div class="panel-head"><h4>Status Analytics</h4></div>
+        <div class="table-responsive">
+            <table class="table">
+                <thead><tr><th>Status</th><th>Count</th></tr></thead>
+                <tbody>
+                {% for status, count in status_counts %}
+                    <tr><td>{{ status|upper }}</td><td>{{ count }}</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="admin-recent-panel">
+        <div class="panel-head"><h4>Rating Distribution</h4></div>
+        <div class="table-responsive">
+            <table class="table">
+                <thead><tr><th>Stars</th><th>Count</th></tr></thead>
+                <tbody>
+                {% for stars, count in rating_counts %}
+                    <tr><td>{{ stars }} Star</td><td>{{ count }}</td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+{% endblock %}

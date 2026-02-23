@@ -8,10 +8,10 @@ const Remedies = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await fetch('http://127.0.0.1:8000/api/products');
+                const response = await fetch('/api/products');
                 const data = await response.json();
                 setProducts(data.filter(p =>
-                    (p.category && p.category.name === 'Remedies') || p.description?.toLowerCase().includes('cleanse')
+                    (p.category && p.category.name === 'Vastu & Feng Shui')
                 ));
                 setLoading(false);
             } catch (error) {
@@ -24,40 +24,44 @@ const Remedies = () => {
 
     return (
         <div className="category-page">
-            <header className="shop-hero">
+            <header className="shop-hero luxury-hero-bg">
                 <div className="container">
-                    <span className="hero-eyebrow">Energetic Solutions</span>
-                    <h1 className="hero-title">Crystal Remedies</h1>
-                    <p className="hero-desc">Natural vibrations to help you navigate life's challenges with grace and clarity.</p>
+                    <span className="hero-eyebrow">Sacred Space Harmony</span>
+                    <h1 className="hero-title">Vastu & Feng Shui</h1>
+                    <p className="hero-desc">Ancient remedies and architectural alignments to harmonize your living and working environments.</p>
                 </div>
             </header>
 
             <div className="container section-padding">
                 <div className="intro-text text-center mb-60">
-                    <h2 className="section-title-serif">Restore Your Balance</h2>
+                    <h2 className="section-title-serif">Energize Your Environment</h2>
                     <p style={{ maxWidth: '700px', margin: '0 auto', color: 'var(--text-light)', fontWeight: '300' }}>
-                        Each remedy is selected for its traditional healing properties and vibrational resonance,
-                        crafted to support your emotional and spiritual well-being.
+                        From salt lamps to crystal pyramids, our Vastu and Feng Shui collection
+                        is designed to correct energetic imbalances and invite abundance into your space.
                     </p>
                 </div>
 
                 <div className="products-grid-luxury">
                     {loading ? (
-                        <div className="loading-state">Refining remedies...</div>
+                        <div className="loading-state">Aligning energies...</div>
                     ) : products.length > 0 ? (
                         products.map(product => (
                             <ProductCard key={product.id} product={product} />
                         ))
                     ) : (
-                        <div className="no-results">Updating our energetic remedies. Check back shortly.</div>
+                        <div className="no-results">Sacred space tools are being arriving soon.</div>
                     )}
                 </div>
             </div>
 
             <style jsx="true">{`
+                .luxury-hero-bg {
+                    background: linear-gradient(rgba(255,255,255,0.7), rgba(255,255,255,0.7)), url('https://images.unsplash.com/photo-1596439535105-bb59e5504c41?q=80&w=2070&auto=format&fit=crop') !important;
+                    background-size: cover !important;
+                    background-position: center !important;
+                }
                 .shop-hero {
                     padding: 150px 0 100px;
-                    background: var(--bg-creme);
                     text-align: center;
                     border-bottom: 1px solid #F0EAE5;
                 }

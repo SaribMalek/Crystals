@@ -4,20 +4,95 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>{% block title %}AS Crystals | Premium Healing Crystals & Jewelry{% endblock %}</title>
-        <link rel="icon" type="image/svg+xml" href="/favicon.ico">
+        <link rel="icon" type="image/png" href="/images/AS_Crystal_logo.png">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+        <style>
+            #site-loader {
+                position: fixed;
+                inset: 0;
+                z-index: 2147483647;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 14px;
+                background: #fdfbf9;
+                transition: opacity 220ms ease, visibility 220ms ease;
+            }
+            #site-loader.is-hidden {
+                opacity: 0;
+                visibility: hidden;
+                pointer-events: none;
+            }
+            #site-loader .spinner {
+                width: 52px;
+                height: 52px;
+                border: 3px solid rgba(44, 62, 80, 0.2);
+                border-top-color: #d4af37;
+                border-radius: 50%;
+                animation: siteLoaderSpin .8s linear infinite;
+            }
+            #site-loader .label {
+                font-family: Inter, sans-serif;
+                font-size: 12px;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                font-weight: 600;
+                color: #2c3e50;
+            }
+            @keyframes siteLoaderSpin {
+                to { transform: rotate(360deg); }
+            }
+        </style>
         {% block stylesheets %}
         {% endblock %}
     </head>
     <body>
+        <div id="site-loader" role="status" aria-live="polite" aria-label="Loading page">
+            <div class="spinner"></div>
+            <div class="label">Loading...</div>
+        </div>
         <!-- Main Application Entry Point -->
         <div id="root"></div>
 
         <!-- Production Assets Linking -->
-        <link rel="stylesheet" href="/assets/frontend/assets/main-GcUPDhLJ.css">
-        <script type="module" src="/assets/frontend/assets/main-DtKdNmHX.js"></script>
+        {% for stylesheet in entry_styles|default([]) %}
+            <link rel="stylesheet" href="{{ stylesheet }}">
+        {% endfor %}
+        {% if entry_script %}
+            <script type="module" src="{{ entry_script }}"></script>
+        {% endif %}
+        <script>
+            (function () {
+                var loader = document.getElementById('site-loader');
+                if (!loader) return;
+
+                var start = Date.now();
+                var minDuration = 350;
+
+                var hide = function () {
+                    var elapsed = Date.now() - start;
+                    var wait = Math.max(0, minDuration - elapsed);
+                    setTimeout(function () {
+                        loader.classList.add('is-hidden');
+                        setTimeout(function () {
+                            if (loader && loader.parentNode) loader.parentNode.removeChild(loader);
+                        }, 260);
+                    }, wait);
+                };
+
+                if (document.readyState === 'complete') {
+                    hide();
+                } else {
+                    window.addEventListener('load', hide, { once: true });
+                    window.addEventListener('DOMContentLoaded', function () {
+                        setTimeout(hide, 1200);
+                    }, { once: true });
+                }
+            })();
+        </script>
 
         {% block body %}{% endblock %}
     </body>

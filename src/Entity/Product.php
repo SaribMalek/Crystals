@@ -53,6 +53,12 @@ class Product
     #[Groups(['product:read'])]
     private ?string $old_price = null;
 
+    #[ORM\Column(length: 120, nullable: true)]
+    private ?string $supplier_reference = null;
+
+    #[ORM\Column(length: 40, options: ['default' => 'standard'])]
+    private string $tax_class = 'standard';
+
     public function getId(): ?int
     {
         return $this->id;
@@ -162,6 +168,30 @@ class Product
     public function setOldPrice(?string $old_price): static
     {
         $this->old_price = $old_price;
+
+        return $this;
+    }
+
+    public function getSupplierReference(): ?string
+    {
+        return $this->supplier_reference;
+    }
+
+    public function setSupplierReference(?string $supplier_reference): static
+    {
+        $this->supplier_reference = $supplier_reference;
+
+        return $this;
+    }
+
+    public function getTaxClass(): string
+    {
+        return $this->tax_class;
+    }
+
+    public function setTaxClass(string $tax_class): static
+    {
+        $this->tax_class = $tax_class;
 
         return $this;
     }

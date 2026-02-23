@@ -6,14 +6,15 @@ const Hero = () => {
     <section className="hero">
       <div className="container hero-container">
         <div className="hero-content">
-          <span className="hero-eyebrow">Hand-Selected Manifestation Tools</span>
-          <h1 className="hero-title">Elevate Your <br />Inner Radiance</h1>
+          <span className="hero-eyebrow">Natural Gemstones For Daily Wellness</span>
+          <h1 className="hero-title">Healing Crystals <br />For Reiki & Balance</h1>
           <p className="hero-desc">
-            Discover the profound energy of authentic crystals, ethically sourced and curated for your healing journey.
+            Explore authentic healing crystals, bracelets, malas and Reiki tools curated to support
+            grounding, protection, prosperity, love and spiritual growth.
           </p>
           <div className="hero-actions">
-            <Link to="/shop" className="btn-luxury">Discover Collection</Link>
-            <Link to="/about" className="btn-text">Our Philosophy</Link>
+            <Link to="/shop" className="btn-luxury">Shop Collection</Link>
+            <Link to="/services" className="btn-text">Our Services</Link>
           </div>
         </div>
       </div>
@@ -23,7 +24,7 @@ const Hero = () => {
           height: 100vh;
           display: flex;
           align-items: center;
-          background: linear-gradient(rgba(255,255,255,0.4), rgba(255,255,255,0.4)), url('https://images.unsplash.com/photo-1551970634-747846a548cb?q=80&w=2070&auto=format&fit=crop');
+          background: linear-gradient(rgba(255,255,255,0.4), rgba(255,255,255,0.4)), url('https://images.unsplash.com/photo-1569144157591-c483197ec02c?q=80&w=2070&auto=format&fit=crop');
           background-size: cover;
           background-position: center;
           position: relative;

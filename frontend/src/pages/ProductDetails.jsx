@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { Star, Truck, ShieldCheck, RefreshCcw, Plus, Minus, ShoppingBag } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
+import { resolveProductImage } from '../utils/productImage';
 
 const ProductDetails = () => {
     const { id } = useParams();
@@ -16,14 +17,14 @@ const ProductDetails = () => {
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-                const response = await fetch(`http://127.0.0.1:8000/api/products/${id}`);
+                const response = await fetch(`/api/products/${id}`);
                 const data = await response.json();
                 setProduct(data);
                 setLoading(false);
                 window.scrollTo(0, 0);
 
                 // Fetch related products (same category)
-                const relResponse = await fetch(`http://127.0.0.1:8000/api/products`);
+                const relResponse = await fetch('/api/products');
                 const allProducts = await relResponse.json();
                 setRelatedProducts(allProducts.filter(p => p.category === data.category && p.id !== data.id).slice(0, 4));
             } catch (error) {
@@ -49,7 +50,7 @@ const ProductDetails = () => {
                     <div className="product-gallery-luxury">
                         <div className="main-image-luxury">
                             <img
-                                src={product.image && product.image !== 'default.jpg' ? product.image : 'https://via.placeholder.com/600x800/FDFBF9/2C3E50?text=' + encodeURIComponent(product.name)}
+                                src={resolveProductImage(product)}
                                 alt={product.name}
                             />
                         </div>

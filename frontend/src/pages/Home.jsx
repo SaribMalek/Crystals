@@ -1,256 +1,360 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import Hero from '../components/Hero'
 import ProductCard from '../components/ProductCard'
 
+const collections = [
+  { name: 'New Arrivals', desc: 'Fresh gemstone arrivals and trending spiritual tools.', path: '/shop?search=new' },
+  { name: '7 Chakra', desc: 'Balanced chakra sets for alignment and emotional clarity.', path: '/shop?search=chakra' },
+  { name: 'Bracelets', desc: 'Crystal bracelets for confidence, abundance and protection.', path: '/crystal-jewelry?search=bracelet' },
+  { name: 'Malas', desc: 'Meditation malas for mantra practice and focused intention.', path: '/crystal-jewelry?search=mala' },
+  { name: 'Pendants', desc: 'Wearable crystal pendants to keep healing energy close.', path: '/crystal-jewelry?search=pendant' },
+  { name: 'Rudraksha', desc: 'Sacred rudraksha combinations for grounding and strength.', path: '/shop?search=rudraksha' },
+  { name: 'Angels', desc: 'Carved angel crystals for guidance and emotional support.', path: '/shop?search=angel' },
+  { name: 'Tumbles', desc: 'Pocket-friendly tumble stones for everyday energy work.', path: '/healing-stones?search=tumble' },
+  { name: 'Pencils & Obelisks', desc: 'Crystal points for manifestation, grids and healing.', path: '/healing-stones?search=obelisk' },
+  { name: 'Pyramids', desc: 'Sacred geometry crystal pyramids for space harmonizing.', path: '/healing-stones?search=pyramid' },
+]
+
+const uspItems = [
+  { title: 'Free Shipping', text: 'On qualifying orders' },
+  { title: 'Secure Payments', text: 'Safe checkout guaranteed' },
+  { title: 'Speedy Delivery', text: 'Fast dispatch & tracking' },
+  { title: 'Cash On Delivery', text: 'Available on selected orders' },
+  { title: 'Expert Support', text: 'Crystal guidance available' },
+]
+
+const testimonials = [
+  { name: 'Priya S.', text: 'Original crystals, beautiful quality and very helpful guidance.' },
+  { name: 'Swaroop P.', text: 'Great variety of stones at reasonable prices. Highly recommended.' },
+  { name: 'Umaid S.', text: 'Authentic products, great pricing and patient staff support.' },
+]
+
 const Home = () => {
-  const [featuredProducts, setFeaturedProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [featuredProducts, setFeaturedProducts] = useState([])
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const fetchFeatured = async () => {
       try {
-        const response = await fetch('http://127.0.0.1:8000/api/products');
-        const data = await response.json();
-        setFeaturedProducts(data.slice(0, 4));
-        setLoading(false);
+        const response = await fetch('/api/products')
+        const data = await response.json()
+        setFeaturedProducts(data.slice(0, 8))
       } catch (error) {
-        console.error('Error fetching featured products:', error);
-        setLoading(false);
+        console.error('Error fetching featured products:', error)
+      } finally {
+        setLoading(false)
       }
-    };
+    }
 
-    fetchFeatured();
-  }, []);
-
-  const categories = [
-    { name: 'Protection', desc: 'Shield your energy from negativity', color: '#1A1A1A' },
-    { name: 'Abundance', desc: 'Attract prosperity and luck', color: '#D4AF37' },
-    { name: 'Inner Peace', desc: 'Restore balance to mind and body', color: '#7F8C8D' },
-    { name: 'Vitality', desc: 'Awaken your creative spirit', color: '#E91E63' },
-  ]
+    fetchFeatured()
+  }, [])
 
   return (
     <div className="home-page">
       <Hero />
 
-      {/* Philosophy Section */}
-      <section className="philosophy-section">
-        <div className="container">
-          <div className="philosophy-grid">
-            <div className="philosophy-text">
-              <span className="hero-eyebrow">Our Philosophy</span>
-              <h2 className="section-title" style={{ textAlign: 'left' }}>Purity in Every <br />Crystal Plane</h2>
-              <p>
-                At AS Crystals, we believe that energy is the foundation of existence. Our collection is meticulously curated to ensure each stone resonates with its natural frequency, helping you manifest your highest self.
-              </p>
-              <Link to="/about" className="btn-text">Read Our Story</Link>
+      <section className="usp-strip">
+        <div className="container usp-grid">
+          {uspItems.map((item) => (
+            <div key={item.title} className="usp-card">
+              <h4>{item.title}</h4>
+              <p>{item.text}</p>
             </div>
-            <div className="philosophy-image">
-              <img src="https://images.unsplash.com/photo-1567225557594-88d73e55f2cb?q=80&w=1974&auto=format&fit=crop" alt="Healing Crystals" />
-            </div>
-          </div>
+          ))}
         </div>
       </section>
 
-      {/* Intention Grid */}
-      <section className="intention-section">
+      <section className="section-padding collections-section">
         <div className="container">
           <div className="text-center mb-60">
-            <span className="hero-eyebrow">Curated Collections</span>
-            <h2 className="section-title">Shop by Intention</h2>
+            <span className="hero-eyebrow">Shop By Collection</span>
+            <h2 className="section-title">Popular Crystal Categories</h2>
           </div>
-          <div className="category-grid">
-            {categories.map((cat, idx) => (
-              <div key={idx} className="category-card" style={{ '--accent': cat.color }}>
-                <div className="cat-icon-placeholder" style={{ background: cat.color }}></div>
-                <h3>{cat.name}</h3>
-                <p>{cat.desc}</p>
-                <Link to="/shop" className="anchor-luxury">Discover →</Link>
-              </div>
+          <div className="collections-grid">
+            {collections.map((item) => (
+              <Link key={item.name} to={item.path} className="collection-card">
+                <h3>{item.name}</h3>
+                <p>{item.desc}</p>
+                <span>Explore</span>
+              </Link>
             ))}
           </div>
         </div>
       </section>
 
-      {/* Featured Products */}
-      <section className="featured-products">
+      <section className="section-padding featured-products">
         <div className="container">
           <div className="text-center mb-60">
-            <span className="hero-eyebrow">The Essentials</span>
-            <h2 className="section-title">Current Bestsellers</h2>
+            <span className="hero-eyebrow">Featured Products</span>
+            <h2 className="section-title">Best Sellers</h2>
           </div>
           <div className="products-grid">
             {loading ? (
-              <div className="loading-state">Refining energy...</div>
+              <div className="loading-state">Loading products...</div>
             ) : featuredProducts.length > 0 ? (
-              featuredProducts.map(product => (
-                <ProductCard key={product.id} product={product} />
-              ))
+              featuredProducts.map((product) => <ProductCard key={product.id} product={product} />)
             ) : (
-              <div className="no-products">Our vault is being updated.</div>
+              <div className="no-products">No featured products available.</div>
             )}
           </div>
           <div className="text-center mt-60">
-            <Link to="/shop" className="btn-luxury">View Entire Catalog</Link>
+            <Link to="/shop" className="btn-luxury">View All Products</Link>
           </div>
         </div>
       </section>
 
-      {/* Newsletter */}
-      <section className="newsletter-luxury">
+      <section className="section-padding service-focus">
         <div className="container">
-          <div className="newsletter-wrapper">
-            <div className="newsletter-content">
-              <span className="hero-eyebrow" style={{ color: 'rgba(255,255,255,0.6)' }}>Stay Connected</span>
-              <h2>Join the Soul Circle</h2>
-              <p>Register for exclusive access to moon-cycle rituals, energy updates, and boutique collections.</p>
-              <form className="luxury-form">
-                <input type="email" placeholder="Your essence (email)" required />
-                <button type="submit">Join</button>
-              </form>
+          <div className="text-center mb-60">
+            <span className="hero-eyebrow">Our Services</span>
+            <h2 className="section-title">Reiki Healing & Consultation</h2>
+          </div>
+          <div className="service-grid">
+            <div className="service-card">
+              <h3>Reiki Healing</h3>
+              <p>Energy balancing sessions for emotional, physical and spiritual well-being.</p>
             </div>
+            <div className="service-card">
+              <h3>Reiki Emergency Healing</h3>
+              <p>Focused sessions designed for urgent emotional stress and energy imbalance.</p>
+            </div>
+            <div className="service-card">
+              <h3>Reiki Personalized Healing</h3>
+              <p>Custom healing protocols aligned to your life goals and current challenges.</p>
+            </div>
+            <div className="service-card">
+              <h3>Crystal Vastu Consultation</h3>
+              <p>Space harmonization with crystal placements for home and business environments.</p>
+            </div>
+          </div>
+          <div className="text-center mt-60">
+            <Link to="/services" className="btn-luxury">Book A Service</Link>
+          </div>
+        </div>
+      </section>
+
+      <section className="section-padding testimonials">
+        <div className="container">
+          <div className="text-center mb-60">
+            <span className="hero-eyebrow">Client Feedback</span>
+            <h2 className="section-title">What Customers Say</h2>
+          </div>
+          <div className="testimonials-grid">
+            {testimonials.map((item) => (
+              <article key={item.name} className="testimonial-card">
+                <div className="stars">★★★★★</div>
+                <p>"{item.text}"</p>
+                <strong>{item.name}</strong>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="home-cta">
+        <div className="container">
+          <div className="cta-box">
+            <h2>Start Your Crystal Journey Today</h2>
+            <p>Shop natural gemstones, Reiki tools and intention-based collections for every life goal.</p>
+            <Link to="/shop" className="btn-luxury">Shop Now</Link>
           </div>
         </div>
       </section>
 
       <style jsx="true">{`
+        .text-center { text-align: center; }
         .mb-60 { margin-bottom: 60px; }
         .mt-60 { margin-top: 60px; }
-        .text-center { text-align: center; }
 
-        .philosophy-section { background: var(--white); }
-        .philosophy-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 80px;
-            align-items: center;
+        .usp-strip {
+          background: #fff;
+          border-top: 1px solid #efe7de;
+          border-bottom: 1px solid #efe7de;
+          padding: 28px 0;
         }
-        .philosophy-text p {
-            font-size: 1.1rem;
-            color: var(--text-light);
-            margin-bottom: 30px;
-            font-weight: 300;
-        }
-        .philosophy-image img {
-            width: 100%;
-            height: 500px;
-            object-fit: cover;
-            border-radius: 4px;
-            box-shadow: var(--shadow-medium);
-        }
-
-        .category-grid {
+        .usp-grid {
           display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 30px;
+          grid-template-columns: repeat(5, minmax(0, 1fr));
+          gap: 14px;
         }
-        .category-card {
-          padding: 60px 40px;
-          background: white;
-          transition: var(--transition);
+        .usp-card {
           text-align: center;
-          border: 1px solid #F0EAE5;
+          padding: 12px 10px;
         }
-        .category-card:hover {
-          transform: translateY(-10px);
-          box-shadow: var(--shadow-medium);
-          border-color: var(--secondary);
-        }
-        .cat-icon-placeholder {
-            width: 40px;
-            height: 40px;
-            margin: 0 auto 30px;
-            border-radius: 50%;
-            opacity: 0.1;
-        }
-        .category-card h3 {
-          margin-bottom: 15px;
-          font-family: var(--font-serif);
-          font-size: 1.5rem;
+        .usp-card h4 {
+          font-size: 0.9rem;
+          margin-bottom: 4px;
           color: var(--primary);
         }
-        .category-card p {
-          font-size: 0.85rem;
+        .usp-card p {
           color: var(--text-light);
-          margin-bottom: 25px;
-          font-weight: 300;
+          font-size: 0.76rem;
+          letter-spacing: 0.4px;
         }
-        .anchor-luxury {
-            text-decoration: none;
-            color: var(--secondary);
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-weight: 600;
+
+        .collections-section {
+          background: var(--bg-creme);
         }
-        
+        .collections-grid {
+          display: grid;
+          grid-template-columns: repeat(5, minmax(0, 1fr));
+          gap: 16px;
+        }
+        .collection-card {
+          background: #fff;
+          border: 1px solid #efe7de;
+          padding: 24px 20px;
+          border-radius: 6px;
+          transition: var(--transition);
+          min-height: 180px;
+        }
+        .collection-card:hover {
+          border-color: var(--secondary);
+          transform: translateY(-6px);
+          box-shadow: var(--shadow-soft);
+        }
+        .collection-card h3 {
+          font-size: 1.2rem;
+          margin-bottom: 8px;
+          color: var(--primary);
+        }
+        .collection-card p {
+          color: var(--text-light);
+          font-size: 0.85rem;
+          line-height: 1.6;
+          min-height: 80px;
+        }
+        .collection-card span {
+          text-transform: uppercase;
+          letter-spacing: 1.6px;
+          font-size: 0.7rem;
+          color: var(--secondary);
+          font-weight: 600;
+        }
+
+        .featured-products {
+          background: #fff;
+        }
         .products-grid {
           display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 40px;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 30px;
+        }
+        .loading-state,
+        .no-products {
+          grid-column: 1 / -1;
+          text-align: center;
+          color: var(--text-light);
+          padding: 24px 0;
         }
 
-        .newsletter-luxury {
-            padding: 120px 0;
-            background: var(--bg-dark);
+        .service-focus {
+          background: var(--bg-creme);
         }
-        .newsletter-wrapper {
-            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1520038410233-7141be7e6f97?q=80&w=2070&auto=format&fit=crop');
-            background-size: cover;
-            background-position: center;
-            padding: 100px 60px;
-            text-align: center;
-            color: white;
-            border-radius: 4px;
+        .service-grid {
+          display: grid;
+          grid-template-columns: repeat(4, minmax(0, 1fr));
+          gap: 18px;
         }
-        .newsletter-content h2 {
-            font-size: 3.5rem;
-            margin-bottom: 20px;
+        .service-card {
+          background: #fff;
+          border: 1px solid #efe7de;
+          border-top: 3px solid var(--secondary);
+          border-radius: 4px;
+          padding: 24px 20px;
         }
-        .newsletter-content p {
-            max-width: 500px;
-            margin: 0 auto 40px;
-            opacity: 0.7;
-            font-weight: 300;
+        .service-card h3 {
+          font-size: 1.05rem;
+          margin-bottom: 8px;
+          color: var(--primary);
         }
-        .luxury-form {
-            display: flex;
-            max-width: 500px;
-            margin: 0 auto;
-            border-bottom: 1px solid rgba(255,255,255,0.3);
-        }
-        .luxury-form input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            padding: 15px 0;
-            color: white;
-            outline: none;
-            font-size: 1rem;
-        }
-        .luxury-form button {
-            background: transparent;
-            border: none;
-            color: var(--secondary);
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-weight: 700;
-            cursor: pointer;
-            padding: 0 20px;
+        .service-card p {
+          font-size: 0.86rem;
+          color: var(--text-light);
         }
 
-        @media (max-width: 1024px) {
-            .philosophy-grid { grid-template-columns: 1fr; gap: 40px; }
-            .category-grid, .products-grid { grid-template-columns: 1fr 1fr; }
+        .testimonials {
+          background: #fff;
         }
-        @media (max-width: 576px) {
-            .category-grid, .products-grid { grid-template-columns: 1fr; }
-            .newsletter-content h2 { font-size: 2.5rem; }
+        .testimonials-grid {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(0, 1fr));
+          gap: 24px;
+        }
+        .testimonial-card {
+          border: 1px solid #efe7de;
+          background: #fff;
+          padding: 28px;
+          border-radius: 6px;
+        }
+        .testimonial-card .stars {
+          color: #d4af37;
+          letter-spacing: 1.5px;
+          margin-bottom: 10px;
+          font-size: 0.9rem;
+        }
+        .testimonial-card p {
+          color: var(--text-light);
+          font-size: 0.92rem;
+          margin-bottom: 14px;
+        }
+        .testimonial-card strong {
+          color: var(--primary);
+          font-size: 0.88rem;
+        }
+
+        .home-cta {
+          padding: 90px 0;
+          background: #111;
+        }
+        .cta-box {
+          text-align: center;
+          color: #fff;
+          max-width: 760px;
+          margin: 0 auto;
+        }
+        .cta-box h2 {
+          font-size: 3rem;
+          margin-bottom: 12px;
+        }
+        .cta-box p {
+          color: rgba(255, 255, 255, 0.8);
+          margin-bottom: 32px;
+        }
+
+        @media (max-width: 1200px) {
+          .collections-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+          }
+          .usp-grid {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+          }
+          .service-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
+        }
+        @media (max-width: 900px) {
+          .products-grid,
+          .testimonials-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+          }
+        }
+        @media (max-width: 640px) {
+          .collections-grid,
+          .usp-grid,
+          .products-grid,
+          .service-grid,
+          .testimonials-grid {
+            grid-template-columns: 1fr;
+          }
+          .cta-box h2 {
+            font-size: 2.1rem;
+          }
         }
       `}</style>
     </div>
   )
 }
 
-export default Home;
+export default Home

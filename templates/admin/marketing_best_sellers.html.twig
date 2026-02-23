@@ -1,0 +1,33 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Best Sellers{% endblock %}
+
+{% block main %}
+    <section class="admin-recent-panel">
+        <div class="panel-head">
+            <h4>Best Sellers</h4>
+            <a href="{{ ea_url().setController('App\\Controller\\Admin\\OrderCrudController').setAction('index') }}" class="panel-link">Manage Orders</a>
+        </div>
+        {% if best_sellers is empty %}
+            <p class="empty-state">No paid/completed sales found yet.</p>
+        {% else %}
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                    <tr><th>Product ID</th><th>Product</th><th>Units Sold</th><th>Gross Sales</th></tr>
+                    </thead>
+                    <tbody>
+                    {% for row in best_sellers %}
+                        <tr>
+                            <td>#{{ row.product_id }}</td>
+                            <td>{{ row.product_name }}</td>
+                            <td>{{ row.units_sold }}</td>
+                            <td>${{ row.gross_amount|number_format(2, '.', ',') }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </section>
+{% endblock %}

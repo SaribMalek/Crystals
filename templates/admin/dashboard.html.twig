@@ -1,0 +1,544 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}
+    Admin Overview
+{% endblock %}
+
+{% block main %}
+    <div class="admin-overview">
+        <section class="admin-kpi-grid">
+            <article class="admin-kpi-card">
+                <div class="kpi-top">
+                    <p class="kpi-label">Total Sales (Today)</p>
+                    <span class="kpi-icon"><i class="fas fa-sun"></i></span>
+                </div>
+                <h3>${{ stats.sales_today|number_format(2, '.', ',') }}</h3>
+            </article>
+            <article class="admin-kpi-card">
+                <div class="kpi-top">
+                    <p class="kpi-label">Total Sales (Week)</p>
+                    <span class="kpi-icon"><i class="fas fa-calendar-week"></i></span>
+                </div>
+                <h3>${{ stats.sales_week|number_format(2, '.', ',') }}</h3>
+            </article>
+            <article class="admin-kpi-card">
+                <div class="kpi-top">
+                    <p class="kpi-label">Total Sales (Month)</p>
+                    <span class="kpi-icon"><i class="fas fa-calendar-alt"></i></span>
+                </div>
+                <h3>${{ stats.sales_month|number_format(2, '.', ',') }}</h3>
+            </article>
+            <article class="admin-kpi-card">
+                <div class="kpi-top">
+                    <p class="kpi-label">Total Orders</p>
+                    <span class="kpi-icon"><i class="fas fa-shopping-bag"></i></span>
+                </div>
+                <h3>{{ stats.order_count }}</h3>
+            </article>
+            <article class="admin-kpi-card">
+                <div class="kpi-top">
+                    <p class="kpi-label">Pending Orders</p>
+                    <span class="kpi-icon warning"><i class="fas fa-clock"></i></span>
+                </div>
+                <h3>{{ stats.pending_order_count }}</h3>
+            </article>
+            <article class="admin-kpi-card">
+                <div class="kpi-top">
+                    <p class="kpi-label">Completed Orders</p>
+                    <span class="kpi-icon success"><i class="fas fa-check-circle"></i></span>
+                </div>
+                <h3>{{ stats.completed_order_count }}</h3>
+            </article>
+            <article class="admin-kpi-card">
+                <div class="kpi-top">
+                    <p class="kpi-label">Cancelled Orders</p>
+                    <span class="kpi-icon danger"><i class="fas fa-times-circle"></i></span>
+                </div>
+                <h3>{{ stats.cancelled_order_count }}</h3>
+            </article>
+            <article class="admin-kpi-card">
+                <div class="kpi-top">
+                    <p class="kpi-label">Total Customers</p>
+                    <span class="kpi-icon"><i class="fas fa-users"></i></span>
+                </div>
+                <h3>{{ stats.customer_count }}</h3>
+            </article>
+            <article class="admin-kpi-card">
+                <div class="kpi-top">
+                    <p class="kpi-label">Low Stock Alerts (<= {{ inventory_settings.low_stock_threshold }})</p>
+                    <span class="kpi-icon danger"><i class="fas fa-exclamation-triangle"></i></span>
+                </div>
+                <h3>{{ stats.low_stock_count }}</h3>
+            </article>
+            <article class="admin-kpi-card">
+                <div class="kpi-top">
+                    <p class="kpi-label">Out of Stock</p>
+                    <span class="kpi-icon danger"><i class="fas fa-box-open"></i></span>
+                </div>
+                <h3>{{ stats.out_of_stock_count }}</h3>
+            </article>
+            <article class="admin-kpi-card">
+                <div class="kpi-top">
+                    <p class="kpi-label">Total Products</p>
+                    <span class="kpi-icon"><i class="fas fa-gem"></i></span>
+                </div>
+                <h3>{{ stats.product_count }}</h3>
+            </article>
+            <article class="admin-kpi-card">
+                <div class="kpi-top">
+                    <p class="kpi-label">Categories</p>
+                    <span class="kpi-icon"><i class="fas fa-tags"></i></span>
+                </div>
+                <h3>{{ stats.category_count }}</h3>
+            </article>
+            <article class="admin-kpi-card full">
+                <div class="kpi-top">
+                    <p class="kpi-label">Lifetime Revenue (All Orders)</p>
+                    <span class="kpi-icon"><i class="fas fa-chart-line"></i></span>
+                </div>
+                <h3>${{ stats.total_revenue|number_format(2, '.', ',') }}</h3>
+            </article>
+        </section>
+
+        <section class="admin-actions-panel">
+            <h4>Quick Actions</h4>
+            <div class="admin-action-grid">
+                <a href="{{ quick_links.new_product }}" class="admin-action-btn">Add Product</a>
+                <a href="{{ quick_links.new_category }}" class="admin-action-btn">Add Category</a>
+                <a href="{{ quick_links.new_order }}" class="admin-action-btn">Create Order</a>
+                <a href="{{ quick_links.new_order_item }}" class="admin-action-btn">Add Order Item</a>
+                <a href="{{ quick_links.products }}" class="admin-action-btn ghost">Manage Products</a>
+                <a href="{{ quick_links.categories }}" class="admin-action-btn ghost">Manage Categories</a>
+                <a href="{{ quick_links.orders }}" class="admin-action-btn ghost">Manage Orders</a>
+                <a href="{{ quick_links.order_items }}" class="admin-action-btn ghost">Manage Order Items</a>
+                <a href="{{ quick_links.inventory_settings }}" class="admin-action-btn ghost">Stock Settings</a>
+                <a href="{{ quick_links.payment_settings }}" class="admin-action-btn">Payment Settings</a>
+                <a href="{{ quick_links.payment_transactions }}" class="admin-action-btn ghost">Transactions</a>
+                <a href="{{ quick_links.payment_failures }}" class="admin-action-btn ghost">Payment Failures</a>
+                <a href="{{ quick_links.banners }}" class="admin-action-btn">Banner Management</a>
+                <a href="{{ quick_links.featured_products }}" class="admin-action-btn ghost">Featured Products</a>
+                <a href="{{ quick_links.best_sellers }}" class="admin-action-btn ghost">Best Sellers</a>
+                <a href="{{ quick_links.email_campaigns }}" class="admin-action-btn">Email Campaigns</a>
+                <a href="{{ quick_links.push_notifications }}" class="admin-action-btn ghost">Push Notifications</a>
+                <a href="{{ quick_links.abandoned_carts }}" class="admin-action-btn ghost">Abandoned Carts</a>
+                <a href="{{ quick_links.newsletter_subscribers }}" class="admin-action-btn">Newsletter Subscribers</a>
+                <a href="{{ quick_links.referral_program }}" class="admin-action-btn ghost">Referral Program</a>
+                <a href="{{ quick_links.reviews }}" class="admin-action-btn">Reviews & Ratings</a>
+                <a href="{{ quick_links.review_analytics }}" class="admin-action-btn ghost">Rating Analytics</a>
+                <a href="{{ quick_links.static_pages }}" class="admin-action-btn">Static Pages</a>
+                <a href="{{ quick_links.cms_about }}" class="admin-action-btn ghost">About Page</a>
+                <a href="{{ quick_links.cms_contact }}" class="admin-action-btn ghost">Contact Page</a>
+                <a href="{{ quick_links.cms_policy }}" class="admin-action-btn ghost">Policy Page</a>
+                <a href="{{ quick_links.cms_terms }}" class="admin-action-btn">Terms & Conditions</a>
+                <a href="{{ quick_links.cms_privacy }}" class="admin-action-btn">Privacy Policy</a>
+                <a href="{{ quick_links.faq_items }}" class="admin-action-btn ghost">FAQ Management</a>
+                <a href="{{ quick_links.blog_posts }}" class="admin-action-btn">Blog Posts</a>
+                <a href="{{ quick_links.footer_links }}" class="admin-action-btn ghost">Footer Links</a>
+                <a href="{{ quick_links.shipping_zones }}" class="admin-action-btn">Shipping Zones</a>
+                <a href="{{ quick_links.shipping_methods }}" class="admin-action-btn ghost">Shipping Methods</a>
+                <a href="{{ quick_links.delivery_partners }}" class="admin-action-btn ghost">Delivery Partners</a>
+                <a href="{{ quick_links.tracking }}" class="admin-action-btn ghost">Tracking IDs</a>
+                <a href="{{ quick_links.coupons }}" class="admin-action-btn">Coupon Codes</a>
+                <a href="{{ quick_links.tax_rules }}" class="admin-action-btn ghost">Tax Rules</a>
+                <a href="{{ quick_links.tax_reports }}" class="admin-action-btn ghost">Tax Reports</a>
+                <a href="{{ quick_links.bulk_stock_update }}" class="admin-action-btn">Bulk Stock Update</a>
+                <a href="{{ quick_links.stock_history }}" class="admin-action-btn ghost">Stock History</a>
+                <a href="{{ quick_links.new_user }}" class="admin-action-btn">Add User</a>
+                <a href="{{ quick_links.users }}" class="admin-action-btn ghost">Manage Users</a>
+                <a href="{{ quick_links.new_customer }}" class="admin-action-btn">Add Customer</a>
+                <a href="{{ quick_links.customers }}" class="admin-action-btn ghost">Customer List</a>
+                <a href="/shop" class="admin-action-btn ghost">Open Storefront</a>
+            </div>
+        </section>
+
+        <section class="admin-recent-panel">
+            <div class="panel-head">
+                <h4>Order Management</h4>
+                <a href="{{ quick_links.orders }}" class="panel-link">View All Orders</a>
+            </div>
+            <div class="inventory-control-grid">
+                <div class="inventory-control-item">
+                    <span class="inventory-label">Manual Order Creation</span>
+                    <a href="{{ quick_links.new_order }}" class="panel-link">Create Order</a>
+                </div>
+                <div class="inventory-control-item">
+                    <span class="inventory-label">Order Details (items, address, payment)</span>
+                    <span class="inventory-value">Enabled</span>
+                </div>
+                <div class="inventory-control-item">
+                    <span class="inventory-label">Invoice &amp; Packing Slip PDF</span>
+                    <span class="inventory-value">Enabled</span>
+                </div>
+                <div class="inventory-control-item">
+                    <span class="inventory-label">Order Notes (internal)</span>
+                    <span class="inventory-value">Enabled</span>
+                </div>
+                <div class="inventory-control-item">
+                    <span class="inventory-label">Partial Refund Support</span>
+                    <span class="inventory-value">Enabled</span>
+                </div>
+            </div>
+            <div class="status-flow-wrap">
+                <span class="status-flow-pill">Pending: {{ order_status_flow_counts.pending }}</span>
+                <span class="status-flow-pill">Paid: {{ order_status_flow_counts.paid }}</span>
+                <span class="status-flow-pill">Processing: {{ order_status_flow_counts.processing }}</span>
+                <span class="status-flow-pill">Shipped: {{ order_status_flow_counts.shipped }}</span>
+                <span class="status-flow-pill">Delivered: {{ order_status_flow_counts.delivered }}</span>
+                <span class="status-flow-pill">Cancelled: {{ order_status_flow_counts.cancelled }}</span>
+                <span class="status-flow-pill">Refunded: {{ order_status_flow_counts.refunded }}</span>
+            </div>
+        </section>
+
+        <section class="admin-recent-panel">
+            <div class="panel-head">
+                <h4>Inventory Controls</h4>
+                <a href="{{ quick_links.inventory_settings }}" class="panel-link">Edit Settings</a>
+            </div>
+            <div class="inventory-control-grid">
+                <div class="inventory-control-item">
+                    <span class="inventory-label">Stock Tracking</span>
+                    <span class="inventory-value {{ inventory_settings.stock_tracking_enabled ? 'ok' : 'off' }}">{{ inventory_settings.stock_tracking_enabled ? 'Enabled' : 'Disabled' }}</span>
+                </div>
+                <div class="inventory-control-item">
+                    <span class="inventory-label">Low Stock Threshold</span>
+                    <span class="inventory-value">{{ inventory_settings.low_stock_threshold }}</span>
+                </div>
+                <div class="inventory-control-item">
+                    <span class="inventory-label">Out-of-Stock Notifications</span>
+                    <span class="inventory-value {{ inventory_settings.out_of_stock_notifications_enabled ? 'ok' : 'off' }}">{{ inventory_settings.out_of_stock_notifications_enabled ? 'Enabled' : 'Disabled' }}</span>
+                </div>
+                <div class="inventory-control-item">
+                    <span class="inventory-label">Current Out-of-Stock Products</span>
+                    <span class="inventory-value {{ stats.out_of_stock_count > 0 ? 'warn' : 'ok' }}">{{ stats.out_of_stock_count }}</span>
+                </div>
+            </div>
+        </section>
+
+        {% if inventory_settings.out_of_stock_notifications_enabled %}
+            <section class="admin-recent-panel">
+                <div class="panel-head">
+                    <h4>Out-of-Stock Notifications</h4>
+                    <a href="{{ quick_links.products }}" class="panel-link">Manage Products</a>
+                </div>
+                {% if out_of_stock_products is empty %}
+                    <p class="empty-state">No out-of-stock products right now.</p>
+                {% else %}
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Stock</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for product in out_of_stock_products %}
+                                <tr>
+                                    <td>{{ product.name }}</td>
+                                    <td>{{ product.stock }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </section>
+        {% endif %}
+
+        <section class="admin-chart-grid">
+            <article class="admin-chart-panel">
+                <h4>Orders (Last 6 Months)</h4>
+                <canvas id="ordersChart" height="120"></canvas>
+            </article>
+            <article class="admin-chart-panel">
+                <h4>Revenue (Last 6 Months)</h4>
+                <canvas id="revenueChart" height="120"></canvas>
+            </article>
+            <article class="admin-chart-panel full">
+                <h4>Products by Category</h4>
+                <canvas id="categoryChart" height="110"></canvas>
+            </article>
+        </section>
+
+        <section class="admin-recent-panel">
+            <div class="panel-head">
+                <h4>Recent Orders</h4>
+                <a href="{{ quick_links.orders }}" class="panel-link">View All Orders</a>
+            </div>
+            {% if recent_orders is empty %}
+                <p class="empty-state">No orders yet.</p>
+            {% else %}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Customer</th>
+                            <th>Status</th>
+                            <th>Total</th>
+                            <th>Created</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for order in recent_orders %}
+                            <tr>
+                                <td>#{{ order.id }}</td>
+                                <td>{{ order.customerEmail }}</td>
+                                <td><span class="status-pill">{{ order.status|upper }}</span></td>
+                                <td>${{ order.totalAmount|number_format(2, '.', ',') }}</td>
+                                <td>{{ order.createdAt ? order.createdAt|date('Y-m-d H:i') : '-' }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </section>
+
+        <section class="admin-recent-panel">
+            <div class="panel-head">
+                <h4>Top-Selling Products</h4>
+                <a href="{{ quick_links.products }}" class="panel-link">Manage Products</a>
+            </div>
+            {% if top_selling_products is empty %}
+                <p class="empty-state">No completed sales available yet.</p>
+            {% else %}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Units Sold</th>
+                            <th>Gross Sales</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for row in top_selling_products %}
+                            <tr>
+                                <td>{{ row.product_name }}</td>
+                                <td>{{ row.units_sold }}</td>
+                                <td>${{ row.gross_amount|number_format(2, '.', ',') }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </section>
+
+        <section class="admin-recent-panel">
+            <div class="panel-head">
+                <h4>Stock History Log</h4>
+                <a href="{{ quick_links.stock_history }}" class="panel-link">View Full Log</a>
+            </div>
+            {% if recent_stock_logs is empty %}
+                <p class="empty-state">No stock changes recorded yet.</p>
+            {% else %}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Previous</th>
+                            <th>New</th>
+                            <th>Change</th>
+                            <th>By</th>
+                            <th>When</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for row in recent_stock_logs %}
+                            <tr>
+                                <td>{{ row.product ? row.product.name : '-' }}</td>
+                                <td>{{ row.previousStock }}</td>
+                                <td>{{ row.newStock }}</td>
+                                <td>{{ row.changeAmount > 0 ? '+' : '' }}{{ row.changeAmount }}</td>
+                                <td>{{ row.changedBy ?: '-' }}</td>
+                                <td>{{ row.changedAt ? row.changedAt|date('Y-m-d H:i') : '-' }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </section>
+
+        <section class="admin-recent-panel">
+            <div class="panel-head">
+                <h4>Admin Users</h4>
+                <div class="panel-link-group">
+                    <a href="{{ quick_links.new_user }}" class="panel-link">Create Admin</a>
+                    <a href="{{ quick_links.users }}" class="panel-link">Manage Users</a>
+                </div>
+            </div>
+            {% if admin_users is empty %}
+                <p class="empty-state">No admin users found.</p>
+            {% else %}
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Email</th>
+                            <th>Roles</th>
+                            <th>Created</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for adminUser in admin_users %}
+                            <tr>
+                                <td>#{{ adminUser.id }}</td>
+                                <td>{{ adminUser.email }}</td>
+                                <td>{{ adminUser.roles|join(', ') }}</td>
+                                <td>{{ adminUser.createdAt ? adminUser.createdAt|date('Y-m-d H:i') : '-' }}</td>
+                                <td>
+                                    {% set links = admin_user_links[adminUser.id] ?? null %}
+                                    {% if links and links.edit is defined %}
+                                        <a href="{{ links.edit }}" class="table-action-link">Edit</a>
+                                    {% endif %}
+                                    <a href="{{ quick_links.users }}" class="table-action-link ghost">Delete</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% endif %}
+        </section>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+    <script>
+        (function () {
+            if (typeof Chart === 'undefined') {
+                return;
+            }
+
+            const months = {{ charts.months|json_encode|raw }};
+            const monthlyOrderCounts = {{ charts.monthly_order_counts|json_encode|raw }};
+            const monthlyRevenue = {{ charts.monthly_revenue|json_encode|raw }};
+            const categoryLabels = {{ charts.category_labels|json_encode|raw }};
+            const categoryProductCounts = {{ charts.category_product_counts|json_encode|raw }};
+
+            const axisColor = '#738195';
+            const gridColor = 'rgba(115, 129, 149, 0.18)';
+
+            const baseOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        labels: {
+                            color: '#243142',
+                            boxWidth: 12,
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        ticks: { color: axisColor },
+                        grid: { color: gridColor }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        ticks: { color: axisColor },
+                        grid: { color: gridColor }
+                    }
+                }
+            };
+
+            const ordersCtx = document.getElementById('ordersChart');
+            if (ordersCtx) {
+                new Chart(ordersCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: months,
+                        datasets: [{
+                            label: 'Orders',
+                            data: monthlyOrderCounts,
+                            backgroundColor: 'rgba(31, 59, 97, 0.78)',
+                            borderColor: '#1f3b61',
+                            borderWidth: 1,
+                            borderRadius: 6
+                        }]
+                    },
+                    options: baseOptions
+                });
+            }
+
+            const revenueCtx = document.getElementById('revenueChart');
+            if (revenueCtx) {
+                new Chart(revenueCtx, {
+                    type: 'line',
+                    data: {
+                        labels: months,
+                        datasets: [{
+                            label: 'Revenue (USD)',
+                            data: monthlyRevenue,
+                            fill: true,
+                            backgroundColor: 'rgba(202, 164, 93, 0.2)',
+                            borderColor: '#caa45d',
+                            borderWidth: 2,
+                            tension: 0.35,
+                            pointBackgroundColor: '#caa45d',
+                            pointRadius: 4
+                        }]
+                    },
+                    options: {
+                        ...baseOptions,
+                        scales: {
+                            ...baseOptions.scales,
+                            y: {
+                                ...baseOptions.scales.y,
+                                ticks: {
+                                    color: axisColor,
+                                    callback: function(value) {
+                                        return '$' + value;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            const categoryCtx = document.getElementById('categoryChart');
+            if (categoryCtx) {
+                new Chart(categoryCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: categoryLabels,
+                        datasets: [{
+                            label: 'Products',
+                            data: categoryProductCounts,
+                            backgroundColor: [
+                                '#1f3b61',
+                                '#caa45d',
+                                '#4f7cac',
+                                '#2f5d8a',
+                                '#d6b772',
+                                '#86a9c8'
+                            ],
+                            borderColor: '#ffffff',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    color: '#243142',
+                                    boxWidth: 12
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        })();
+    </script>
+{% endblock %}

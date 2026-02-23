@@ -1,0 +1,38 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Bulk Stock Update{% endblock %}
+
+{% block main %}
+    <section class="admin-recent-panel">
+        <div class="panel-head">
+            <h4>Bulk Stock Update</h4>
+            <div class="panel-link-group">
+                <a href="{{ products_url }}" class="panel-link">Manage Products</a>
+                <a href="{{ history_url }}" class="panel-link">Stock History</a>
+            </div>
+        </div>
+
+        <p class="empty-state" style="padding-top:0">
+            Use one line per product in format: <code>product_id,stock,note</code><br>
+            Example: <code>12,25,Restocked from vendor</code>
+        </p>
+
+        <form method="post">
+            <div class="form-group">
+                <label for="stock_rows" class="form-label">Bulk Rows</label>
+                <textarea id="stock_rows" name="stock_rows" class="form-control" rows="10" placeholder="12,25,Restocked&#10;14,0,Sold out">{{ raw_input }}</textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Apply Bulk Update</button>
+        </form>
+
+        {% if results is not empty %}
+            <hr>
+            <h5>Results</h5>
+            <ul>
+                {% for line in results %}
+                    <li>{{ line }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </section>
+{% endblock %}

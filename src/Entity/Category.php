@@ -21,7 +21,7 @@ class Category
     #[Groups(['product:read', 'category:read'])]
     private ?string $name = null;
 
-    #[ORM\Column(length: 255, unique: true)]
+    #[ORM\Column(length: 191, unique: true)]
     #[Groups(['product:read', 'category:read'])]
     private ?string $slug = null;
 

@@ -1,9 +1,9 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
     plugins: [react()],
-    base: '/assets/frontend/',
+    base: command === 'serve' ? '/' : '/assets/frontend/',
     build: {
         outDir: '../public/assets/frontend',
         emptyOutDir: true,
@@ -22,4 +22,4 @@ export default defineConfig({
             host: 'localhost'
         }
     }
-})
+}))

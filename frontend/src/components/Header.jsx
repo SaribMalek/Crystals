@@ -1,13 +1,48 @@
 import React, { useState, useEffect } from 'react'
-import { Search, ShoppingCart, User, Menu, X, ChevronDown } from 'lucide-react'
-import { Link, useLocation } from 'react-router-dom'
+import { Search, ShoppingCart, User, Settings, Menu, X } from 'lucide-react'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
+
+const FALLBACK_NAV_LINKS = [
+  { name: 'HOME', path: '/' },
+  { name: 'SHOP', path: '/shop' },
+  {
+    name: 'HEALING STONES',
+    path: '/healing-stones',
+    dropdown: ['Rose Quartz', 'Clear Quartz', 'Amethyst', 'Black Tourmaline', 'Lapis Lazuli', 'Citrine', 'Selenite', 'Pyrite']
+      .map((item) => ({ label: item, path: `/shop?search=${encodeURIComponent(item)}` }))
+  },
+  {
+    name: 'CRYSTAL JEWELRY',
+    path: '/crystal-jewelry',
+    dropdown: ['Bracelets', 'Pendants', 'Malas', 'Rings']
+      .map((item) => ({ label: item, path: `/shop?search=${encodeURIComponent(item)}` }))
+  },
+  {
+    name: 'REIKI TOOLS',
+    path: '/reiki-tools',
+    dropdown: ['Pendulums', 'Chakra Sets', 'Engraved Stones', 'Charging Plates']
+      .map((item) => ({ label: item, path: `/shop?search=${encodeURIComponent(item)}` }))
+  },
+  {
+    name: 'REMEDIES',
+    path: '/remedies',
+    dropdown: ['Wealth', 'Health', 'Protection', 'Relationship', 'Root Chakra', 'Self-Confidence', 'Education']
+      .map((item) => ({ label: item, path: `/shop?search=${encodeURIComponent(item)}` }))
+  },
+  { name: 'SERVICES', path: '/services' },
+  { name: 'CONTACT', path: '/contact' },
+]
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const [navLinks, setNavLinks] = useState(FALLBACK_NAV_LINKS)
   const { cartCount } = useCart()
   const location = useLocation()
+  const navigate = useNavigate()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -17,14 +52,62 @@ const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  const navLinks = [
-    { name: 'HOME', path: '/' },
-    { name: 'SHOP', path: '/shop', dropdown: ['7 Chakra Products', 'Bracelets', 'Pendants', 'Malas', 'Rudraksha', 'Angels', 'Tumble Stones', 'Crystal Pencils', 'Pyramids', 'Balls', 'Dowser', 'Orgone', 'Crystal Trees', 'Feng Shui'] },
-    { name: 'REMEDIES', path: '/remedies', dropdown: ['Wealth', 'Health', 'Protection', 'Relationship', 'Root Chakra', 'Self-Confidence', 'Education'] },
-    { name: 'HEALING STONES', path: '/healing-stones', dropdown: ['Rose Quartz', 'Clear Quartz', 'Amethyst', 'Black Tourmaline', 'Lapis Lazuli', 'Citrine', 'Selenite', 'Pyrite'] },
-    { name: 'TRAININGS', path: '/trainings' },
-    { name: 'CONTACT', path: '/contact' },
-  ]
+  useEffect(() => {
+    const params = new URLSearchParams(location.search)
+    setSearchQuery(params.get('search') || '')
+  }, [location.search])
+
+  useEffect(() => {
+    const loadHeaderMenu = async () => {
+      try {
+        const response = await fetch('/api/header-menu')
+        if (!response.ok) {
+          return
+        }
+        const data = await response.json()
+        if (Array.isArray(data) && data.length > 0) {
+          setNavLinks(data)
+        }
+      } catch (error) {
+        console.error('Unable to load header menu:', error)
+      }
+    }
+
+    loadHeaderMenu()
+  }, [])
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault()
+    const trimmedQuery = searchQuery.trim()
+    navigate(trimmedQuery ? `/shop?search=${encodeURIComponent(trimmedQuery)}` : '/shop')
+    setIsSearchOpen(false)
+  }
+
+  const renderMenuLink = (item, className, onClick = undefined) => {
+    const path = item.path || '/'
+    const openInNewTab = !!item.openInNewTab
+    const isInternal = path.startsWith('/') && !openInNewTab
+
+    if (isInternal) {
+      return (
+        <Link to={path} className={className} onClick={onClick}>
+          {item.name || item.label}
+        </Link>
+      )
+    }
+
+    return (
+      <a
+        href={path}
+        className={className}
+        onClick={onClick}
+        target={openInNewTab ? '_blank' : undefined}
+        rel={openInNewTab ? 'noopener noreferrer' : undefined}
+      >
+        {item.name || item.label}
+      </a>
+    )
+  }
 
   return (
     <header className={`header ${isScrolled ? 'header-scrolled' : ''}`}>
@@ -36,24 +119,19 @@ const Header = () => {
 
       <div className="container main-header">
         <Link to="/" className="logo-container">
-          <div className="logo-text">
-            <span className="brand-name">AS CRYSTALS</span>
-            <span className="brand-tagline">Purity & Energy</span>
-          </div>
+          <img src="/images/AS_Crystal_logo.png" alt="AS Crystal" className="brand-logo-img" />
         </Link>
 
         <nav className="desktop-nav">
           <ul className="nav-list">
             {navLinks.map((link) => (
-              <li key={link.name} className={`nav-item ${link.dropdown ? 'has-dropdown' : ''}`}>
-                <Link to={link.path} className={`nav-link ${location.pathname === link.path ? 'active' : ''}`}>
-                  {link.name}
-                </Link>
-                {link.dropdown && (
+              <li key={link.name} className={`nav-item ${Array.isArray(link.dropdown) && link.dropdown.length > 0 ? 'has-dropdown' : ''}`}>
+                {renderMenuLink(link, `nav-link ${location.pathname === link.path ? 'active' : ''}`)}
+                {Array.isArray(link.dropdown) && link.dropdown.length > 0 && (
                   <ul className="mega-menu">
                     {link.dropdown.map(item => (
-                      <li key={item}>
-                        <Link to={`/shop?category=${item}`}>{item}</Link>
+                      <li key={item.label}>
+                        {renderMenuLink(item, '', undefined)}
                       </li>
                     ))}
                   </ul>
@@ -64,15 +142,41 @@ const Header = () => {
         </nav>
 
         <div className="header-actions">
-          <button className="icon-btn"><Search size={18} strokeWidth={1.5} /></button>
+          <button
+            className={`icon-btn ${isSearchOpen ? 'active' : ''}`}
+            onClick={() => setIsSearchOpen(prev => !prev)}
+            aria-label="Toggle search"
+          >
+            <Search size={18} strokeWidth={1.5} />
+          </button>
           <Link to="/cart" className="icon-btn cart-btn">
             <ShoppingCart size={18} strokeWidth={1.5} />
             {cartCount > 0 && <span className="cart-count">{cartCount}</span>}
           </Link>
+          <Link to="/orders" className="icon-btn" aria-label="My Orders" title="My Orders">
+            <User size={18} strokeWidth={1.5} />
+          </Link>
+          <a href="/admin" className="icon-btn" aria-label="Admin Dashboard" title="Admin Dashboard">
+            <Settings size={18} strokeWidth={1.5} />
+          </a>
           <button className="mobile-toggle" onClick={() => setIsMenuOpen(!isMenuOpen)}>
             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
+      </div>
+
+      <div className={`search-panel ${isSearchOpen ? 'open' : ''}`}>
+        <form className="search-form" onSubmit={handleSearchSubmit}>
+          <Search size={16} strokeWidth={1.8} />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search crystals, jewelry, remedies..."
+            aria-label="Search products"
+          />
+          <button type="submit">Search</button>
+        </form>
       </div>
 
       {/* Mobile Nav */}
@@ -80,9 +184,24 @@ const Header = () => {
         <ul className="mobile-nav-list">
           {navLinks.map((link) => (
             <li key={link.name}>
-              <Link to={link.path} onClick={() => setIsMenuOpen(false)}>{link.name}</Link>
+              {renderMenuLink(link, '', () => setIsMenuOpen(false))}
+              {Array.isArray(link.dropdown) && link.dropdown.length > 0 && (
+                <ul className="mobile-submenu-list">
+                  {link.dropdown.map(item => (
+                    <li key={item.label}>
+                      {renderMenuLink(item, '', () => setIsMenuOpen(false))}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </li>
           ))}
+          <li>
+            <Link to="/orders" onClick={() => setIsMenuOpen(false)}>MY ORDERS</Link>
+          </li>
+          <li>
+            <a href="/admin">ADMIN DASHBOARD</a>
+          </li>
         </ul>
       </nav>
 
@@ -100,6 +219,53 @@ const Header = () => {
                     background: rgba(255, 255, 255, 0.98);
                     backdrop-filter: blur(15px);
                     box-shadow: 0 5px 20px rgba(0,0,0,0.03);
+                }
+                .search-panel {
+                    max-height: 0;
+                    overflow: hidden;
+                    background: rgba(255, 255, 255, 0.98);
+                    border-top: 1px solid rgba(0,0,0,0.06);
+                    transition: max-height 0.25s ease;
+                }
+                .search-panel.open {
+                    max-height: 90px;
+                }
+                .search-form {
+                    max-width: 1100px;
+                    margin: 0 auto;
+                    padding: 16px 24px;
+                    display: grid;
+                    grid-template-columns: auto 1fr auto;
+                    gap: 12px;
+                    align-items: center;
+                    color: var(--text-light);
+                }
+                .search-form input {
+                    border: 1px solid #E7DFD7;
+                    border-radius: 24px;
+                    padding: 10px 14px;
+                    font-size: 0.9rem;
+                    color: var(--primary);
+                    background: white;
+                }
+                .search-form input:focus {
+                    outline: none;
+                    border-color: var(--secondary);
+                }
+                .search-form button {
+                    border: none;
+                    border-radius: 20px;
+                    background: var(--primary);
+                    color: white;
+                    padding: 10px 16px;
+                    font-size: 0.72rem;
+                    letter-spacing: 1px;
+                    text-transform: uppercase;
+                    cursor: pointer;
+                    transition: var(--transition);
+                }
+                .search-form button:hover {
+                    background: var(--bg-dark);
                 }
                 .top-bar {
                     background: var(--bg-dark);
@@ -121,6 +287,7 @@ const Header = () => {
                     flex-direction: row !important;
                     align-items: center;
                     justify-content: space-between;
+                    gap: 20px;
                     padding: 30px 0;
                     transition: var(--transition);
                 }
@@ -129,41 +296,32 @@ const Header = () => {
                 .logo-container {
                     text-decoration: none;
                     flex-shrink: 0;
+                    display: flex;
+                    align-items: center;
+                }
+                .brand-logo-img {
+                    width: clamp(180px, 16vw, 250px);
+                    height: 56px;
+                    object-fit: contain;
+                    object-position: left center;
                     display: block;
                 }
-                .logo-text {
-                    display: flex;
-                    flex-direction: column;
-                    align-items: flex-start;
-                }
-                .brand-name {
-                    font-family: var(--font-serif);
-                    font-size: 1.8rem;
-                    color: var(--primary);
-                    font-weight: 600;
-                    letter-spacing: 2px;
-                    line-height: 1;
-                }
-                .brand-tagline {
-                    font-size: 0.55rem;
-                    text-transform: uppercase;
-                    letter-spacing: 3px;
-                    color: var(--secondary);
-                    margin-top: 4px;
-                    font-weight: 600;
-                }
+                .header-scrolled .brand-logo-img { height: 48px; }
                 
                 .desktop-nav {
                     flex-grow: 1;
                     display: flex;
                     justify-content: center;
+                    min-width: 0;
                 }
                 
                 .nav-list {
                     display: flex;
-                    gap: 30px;
+                    gap: clamp(16px, 1.6vw, 30px);
                     list-style: none;
                     margin: 0 auto;
+                    align-items: center;
+                    flex-wrap: nowrap;
                 }
                 .nav-item {
                     position: relative;
@@ -181,6 +339,7 @@ const Header = () => {
                     transition: var(--transition);
                     position: relative;
                     text-transform: uppercase;
+                    white-space: nowrap;
                 }
                 .nav-link::after {
                     content: '';
@@ -233,9 +392,10 @@ const Header = () => {
                 
                 .header-actions {
                     display: flex;
-                    gap: 20px;
+                    gap: 14px;
                     align-items: center;
                     flex-shrink: 0;
+                    white-space: nowrap;
                 }
                 .icon-btn {
                     background: none;
@@ -247,6 +407,7 @@ const Header = () => {
                     display: flex;
                     align-items: center;
                 }
+                .icon-btn.active { color: var(--secondary); }
                 .icon-btn:hover { color: var(--secondary); transform: translateY(-2px); }
                 .cart-count {
                     position: absolute;
@@ -266,10 +427,46 @@ const Header = () => {
                 
                 .mobile-toggle { display: none; }
                 .mobile-nav { display: none; }
+
+                @media (max-width: 1360px) {
+                    .main-header { padding: 22px 0; }
+                    .brand-logo-img {
+                        width: clamp(160px, 14vw, 210px);
+                        height: 50px;
+                    }
+                    .nav-link {
+                        font-size: 0.7rem;
+                        letter-spacing: 1.2px;
+                    }
+                    .header-actions { gap: 12px; }
+                }
+
+                @media (max-width: 1180px) {
+                    .brand-logo-img {
+                        width: clamp(150px, 13vw, 185px);
+                        height: 46px;
+                    }
+                    .nav-link {
+                        font-size: 0.66rem;
+                        letter-spacing: 1px;
+                    }
+                    .nav-list { gap: 12px; }
+                }
                 
                 @media (max-width: 1024px) {
                     .desktop-nav { display: none; }
                     .mobile-toggle { display: block; }
+                    .brand-logo-img {
+                        width: clamp(145px, 34vw, 195px);
+                        height: 44px;
+                    }
+                    .header-scrolled .brand-logo-img { height: 40px; }
+                    .search-form {
+                        padding: 12px 20px;
+                        grid-template-columns: 1fr auto;
+                    }
+                    .search-form svg { display: none; }
+                    .search-panel.open { max-height: 120px; }
                     .mobile-nav {
                         display: block;
                         position: fixed;
@@ -291,6 +488,20 @@ const Header = () => {
                         color: var(--text-main);
                         font-family: var(--font-serif);
                         font-size: 2rem;
+                    }
+                    .mobile-submenu-list {
+                        list-style: none;
+                        margin-top: 10px;
+                        margin-left: 10px;
+                    }
+                    .mobile-submenu-list li {
+                        margin-bottom: 10px;
+                    }
+                    .mobile-submenu-list a {
+                        font-size: 1rem;
+                        font-family: var(--font-sans);
+                        color: var(--text-light);
+                        letter-spacing: 1px;
                     }
                 }
             `}</style>

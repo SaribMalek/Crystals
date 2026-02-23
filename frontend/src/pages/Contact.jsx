@@ -24,7 +24,7 @@ const Contact = () => {
                                     <div className="method-icon"><Mail size={20} strokeWidth={1} /></div>
                                     <div className="method-text">
                                         <h3>Electronic Mail</h3>
-                                        <p>hello@ascrystals.com</p>
+                                        <p>ascrystal0204@gmail.com</p>
                                     </div>
                                 </div>
                                 <div className="contact-method-item">
@@ -66,7 +66,7 @@ const Contact = () => {
                                 </div>
                                 <div className="form-group-boutique full">
                                     <label>Email Address</label>
-                                    <input type="email" placeholder="julian@ascrystals.com" required />
+                                    <input type="email" placeholder="julian@reikicrystals.com" required />
                                 </div>
                                 <div className="form-group-boutique full">
                                     <label>The Nature of Your Inquiry</label>
@@ -90,9 +90,13 @@ const Contact = () => {
                 </div>
             </section>
 
-            <div className="boutique-map-panel">
-                <div className="map-placeholder-luxury">
-                    <p>Our Studio resides in Crystal Valley, CA</p>
+            <div className="boutique-studio-image">
+                <img src="https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=2070&auto=format&fit=crop" alt="Our Sacred Studio" />
+                <div className="studio-overlay">
+                    <div className="studio-label">
+                        <span className="hero-eyebrow white">Our Studio</span>
+                        <p>Crystal Valley, CA — Open Mon–Sat, 10am–6pm</p>
+                    </div>
                 </div>
             </div>
 
@@ -131,6 +135,10 @@ const Contact = () => {
                 .btn-luxury-submit:hover { background: var(--bg-dark); transform: translateY(-3px); }
                 .btn-luxury-submit.full-width { width: 100%; }
 
+                .boutique-studio-image { position: relative; height: 450px; overflow: hidden; border-top: 1px solid #F0EAE5; }
+                .boutique-studio-image img { width: 100%; height: 100%; object-fit: cover; filter: brightness(0.6); }
+                .studio-overlay { position: absolute; inset: 0; display: flex; align-items: flex-end; padding: 60px; }
+                .studio-label p { color: rgba(255,255,255,0.85); font-size: 1rem; margin-top: 8px; font-weight: 300; }
                 .boutique-map-panel { background: var(--bg-creme); height: 400px; border-top: 1px solid #F0EAE5; display: flex; align-items: center; justify-content: center; }
                 .map-placeholder-luxury { color: #BDC3C7; font-family: var(--font-serif); font-style: italic; font-size: 1.4rem; }
 

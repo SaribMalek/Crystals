@@ -2,15 +2,17 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import { ShoppingCart, Eye, Star } from 'lucide-react'
 import { useCart } from '../context/CartContext'
+import { resolveProductImage } from '../utils/productImage'
 
 const ProductCard = ({ product }) => {
   const { addToCart } = useCart();
+  const productImage = resolveProductImage(product)
 
   return (
     <div className="luxury-product-card">
       <div className="product-visual">
         <img
-          src={product.image && product.image !== 'default.jpg' ? product.image : 'https://via.placeholder.com/400x500/FDFBF9/2C3E50?text=' + encodeURIComponent(product.name)}
+          src={productImage}
           alt={product.name}
           className="product-img-main"
         />
