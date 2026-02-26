@@ -5,14 +5,14 @@ namespace App\Controller\Admin;
 use App\Entity\ProductReview;
 use App\Repository\ProductReviewRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
 class ReviewModerationController extends AbstractController
 {
-    #[Route('/admin/reviews/{id}/approve', name: 'admin_review_approve', methods: ['GET'])]
+    #[AdminRoute(path: '/reviews/{id}/approve', name: 'review_approve', options: ['methods' => ['GET']])]
     public function approve(ProductReview $review, EntityManagerInterface $entityManager): RedirectResponse
     {
         $this->moderate($review, ProductReview::STATUS_APPROVED, false, $entityManager);
@@ -24,7 +24,7 @@ class ReviewModerationController extends AbstractController
         ]);
     }
 
-    #[Route('/admin/reviews/{id}/reject', name: 'admin_review_reject', methods: ['GET'])]
+    #[AdminRoute(path: '/reviews/{id}/reject', name: 'review_reject', options: ['methods' => ['GET']])]
     public function reject(ProductReview $review, EntityManagerInterface $entityManager): RedirectResponse
     {
         $this->moderate($review, ProductReview::STATUS_REJECTED, false, $entityManager);
@@ -36,7 +36,7 @@ class ReviewModerationController extends AbstractController
         ]);
     }
 
-    #[Route('/admin/reviews/{id}/spam', name: 'admin_review_mark_spam', methods: ['GET'])]
+    #[AdminRoute(path: '/reviews/{id}/spam', name: 'review_mark_spam', options: ['methods' => ['GET']])]
     public function markSpam(ProductReview $review, EntityManagerInterface $entityManager): RedirectResponse
     {
         $this->moderate($review, ProductReview::STATUS_SPAM, true, $entityManager);
@@ -48,7 +48,7 @@ class ReviewModerationController extends AbstractController
         ]);
     }
 
-    #[Route('/admin/reviews/analytics', name: 'admin_review_analytics', methods: ['GET'])]
+    #[AdminRoute(path: '/reviews/analytics', name: 'review_analytics', options: ['methods' => ['GET']])]
     public function analytics(ProductReviewRepository $reviewRepository): Response
     {
         $allReviews = $reviewRepository->findAll();

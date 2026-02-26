@@ -299,35 +299,81 @@ const Shop = () => {
                     grid-template-columns: 220px 1fr;
                     gap: 60px;
                 }
+                .shop-sidebar {
+                    position: sticky;
+                    top: 190px;
+                    align-self: start;
+                }
+                .sidebar-section {
+                    background: linear-gradient(180deg, #ffffff 0%, #fbf8f4 100%);
+                    border: 1px solid #ece2d7;
+                    border-radius: 16px;
+                    padding: 20px 16px;
+                    box-shadow: 0 14px 28px rgba(38, 52, 67, 0.08);
+                }
                 
                 .sidebar-title {
                     font-family: var(--font-serif);
-                    font-size: 1.2rem;
-                    margin-bottom: 25px;
+                    font-size: 1.1rem;
+                    margin-bottom: 14px;
                     text-transform: uppercase;
-                    letter-spacing: 2px;
+                    letter-spacing: 1.5px;
                     color: var(--primary);
+                    border-bottom: 1px solid #eadfce;
+                    padding-bottom: 10px;
                 }
                 .category-list-luxury {
                     list-style: none;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 9px;
                 }
                 .cat-btn-luxury {
-                    background: none;
-                    border: none;
+                    background: #fff;
+                    border: 1px solid #ede4db;
                     display: block;
                     width: 100%;
                     text-align: left;
-                    padding: 12px 0;
-                    font-size: 0.8rem;
-                    color: var(--text-light);
+                    padding: 12px 14px;
+                    font-size: 0.86rem;
+                    color: #586674;
                     cursor: pointer;
-                    transition: var(--transition);
+                    transition: all 0.28s ease;
                     text-transform: uppercase;
-                    letter-spacing: 1px;
+                    letter-spacing: 1.1px;
+                    border-radius: 10px;
+                    font-weight: 600;
+                    position: relative;
                 }
-                .cat-btn-luxury:hover, .cat-btn-luxury.active {
+                .cat-btn-luxury::before {
+                    content: '';
+                    position: absolute;
+                    left: 0;
+                    top: 10px;
+                    bottom: 10px;
+                    width: 0;
+                    border-radius: 0 8px 8px 0;
+                    background: linear-gradient(180deg, #d4af37 0%, #b18b2f 100%);
+                    transition: width 0.22s ease;
+                }
+                .cat-btn-luxury:hover {
+                    color: #304355;
+                    transform: translateX(2px);
+                    border-color: #ddc08b;
+                    background: #fffdf8;
+                    box-shadow: 0 8px 16px rgba(29, 44, 62, 0.09);
+                }
+                .cat-btn-luxury:hover::before {
+                    width: 4px;
+                }
+                .cat-btn-luxury.active {
                     color: var(--secondary);
-                    padding-left: 10px;
+                    border-color: #d6b06b;
+                    background: linear-gradient(90deg, rgba(212, 175, 55, 0.18) 0%, rgba(212, 175, 55, 0.03) 80%);
+                    box-shadow: 0 10px 18px rgba(28, 42, 58, 0.1);
+                }
+                .cat-btn-luxury.active::before {
+                    width: 5px;
                 }
                 
                 .shop-toolbar {

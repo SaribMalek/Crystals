@@ -1,0 +1,108 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Reports & Analytics{% endblock %}
+
+{% block main %}
+    <section class="admin-recent-panel">
+        <div class="panel-head">
+            <h4>Reports &amp; Analytics</h4>
+            <div class="panel-link-group">
+                <a href="{{ path('admin_reports_analytics_export', {format: 'csv'}) }}" class="panel-link">Export CSV</a>
+                <a href="{{ path('admin_reports_analytics_export', {format: 'excel'}) }}" class="panel-link">Export Excel</a>
+            </div>
+        </div>
+        <p class="empty-state">Central reporting dashboard for sales, products, customers, conversion, refunds, and tax.</p>
+    </section>
+
+    <section class="admin-recent-panel">
+        <div class="panel-head">
+            <h4>Sales Report</h4>
+        </div>
+        <div class="inventory-control-grid">
+            <div class="inventory-control-item"><span class="inventory-label">Total Orders</span><span class="inventory-value">{{ analytics.sales.total_orders }}</span></div>
+            <div class="inventory-control-item"><span class="inventory-label">Completed Orders</span><span class="inventory-value">{{ analytics.sales.completed_orders }}</span></div>
+            <div class="inventory-control-item"><span class="inventory-label">Total Revenue</span><span class="inventory-value">${{ analytics.sales.total_revenue|number_format(2, '.', ',') }}</span></div>
+            <div class="inventory-control-item"><span class="inventory-label">Revenue (This Month)</span><span class="inventory-value">${{ analytics.sales.month_revenue|number_format(2, '.', ',') }}</span></div>
+        </div>
+    </section>
+
+    <section class="admin-recent-panel">
+        <div class="panel-head">
+            <h4>Product Performance</h4>
+        </div>
+        {% if analytics.product_performance is empty %}
+            <p class="empty-state">No completed sales data available yet.</p>
+        {% else %}
+            <div class="table-responsive">
+                <table class="table">
+                    <thead><tr><th>Product</th><th>Units Sold</th><th>Gross Sales</th></tr></thead>
+                    <tbody>
+                    {% for row in analytics.product_performance %}
+                        <tr>
+                            <td>{{ row.product_name }}</td>
+                            <td>{{ row.units_sold }}</td>
+                            <td>${{ row.gross_amount|number_format(2, '.', ',') }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </section>
+
+    <section class="admin-recent-panel">
+        <div class="panel-head">
+            <h4>Customer Growth</h4>
+        </div>
+        <div class="inventory-control-grid">
+            <div class="inventory-control-item"><span class="inventory-label">Total Customers</span><span class="inventory-value">{{ analytics.customer_growth.total_customers }}</span></div>
+            <div class="inventory-control-item"><span class="inventory-label">New This Month</span><span class="inventory-value">{{ analytics.customer_growth.new_this_month }}</span></div>
+        </div>
+        <div class="table-responsive" style="margin-top: 1rem;">
+            <table class="table">
+                <thead><tr><th>Month</th><th>New Customers</th></tr></thead>
+                <tbody>
+                {% for row in analytics.customer_growth.monthly %}
+                    <tr>
+                        <td>{{ row.month }}</td>
+                        <td>{{ row.new_customers }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="admin-recent-panel">
+        <div class="panel-head">
+            <h4>Conversion Rate</h4>
+        </div>
+        <div class="inventory-control-grid">
+            <div class="inventory-control-item"><span class="inventory-label">Overall</span><span class="inventory-value">{{ analytics.conversion_rate.overall|number_format(2, '.', ',') }}%</span></div>
+            <div class="inventory-control-item"><span class="inventory-label">This Month</span><span class="inventory-value">{{ analytics.conversion_rate.this_month|number_format(2, '.', ',') }}%</span></div>
+            <div class="inventory-control-item"><span class="inventory-label">Definition</span><span class="inventory-value">{{ analytics.conversion_rate.definition }}</span></div>
+        </div>
+    </section>
+
+    <section class="admin-recent-panel">
+        <div class="panel-head">
+            <h4>Refund Report</h4>
+        </div>
+        <div class="inventory-control-grid">
+            <div class="inventory-control-item"><span class="inventory-label">Refunded Orders</span><span class="inventory-value">{{ analytics.refunds.refund_orders }}</span></div>
+            <div class="inventory-control-item"><span class="inventory-label">Refund Amount</span><span class="inventory-value">${{ analytics.refunds.refund_total|number_format(2, '.', ',') }}</span></div>
+        </div>
+    </section>
+
+    <section class="admin-recent-panel">
+        <div class="panel-head">
+            <h4>Tax Report</h4>
+            <a href="{{ path('admin_tax_reports') }}" class="panel-link">Open Detailed Tax Report</a>
+        </div>
+        <div class="inventory-control-grid">
+            <div class="inventory-control-item"><span class="inventory-label">Taxable Orders</span><span class="inventory-value">{{ analytics.tax.taxable_orders }}</span></div>
+            <div class="inventory-control-item"><span class="inventory-label">Total Tax</span><span class="inventory-value">${{ analytics.tax.total_tax|number_format(2, '.', ',') }}</span></div>
+        </div>
+    </section>
+{% endblock %}
+

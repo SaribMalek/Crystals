@@ -141,6 +141,36 @@
                 <a href="{{ quick_links.coupons }}" class="admin-action-btn">Coupon Codes</a>
                 <a href="{{ quick_links.tax_rules }}" class="admin-action-btn ghost">Tax Rules</a>
                 <a href="{{ quick_links.tax_reports }}" class="admin-action-btn ghost">Tax Reports</a>
+                {% if is_granted('ROLE_MANAGER') %}
+                    <a href="{{ quick_links.reports_analytics }}" class="admin-action-btn">Reports &amp; Analytics</a>
+                    <a href="{{ quick_links.login_history }}" class="admin-action-btn ghost">Login History</a>
+                    <a href="{{ quick_links.activity_logs }}" class="admin-action-btn ghost">Activity Logs</a>
+                {% endif %}
+                {% if is_granted('ROLE_SUPER_ADMIN') %}
+                    <a href="{{ quick_links.permission_control }}" class="admin-action-btn">Permission Control</a>
+                {% endif %}
+                {% if is_granted('ROLE_MANAGER') %}
+                    <a href="{{ quick_links.site_settings }}" class="admin-action-btn">Site Settings</a>
+                    <a href="{{ quick_links.security_system }}" class="admin-action-btn">Security &amp; System</a>
+                    <a href="{{ quick_links.webhook_logs }}" class="admin-action-btn ghost">Webhook Logs</a>
+                    <a href="{{ quick_links.error_logs }}" class="admin-action-btn ghost">Error Logs</a>
+                {% endif %}
+                {% if is_granted('ROLE_SUPPORT') %}
+                    <a href="{{ quick_links.change_password }}" class="admin-action-btn ghost">Change Password</a>
+                {% endif %}
+                {% if is_granted('ROLE_SUPER_ADMIN') %}
+                    <a href="{{ quick_links.api_keys }}" class="admin-action-btn">API Keys</a>
+                    <a href="{{ quick_links.backups_restore }}" class="admin-action-btn ghost">Backup &amp; Restore</a>
+                {% endif %}
+                {% if is_granted('ROLE_MANAGER') %}
+                    <a href="{{ quick_links.advanced_features }}" class="admin-action-btn">Advanced Features</a>
+                    <a href="{{ quick_links.vendors }}" class="admin-action-btn ghost">Vendors</a>
+                    <a href="{{ quick_links.languages }}" class="admin-action-btn ghost">Languages</a>
+                    <a href="{{ quick_links.currencies }}" class="admin-action-btn ghost">Currencies</a>
+                    <a href="{{ quick_links.license_keys }}" class="admin-action-btn ghost">License Keys</a>
+                    <a href="{{ quick_links.affiliate_partners }}" class="admin-action-btn ghost">Affiliate Partners</a>
+                    <a href="{{ quick_links.pos_settings }}" class="admin-action-btn ghost">POS Integration</a>
+                {% endif %}
                 <a href="{{ quick_links.bulk_stock_update }}" class="admin-action-btn">Bulk Stock Update</a>
                 <a href="{{ quick_links.stock_history }}" class="admin-action-btn ghost">Stock History</a>
                 <a href="{{ quick_links.new_user }}" class="admin-action-btn">Add User</a>
@@ -254,9 +284,42 @@
                 <h4>Revenue (Last 6 Months)</h4>
                 <canvas id="revenueChart" height="120"></canvas>
             </article>
+            <article class="admin-chart-panel">
+                <h4>Order Status Breakdown</h4>
+                <canvas id="statusChart" height="120"></canvas>
+            </article>
             <article class="admin-chart-panel full">
                 <h4>Products by Category</h4>
                 <canvas id="categoryChart" height="110"></canvas>
+            </article>
+            <article class="admin-chart-panel">
+                <h4>Average Order Value</h4>
+                <canvas id="avgOrderValueChart" height="120"></canvas>
+            </article>
+            <article class="admin-chart-panel">
+                <h4>Cumulative Revenue</h4>
+                <canvas id="cumulativeRevenueChart" height="120"></canvas>
+            </article>
+            <article class="admin-chart-panel">
+                <h4>Sales Period Comparison</h4>
+                <canvas id="salesPeriodChart" height="120"></canvas>
+            </article>
+            <article class="admin-chart-panel">
+                <h4>Inventory Mix</h4>
+                <canvas id="inventoryMixChart" height="120"></canvas>
+            </article>
+            <article class="admin-chart-panel">
+                <h4>Monthly Unique Customers</h4>
+                <canvas id="customerGrowthChart" height="120"></canvas>
+            </article>
+            <article class="admin-chart-panel">
+                <h4>Order Status Share</h4>
+                <canvas id="statusShareChart" height="120"></canvas>
+            </article>
+            <article class="admin-chart-panel full">
+                <h4>Top Products by Units Sold</h4>
+                <canvas id="topProductsChart" height="120"></canvas>
+                <p id="topProductsChartEmpty" class="empty-state" style="display:none; margin-top: 10px;">No top-selling product data available yet.</p>
             </article>
         </section>
 
@@ -418,8 +481,20 @@
             const months = {{ charts.months|json_encode|raw }};
             const monthlyOrderCounts = {{ charts.monthly_order_counts|json_encode|raw }};
             const monthlyRevenue = {{ charts.monthly_revenue|json_encode|raw }};
+            const monthlyAverageOrderValue = {{ charts.monthly_average_order_value|json_encode|raw }};
+            const monthlyCumulativeRevenue = {{ charts.monthly_cumulative_revenue|json_encode|raw }};
+            const monthlyUniqueCustomers = {{ charts.monthly_unique_customers|json_encode|raw }};
             const categoryLabels = {{ charts.category_labels|json_encode|raw }};
             const categoryProductCounts = {{ charts.category_product_counts|json_encode|raw }};
+            const statusLabels = {{ charts.status_labels|json_encode|raw }};
+            const statusCounts = {{ charts.status_counts|json_encode|raw }};
+            const salesPeriodLabels = {{ charts.sales_period_labels|json_encode|raw }};
+            const salesPeriodValues = {{ charts.sales_period_values|json_encode|raw }};
+            const inventoryLabels = {{ charts.inventory_labels|json_encode|raw }};
+            const inventoryValues = {{ charts.inventory_values|json_encode|raw }};
+            const topProductLabels = {{ charts.top_product_labels|json_encode|raw }};
+            const topProductUnits = {{ charts.top_product_units|json_encode|raw }};
+            const topProductGross = {{ charts.top_product_gross|json_encode|raw }};
 
             const axisColor = '#738195';
             const gridColor = 'rgba(115, 129, 149, 0.18)';
@@ -538,6 +613,275 @@
                         }
                     }
                 });
+            }
+
+            const statusCtx = document.getElementById('statusChart');
+            if (statusCtx) {
+                new Chart(statusCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: statusLabels,
+                        datasets: [{
+                            label: 'Orders',
+                            data: statusCounts,
+                            backgroundColor: [
+                                '#86a9c8',
+                                '#1f3b61',
+                                '#4f7cac',
+                                '#2f5d8a',
+                                '#1e7a3f',
+                                '#c45757',
+                                '#9b6cb8'
+                            ],
+                            borderColor: '#ffffff',
+                            borderWidth: 1,
+                            borderRadius: 6
+                        }]
+                    },
+                    options: {
+                        ...baseOptions,
+                        plugins: {
+                            legend: { display: false }
+                        }
+                    }
+                });
+            }
+
+            const avgOrderValueCtx = document.getElementById('avgOrderValueChart');
+            if (avgOrderValueCtx) {
+                new Chart(avgOrderValueCtx, {
+                    type: 'line',
+                    data: {
+                        labels: months,
+                        datasets: [{
+                            label: 'Avg Order Value (USD)',
+                            data: monthlyAverageOrderValue,
+                            fill: true,
+                            backgroundColor: 'rgba(79, 124, 172, 0.20)',
+                            borderColor: '#4f7cac',
+                            borderWidth: 2,
+                            tension: 0.35,
+                            pointRadius: 3
+                        }]
+                    },
+                    options: {
+                        ...baseOptions,
+                        scales: {
+                            ...baseOptions.scales,
+                            y: {
+                                ...baseOptions.scales.y,
+                                ticks: {
+                                    color: axisColor,
+                                    callback: function(value) {
+                                        return '$' + value;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            const cumulativeRevenueCtx = document.getElementById('cumulativeRevenueChart');
+            if (cumulativeRevenueCtx) {
+                new Chart(cumulativeRevenueCtx, {
+                    type: 'line',
+                    data: {
+                        labels: months,
+                        datasets: [{
+                            label: 'Cumulative Revenue (USD)',
+                            data: monthlyCumulativeRevenue,
+                            fill: true,
+                            backgroundColor: 'rgba(31, 59, 97, 0.16)',
+                            borderColor: '#1f3b61',
+                            borderWidth: 2,
+                            tension: 0.2,
+                            pointRadius: 3
+                        }]
+                    },
+                    options: {
+                        ...baseOptions,
+                        scales: {
+                            ...baseOptions.scales,
+                            y: {
+                                ...baseOptions.scales.y,
+                                ticks: {
+                                    color: axisColor,
+                                    callback: function(value) {
+                                        return '$' + value;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            const salesPeriodCtx = document.getElementById('salesPeriodChart');
+            if (salesPeriodCtx) {
+                new Chart(salesPeriodCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: salesPeriodLabels,
+                        datasets: [{
+                            label: 'Sales (USD)',
+                            data: salesPeriodValues,
+                            backgroundColor: ['#86a9c8', '#4f7cac', '#1f3b61', '#caa45d'],
+                            borderRadius: 8
+                        }]
+                    },
+                    options: {
+                        ...baseOptions,
+                        plugins: { legend: { display: false } },
+                        scales: {
+                            ...baseOptions.scales,
+                            y: {
+                                ...baseOptions.scales.y,
+                                ticks: {
+                                    color: axisColor,
+                                    callback: function(value) {
+                                        return '$' + value;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            const inventoryMixCtx = document.getElementById('inventoryMixChart');
+            if (inventoryMixCtx) {
+                new Chart(inventoryMixCtx, {
+                    type: 'doughnut',
+                    data: {
+                        labels: inventoryLabels,
+                        datasets: [{
+                            data: inventoryValues,
+                            backgroundColor: ['#2e7d32', '#caa45d', '#c45757'],
+                            borderColor: '#ffffff',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: { color: '#243142', boxWidth: 12 }
+                            }
+                        }
+                    }
+                });
+            }
+
+            const customerGrowthCtx = document.getElementById('customerGrowthChart');
+            if (customerGrowthCtx) {
+                new Chart(customerGrowthCtx, {
+                    type: 'line',
+                    data: {
+                        labels: months,
+                        datasets: [{
+                            label: 'Unique Customers',
+                            data: monthlyUniqueCustomers,
+                            fill: true,
+                            backgroundColor: 'rgba(30, 122, 63, 0.16)',
+                            borderColor: '#1e7a3f',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            pointRadius: 3
+                        }]
+                    },
+                    options: baseOptions
+                });
+            }
+
+            const statusShareCtx = document.getElementById('statusShareChart');
+            if (statusShareCtx) {
+                new Chart(statusShareCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: statusLabels,
+                        datasets: [{
+                            data: statusCounts,
+                            backgroundColor: ['#86a9c8', '#1f3b61', '#4f7cac', '#2f5d8a', '#1e7a3f', '#c45757', '#9b6cb8'],
+                            borderColor: '#ffffff',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: { color: '#243142', boxWidth: 12 }
+                            }
+                        }
+                    }
+                });
+            }
+
+            const topProductsCtx = document.getElementById('topProductsChart');
+            const topProductsEmpty = document.getElementById('topProductsChartEmpty');
+            if (topProductsCtx && topProductLabels.length > 0) {
+                if (topProductsEmpty) {
+                    topProductsEmpty.style.display = 'none';
+                }
+                new Chart(topProductsCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: topProductLabels,
+                        datasets: [
+                            {
+                                label: 'Units Sold',
+                                data: topProductUnits,
+                                backgroundColor: 'rgba(31, 59, 97, 0.78)',
+                                borderRadius: 6,
+                                yAxisID: 'y'
+                            },
+                            {
+                                label: 'Gross Sales (USD)',
+                                data: topProductGross,
+                                backgroundColor: 'rgba(202, 164, 93, 0.62)',
+                                borderRadius: 6,
+                                yAxisID: 'y1'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        interaction: { mode: 'index', intersect: false },
+                        plugins: {
+                            legend: { labels: { color: '#243142', boxWidth: 12 } }
+                        },
+                        scales: {
+                            x: { ticks: { color: axisColor }, grid: { color: gridColor } },
+                            y: {
+                                beginAtZero: true,
+                                ticks: { color: axisColor },
+                                grid: { color: gridColor }
+                            },
+                            y1: {
+                                beginAtZero: true,
+                                position: 'right',
+                                ticks: {
+                                    color: axisColor,
+                                    callback: function(value) {
+                                        return '$' + value;
+                                    }
+                                },
+                                grid: { drawOnChartArea: false }
+                            }
+                        }
+                    }
+                });
+            } else if (topProductsCtx) {
+                topProductsCtx.style.display = 'none';
+                if (topProductsEmpty) {
+                    topProductsEmpty.style.display = 'block';
+                }
             }
         })();
     </script>

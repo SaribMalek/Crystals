@@ -1,7 +1,39 @@
-import React from 'react';
-import { Mail, Phone, MapPin, Send, Instagram, Facebook, Twitter } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { Mail, Phone, MapPin, Send, Instagram, Facebook, Twitter, ChevronDown } from 'lucide-react';
 
 const Contact = () => {
+    const inquiryOptions = [
+        'General Manifestation',
+        'Order Sanctuary Support',
+        'Wholesale Partnerships',
+        'Bespoke Selection',
+    ];
+    const [selectedInquiry, setSelectedInquiry] = useState(inquiryOptions[0]);
+    const [isInquiryOpen, setIsInquiryOpen] = useState(false);
+    const inquiryRef = useRef(null);
+
+    useEffect(() => {
+        const closeOnOutside = (event) => {
+            if (inquiryRef.current && !inquiryRef.current.contains(event.target)) {
+                setIsInquiryOpen(false);
+            }
+        };
+
+        const closeOnEscape = (event) => {
+            if (event.key === 'Escape') {
+                setIsInquiryOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', closeOnOutside);
+        document.addEventListener('keydown', closeOnEscape);
+
+        return () => {
+            document.removeEventListener('mousedown', closeOnOutside);
+            document.removeEventListener('keydown', closeOnEscape);
+        };
+    }, []);
+
     return (
         <div className="contact-page">
             <div className="boutique-contact-hero">
@@ -70,12 +102,37 @@ const Contact = () => {
                                 </div>
                                 <div className="form-group-boutique full">
                                     <label>The Nature of Your Inquiry</label>
-                                    <select className="boutique-select">
-                                        <option>General Manifestation</option>
-                                        <option>Order Sanctuary Support</option>
-                                        <option>Wholesale Partnerships</option>
-                                        <option>Bespoke Selection</option>
-                                    </select>
+                                    <div className="boutique-select-wrap" ref={inquiryRef}>
+                                        <input type="hidden" name="inquiry_type" value={selectedInquiry} />
+                                        <button
+                                            type="button"
+                                            className="boutique-select-trigger"
+                                            onClick={() => setIsInquiryOpen((prev) => !prev)}
+                                            aria-haspopup="listbox"
+                                            aria-expanded={isInquiryOpen}
+                                        >
+                                            <span>{selectedInquiry}</span>
+                                            <ChevronDown size={18} className={`select-chevron ${isInquiryOpen ? 'open' : ''}`} />
+                                        </button>
+                                        {isInquiryOpen && (
+                                            <ul className="boutique-select-menu" role="listbox">
+                                                {inquiryOptions.map((option) => (
+                                                    <li key={option}>
+                                                        <button
+                                                            type="button"
+                                                            className={`select-option ${selectedInquiry === option ? 'active' : ''}`}
+                                                            onClick={() => {
+                                                                setSelectedInquiry(option);
+                                                                setIsInquiryOpen(false);
+                                                            }}
+                                                        >
+                                                            {option}
+                                                        </button>
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        )}
+                                    </div>
                                 </div>
                                 <div className="form-group-boutique full">
                                     <label>Your Message to Us</label>
@@ -128,8 +185,73 @@ const Contact = () => {
                 .form-group-boutique { display: flex; flex-direction: column; gap: 10px; }
                 .form-group-boutique.full { grid-column: span 2; }
                 .form-group-boutique label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text-light); }
-                .form-group-boutique input, .boutique-select, .form-group-boutique textarea { border: none; border-bottom: 1px solid #F0EAE5; padding: 12px 0; font-size: 1rem; color: var(--primary); background: transparent; transition: var(--transition); }
-                .form-group-boutique input:focus, .boutique-select:focus, .form-group-boutique textarea:focus { outline: none; border-color: var(--secondary); }
+                .form-group-boutique input, .form-group-boutique textarea { border: none; border-bottom: 1px solid #F0EAE5; padding: 12px 0; font-size: 1rem; color: var(--primary); background: transparent; transition: var(--transition); }
+                .form-group-boutique input:focus, .form-group-boutique textarea:focus { outline: none; border-color: var(--secondary); }
+
+                .boutique-select-wrap {
+                    position: relative;
+                }
+                .boutique-select-trigger {
+                    width: 100%;
+                    border: 1px solid #E8DED3;
+                    border-radius: 12px;
+                    padding: 14px 16px;
+                    min-height: 58px;
+                    font-size: 1rem;
+                    color: var(--primary);
+                    background: linear-gradient(180deg, #ffffff 0%, #fbf8f4 100%);
+                    transition: border-color 0.25s ease, box-shadow 0.25s ease;
+                    cursor: pointer;
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    text-align: left;
+                }
+                .boutique-select-trigger:focus {
+                    outline: none;
+                    border-color: var(--secondary);
+                    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.18);
+                }
+                .select-chevron {
+                    color: #7B8894;
+                    transition: transform 0.22s ease;
+                }
+                .select-chevron.open {
+                    transform: rotate(180deg);
+                }
+                .boutique-select-menu {
+                    position: absolute;
+                    top: calc(100% + 8px);
+                    left: 0;
+                    right: 0;
+                    background: #fff;
+                    border: 1px solid #E6DBCE;
+                    border-radius: 12px;
+                    box-shadow: 0 14px 28px rgba(31, 49, 71, 0.12);
+                    z-index: 20;
+                    padding: 8px;
+                }
+                .select-option {
+                    width: 100%;
+                    border: none;
+                    background: transparent;
+                    text-align: left;
+                    padding: 11px 12px;
+                    border-radius: 8px;
+                    color: #2a3e54;
+                    font-size: 1rem;
+                    cursor: pointer;
+                    transition: background 0.2s ease, color 0.2s ease;
+                }
+                .select-option:hover {
+                    background: #f8f3e9;
+                    color: #213449;
+                }
+                .select-option.active {
+                    background: linear-gradient(90deg, rgba(212, 175, 55, 0.25), rgba(212, 175, 55, 0.08));
+                    color: #213449;
+                    font-weight: 600;
+                }
                 
                 .btn-luxury-submit { background: var(--primary); color: white; border: none; padding: 20px 40px; font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: var(--transition); }
                 .btn-luxury-submit:hover { background: var(--bg-dark); transform: translateY(-3px); }

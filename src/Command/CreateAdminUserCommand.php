@@ -32,7 +32,7 @@ class CreateAdminUserCommand extends Command
         $this
             ->addOption('email', null, InputOption::VALUE_REQUIRED, 'User email')
             ->addOption('password', null, InputOption::VALUE_REQUIRED, 'User password')
-            ->addOption('role', null, InputOption::VALUE_OPTIONAL, 'Primary role', 'ROLE_ADMIN');
+            ->addOption('role', null, InputOption::VALUE_OPTIONAL, 'Primary role (ROLE_SUPER_ADMIN, ROLE_MANAGER, ROLE_SUPPORT)', User::ROLE_MANAGER);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -67,8 +67,17 @@ class CreateAdminUserCommand extends Command
             return Command::INVALID;
         }
 
-        if ($role === '' || !str_starts_with($role, 'ROLE_')) {
-            $role = 'ROLE_ADMIN';
+        $allowedRoles = [
+            User::ROLE_SUPER_ADMIN,
+            User::ROLE_MANAGER,
+            User::ROLE_SUPPORT,
+            'ROLE_ADMIN', // legacy alias
+        ];
+        if ($role === '' || !in_array($role, $allowedRoles, true)) {
+            $role = User::ROLE_MANAGER;
+        }
+        if ($role === 'ROLE_ADMIN') {
+            $role = User::ROLE_SUPER_ADMIN;
         }
 
         $user = $this->userRepository->findOneBy(['email' => $email]);
@@ -80,7 +89,7 @@ class CreateAdminUserCommand extends Command
             $isNew = true;
         }
 
-        $user->setRoles(array_values(array_unique([$role, 'ROLE_ADMIN'])));
+        $user->setRoles([$role]);
         $user->setPassword($this->passwordHasher->hashPassword($user, $password));
         $user->eraseCredentials();
 

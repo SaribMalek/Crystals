@@ -12,6 +12,10 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\UniqueConstraint(name: 'uniq_users_email', columns: ['email'])]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
+    public const ROLE_SUPER_ADMIN = 'ROLE_SUPER_ADMIN';
+    public const ROLE_MANAGER = 'ROLE_MANAGER';
+    public const ROLE_SUPPORT = 'ROLE_SUPPORT';
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -32,6 +36,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $profile_image = null;
 
+    #[ORM\Column(options: ['default' => false])]
+    private bool $two_factor_enabled = false;
+
     #[ORM\Column(options: ['default' => 'CURRENT_TIMESTAMP'])]
     private ?\DateTimeImmutable $created_at = null;
 
@@ -40,7 +47,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function __construct()
     {
         $this->created_at = new \DateTimeImmutable();
-        $this->roles = ['ROLE_ADMIN'];
+        $this->roles = [self::ROLE_MANAGER];
     }
 
     public function __toString(): string
@@ -90,6 +97,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return implode(', ', $this->getRoles());
     }
 
+    public static function adminRoleChoices(): array
+    {
+        return [
+            'Super Admin' => self::ROLE_SUPER_ADMIN,
+            'Manager' => self::ROLE_MANAGER,
+            'Support' => self::ROLE_SUPPORT,
+        ];
+    }
+
     public function getPassword(): ?string
     {
         return $this->password;
@@ -134,6 +150,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         return (string) ($this->email ?? 'User');
+    }
+
+    public function isTwoFactorEnabled(): bool
+    {
+        return $this->two_factor_enabled;
+    }
+
+    public function setTwoFactorEnabled(bool $two_factor_enabled): static
+    {
+        $this->two_factor_enabled = $two_factor_enabled;
+
+        return $this;
     }
 
     public function eraseCredentials(): void

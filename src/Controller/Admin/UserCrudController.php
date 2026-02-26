@@ -8,10 +8,11 @@ use EasyCorp\Bundle\EasyAdminBundle\Config\Action;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Actions;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
-use EasyCorp\Bundle\EasyAdminBundle\Field\ArrayField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -37,14 +38,38 @@ class UserCrudController extends AbstractCrudController
         $rolesDisplay = TextField::new('rolesDisplay', 'Roles')
             ->onlyOnIndex()
             ->renderAsHtml()
-            ->formatValue(function (string $value): string {
-                $roles = array_filter(array_map('trim', explode(',', $value)));
+            ->formatValue(function (mixed $value): string {
+                $roles = array_filter(array_map('trim', explode(',', (string) $value)));
                 $badges = array_map(
                     static fn (string $role): string => sprintf('<span class="user-role-pill">%s</span>', htmlspecialchars($role, ENT_QUOTES)),
                     $roles
                 );
 
-                return implode('', $badges);
+                if ($badges === []) {
+                    return '<span class="text-muted">-</span>';
+                }
+
+                return sprintf('<div class="user-role-pill-wrap">%s</div>', implode('', $badges));
+            });
+
+        $profileImageIndex = TextField::new('profile_image', 'Profile Image')
+            ->onlyOnIndex()
+            ->renderAsHtml()
+            ->formatValue(function (mixed $value, ?User $user): string {
+                $raw = trim((string) ($value ?? ''));
+                if ($raw === '' || strtolower($raw) === 'null') {
+                    $initial = strtoupper(substr((string) ($user?->getDisplayName() ?: 'U'), 0, 1));
+
+                    return sprintf('<span class="user-profile-fallback" title="No image">%s</span>', htmlspecialchars($initial, ENT_QUOTES));
+                }
+
+                $src = '/'.ltrim($raw, '/');
+
+                return sprintf(
+                    '<img src="%s" alt="Profile image" class="user-profile-thumb" loading="lazy" onerror="this.outerHTML=\'<span class=&quot;user-profile-fallback&quot; title=&quot;Image unavailable&quot;>%s</span>\';">',
+                    htmlspecialchars($src, ENT_QUOTES),
+                    htmlspecialchars(strtoupper(substr((string) ($user?->getDisplayName() ?: 'U'), 0, 1)), ENT_QUOTES)
+                );
             });
 
         if ($pageName === Crud::PAGE_NEW) {
@@ -57,15 +82,22 @@ class UserCrudController extends AbstractCrudController
             IdField::new('id')->hideOnForm(),
             TextField::new('email'),
             TextField::new('full_name', 'Name')->setRequired(false),
+            $profileImageIndex,
             ImageField::new('profile_image', 'Profile Image')
                 ->setUploadDir('public/uploads/profiles')
                 ->setBasePath('uploads/profiles')
                 ->setUploadedFileNamePattern('admin-[timestamp]-[randomhash].[extension]')
-                ->setRequired(false),
+                ->setRequired(false)
+                ->onlyOnForms(),
             $rolesDisplay,
-            ArrayField::new('roles')
+            ChoiceField::new('roles', 'Role')
                 ->onlyOnForms()
-                ->setHelp('Example: ROLE_ADMIN, ROLE_EDITOR'),
+                ->allowMultipleChoices()
+                ->renderExpanded()
+                ->setChoices(User::adminRoleChoices())
+                ->setHelp('Select one primary role for admin access.'),
+            BooleanField::new('two_factor_enabled', '2FA Enabled')
+                ->setHelp('Recommended: enable this for admin accounts.'),
             $password,
             DateTimeField::new('created_at', 'Created')->hideOnForm(),
         ];
@@ -79,6 +111,7 @@ class UserCrudController extends AbstractCrudController
             ->setPageTitle(Crud::PAGE_INDEX, 'Users')
             ->setPageTitle(Crud::PAGE_NEW, 'Create Admin User')
             ->setPageTitle(Crud::PAGE_EDIT, 'Edit Admin User')
+            ->setEntityPermission('ROLE_SUPER_ADMIN')
             ->setDefaultSort(['id' => 'DESC'])
             ->setSearchFields(['id', 'email', 'roles'])
             ->setPaginatorPageSize(20);

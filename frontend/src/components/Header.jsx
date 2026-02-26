@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react'
-import { Search, ShoppingCart, User, Settings, Menu, X } from 'lucide-react'
+import React, { useState, useEffect, useRef } from 'react'
+import { Search, ShoppingCart, User, Settings, Menu, X, LogIn, LogOut } from 'lucide-react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
+import { useAuth } from '../context/AuthContext'
 
 const FALLBACK_NAV_LINKS = [
   { name: 'HOME', path: '/' },
@@ -38,11 +39,17 @@ const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const [useCompactNav, setUseCompactNav] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const [navLinks, setNavLinks] = useState(FALLBACK_NAV_LINKS)
   const { cartCount } = useCart()
+  const { customer, isAuthenticated, logout } = useAuth()
   const location = useLocation()
   const navigate = useNavigate()
+  const headerLayoutRef = useRef(null)
+  const logoRef = useRef(null)
+  const navRef = useRef(null)
+  const actionsRef = useRef(null)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -75,6 +82,31 @@ const Header = () => {
 
     loadHeaderMenu()
   }, [])
+
+  useEffect(() => {
+    const updateCompactMode = () => {
+      const layout = headerLayoutRef.current
+      const logo = logoRef.current
+      const nav = navRef.current
+      const actions = actionsRef.current
+
+      if (!layout || !logo || !nav || !actions) {
+        return
+      }
+
+      const availableWidth = layout.clientWidth
+      const requiredWidth = logo.offsetWidth + nav.scrollWidth + actions.offsetWidth + 100
+
+      setUseCompactNav(requiredWidth > availableWidth)
+    }
+
+    updateCompactMode()
+    window.addEventListener('resize', updateCompactMode)
+
+    return () => {
+      window.removeEventListener('resize', updateCompactMode)
+    }
+  }, [navLinks, isAuthenticated])
 
   const handleSearchSubmit = (e) => {
     e.preventDefault()
@@ -117,12 +149,12 @@ const Header = () => {
         <span>Secure Manifestation Tools</span>
       </div>
 
-      <div className="container main-header">
-        <Link to="/" className="logo-container">
+      <div className="container main-header" ref={headerLayoutRef}>
+        <Link to="/" className="logo-container" ref={logoRef}>
           <img src="/images/AS_Crystal_logo.png" alt="AS Crystal" className="brand-logo-img" />
         </Link>
 
-        <nav className="desktop-nav">
+        <nav ref={navRef} className={`desktop-nav ${useCompactNav ? 'desktop-nav-hidden' : ''}`}>
           <ul className="nav-list">
             {navLinks.map((link) => (
               <li key={link.name} className={`nav-item ${Array.isArray(link.dropdown) && link.dropdown.length > 0 ? 'has-dropdown' : ''}`}>
@@ -141,7 +173,7 @@ const Header = () => {
           </ul>
         </nav>
 
-        <div className="header-actions">
+        <div className="header-actions" ref={actionsRef}>
           <button
             className={`icon-btn ${isSearchOpen ? 'active' : ''}`}
             onClick={() => setIsSearchOpen(prev => !prev)}
@@ -153,13 +185,37 @@ const Header = () => {
             <ShoppingCart size={18} strokeWidth={1.5} />
             {cartCount > 0 && <span className="cart-count">{cartCount}</span>}
           </Link>
-          <Link to="/orders" className="icon-btn" aria-label="My Orders" title="My Orders">
+          <Link
+            to={isAuthenticated ? `/orders?email=${encodeURIComponent(customer?.email || '')}` : '/login?redirect=/orders'}
+            className="icon-btn"
+            aria-label="My Orders"
+            title="My Orders"
+          >
             <User size={18} strokeWidth={1.5} />
           </Link>
+          {!isAuthenticated && (
+            <Link to="/login?redirect=/checkout" className="icon-btn" aria-label="Customer Login" title="Login">
+              <LogIn size={18} strokeWidth={1.5} />
+            </Link>
+          )}
+          {isAuthenticated && (
+            <button
+              type="button"
+              className="icon-btn logout-mini-link"
+              aria-label="Logout"
+              title="Logout"
+              onClick={async () => {
+                await logout()
+                navigate('/login')
+              }}
+            >
+              <LogOut size={18} strokeWidth={1.5} />
+            </button>
+          )}
           <a href="/admin" className="icon-btn" aria-label="Admin Dashboard" title="Admin Dashboard">
             <Settings size={18} strokeWidth={1.5} />
           </a>
-          <button className="mobile-toggle" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+          <button className={`mobile-toggle ${useCompactNav ? 'compact-visible' : ''}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
             {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
@@ -197,8 +253,38 @@ const Header = () => {
             </li>
           ))}
           <li>
-            <Link to="/orders" onClick={() => setIsMenuOpen(false)}>MY ORDERS</Link>
+            <Link to={isAuthenticated ? `/orders?email=${encodeURIComponent(customer?.email || '')}` : '/login?redirect=/orders'} onClick={() => setIsMenuOpen(false)}>MY ORDERS</Link>
           </li>
+          {!isAuthenticated && (
+            <li>
+              <Link to="/login?redirect=/checkout" onClick={() => setIsMenuOpen(false)}>LOGIN</Link>
+            </li>
+          )}
+          {!isAuthenticated && (
+            <li>
+              <Link to="/signup?redirect=/checkout" onClick={() => setIsMenuOpen(false)}>SIGN UP</Link>
+            </li>
+          )}
+          {isAuthenticated && (
+            <li>
+              <button
+                type="button"
+                className="mobile-logout-link"
+                onClick={async () => {
+                  await logout()
+                  setIsMenuOpen(false)
+                  navigate('/login')
+                }}
+              >
+                LOGOUT
+              </button>
+            </li>
+          )}
+          {isAuthenticated && (
+            <li>
+              <span className="mobile-customer-email">{customer?.email || ''}</span>
+            </li>
+          )}
           <li>
             <a href="/admin">ADMIN DASHBOARD</a>
           </li>
@@ -313,6 +399,10 @@ const Header = () => {
                     display: flex;
                     justify-content: center;
                     min-width: 0;
+                    padding-right: 14px;
+                }
+                .desktop-nav.desktop-nav-hidden {
+                    display: none !important;
                 }
                 
                 .nav-list {
@@ -396,6 +486,11 @@ const Header = () => {
                     align-items: center;
                     flex-shrink: 0;
                     white-space: nowrap;
+                    margin-left: 22px;
+                    padding-left: 6px;
+                }
+                .logout-mini-link {
+                    font-family: inherit;
                 }
                 .icon-btn {
                     background: none;
@@ -426,6 +521,7 @@ const Header = () => {
                 }
                 
                 .mobile-toggle { display: none; }
+                .mobile-toggle.compact-visible { display: block; }
                 .mobile-nav { display: none; }
 
                 @media (max-width: 1360px) {
@@ -453,7 +549,7 @@ const Header = () => {
                     .nav-list { gap: 12px; }
                 }
                 
-                @media (max-width: 1024px) {
+                @media (max-width: 1360px) {
                     .desktop-nav { display: none; }
                     .mobile-toggle { display: block; }
                     .brand-logo-img {
@@ -502,6 +598,23 @@ const Header = () => {
                         font-family: var(--font-sans);
                         color: var(--text-light);
                         letter-spacing: 1px;
+                    }
+                    .mobile-logout-link {
+                        border: none;
+                        background: none;
+                        color: var(--text-main);
+                        font-family: var(--font-serif);
+                        font-size: 2rem;
+                        cursor: pointer;
+                        padding: 0;
+                    }
+                    .mobile-customer-email {
+                        display: block;
+                        color: var(--text-light);
+                        font-size: 0.75rem;
+                        letter-spacing: 1px;
+                        text-transform: uppercase;
+                        margin-top: -8px;
                     }
                 }
             `}</style>

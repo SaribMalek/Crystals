@@ -6,13 +6,13 @@ use App\Entity\Customer;
 use App\Entity\Order;
 use App\Repository\OrderRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
 class CustomerToolsController extends AbstractController
 {
-    #[Route('/admin/customers/{id}/orders', name: 'admin_customer_orders', methods: ['GET'])]
+    #[AdminRoute(path: '/customers/{id}/orders', name: 'customer_orders', options: ['methods' => ['GET']])]
     public function orders(Customer $customer, OrderRepository $orderRepository): Response
     {
         $orders = $orderRepository->findBy(
@@ -26,7 +26,7 @@ class CustomerToolsController extends AbstractController
         ]);
     }
 
-    #[Route('/admin/customers/{id}/password-reset', name: 'admin_customer_password_reset', methods: ['GET'])]
+    #[AdminRoute(path: '/customers/{id}/password-reset', name: 'customer_password_reset', options: ['methods' => ['GET']])]
     public function manualPasswordReset(Customer $customer, EntityManagerInterface $entityManager): Response
     {
         $tempPassword = $this->generateTempPassword();
@@ -43,7 +43,7 @@ class CustomerToolsController extends AbstractController
         ]);
     }
 
-    #[Route('/admin/customers/{id}/gdpr-export', name: 'admin_customer_export', methods: ['GET'])]
+    #[AdminRoute(path: '/customers/{id}/gdpr-export', name: 'customer_export', options: ['methods' => ['GET']])]
     public function export(Customer $customer, OrderRepository $orderRepository): Response
     {
         $orders = $orderRepository->findBy(
@@ -84,7 +84,7 @@ class CustomerToolsController extends AbstractController
         ]);
     }
 
-    #[Route('/admin/customers/{id}/gdpr-delete', name: 'admin_customer_gdpr_delete', methods: ['GET'])]
+    #[AdminRoute(path: '/customers/{id}/gdpr-delete', name: 'customer_gdpr_delete', options: ['methods' => ['GET']])]
     public function gdprDelete(Customer $customer, OrderRepository $orderRepository, EntityManagerInterface $entityManager): Response
     {
         $orders = $orderRepository->findBy(['customer_email' => strtolower((string) $customer->getEmail())]);

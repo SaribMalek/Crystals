@@ -37,7 +37,8 @@ class ProductCrudController extends AbstractCrudController
         return [
             IdField::new('id')->hideOnForm(),
             TextField::new('name'),
-            AssociationField::new('category'),
+            AssociationField::new('category')
+                ->setFormTypeOption('placeholder', 'Select option'),
             TextEditorField::new('description'),
             MoneyField::new('price')->setCurrency('USD'),
             MoneyField::new('old_price')->setCurrency('USD')->setRequired(false),
@@ -49,7 +50,22 @@ class ProductCrudController extends AbstractCrudController
                     'Zero' => 'zero',
                     'Exempt' => 'exempt',
                 ]),
+            AssociationField::new('vendor')
+                ->setRequired(false)
+                ->setFormTypeOption('placeholder', 'Select option'),
             TextField::new('supplier_reference')->setRequired(false)->setHelp('Vendor/Supplier SKU or reference code'),
+            BooleanField::new('is_subscription', 'Subscription Product'),
+            ChoiceField::new('subscription_interval', 'Subscription Interval')
+                ->setChoices([
+                    'Monthly' => 'monthly',
+                    'Quarterly' => 'quarterly',
+                    'Yearly' => 'yearly',
+                ])
+                ->setRequired(false),
+            MoneyField::new('subscription_price', 'Subscription Price')->setCurrency('USD')->setRequired(false),
+            BooleanField::new('is_digital', 'Digital Product'),
+            TextField::new('digital_download_url', 'Download URL')->setRequired(false),
+            BooleanField::new('license_key_required', 'License Key Required'),
             BooleanField::new('is_sale'),
             BooleanField::new('is_featured'),
             ImageField::new('image')
@@ -67,7 +83,20 @@ class ProductCrudController extends AbstractCrudController
             ->setEntityLabelInPlural('Products')
             ->setPageTitle(Crud::PAGE_INDEX, 'Products List')
             ->setDefaultSort(['id' => 'DESC'])
-            ->setSearchFields(['id', 'name', 'description', 'price', 'old_price', 'stock', 'tax_class', 'supplier_reference', 'category.name'])
+            ->setSearchFields([
+                'id',
+                'name',
+                'description',
+                'price',
+                'old_price',
+                'stock',
+                'tax_class',
+                'supplier_reference',
+                'subscription_interval',
+                'digital_download_url',
+                'category.name',
+                'vendor.name',
+            ])
             ->setPaginatorPageSize(20);
     }
 

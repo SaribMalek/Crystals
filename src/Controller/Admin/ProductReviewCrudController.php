@@ -28,7 +28,8 @@ class ProductReviewCrudController extends AbstractCrudController
     {
         return [
             IdField::new('id')->hideOnForm(),
-            AssociationField::new('product'),
+            AssociationField::new('product')
+                ->setFormTypeOption('placeholder', 'Select option'),
             TextField::new('customer_name')->setRequired(false),
             EmailField::new('customer_email')->setRequired(false),
             IntegerField::new('rating'),

@@ -5,13 +5,13 @@ namespace App\Controller\Admin;
 use App\Entity\Order;
 use App\Repository\OrderItemRepository;
 use App\Repository\ProductRepository;
+use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
 class MarketingInsightsController extends AbstractController
 {
-    #[Route('/admin/marketing/featured-products', name: 'admin_marketing_featured_products', methods: ['GET'])]
+    #[AdminRoute(path: '/marketing/featured-products', name: 'marketing_featured_products', options: ['methods' => ['GET']])]
     public function featuredProducts(ProductRepository $productRepository): Response
     {
         $products = $productRepository->findBy(['is_featured' => true], ['id' => 'DESC']);
@@ -21,7 +21,7 @@ class MarketingInsightsController extends AbstractController
         ]);
     }
 
-    #[Route('/admin/marketing/best-sellers', name: 'admin_marketing_best_sellers', methods: ['GET'])]
+    #[AdminRoute(path: '/marketing/best-sellers', name: 'marketing_best_sellers', options: ['methods' => ['GET']])]
     public function bestSellers(OrderItemRepository $orderItemRepository): Response
     {
         $bestSellers = $orderItemRepository->createQueryBuilder('oi')

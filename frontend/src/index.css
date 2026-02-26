@@ -33,10 +33,27 @@
 body {
   font-family: var(--font-sans);
   color: var(--text-main);
-  background-color: var(--bg-creme);
+  background:
+    radial-gradient(1200px 700px at 8% -10%, rgba(212, 175, 55, 0.16), rgba(212, 175, 55, 0) 52%),
+    radial-gradient(900px 600px at 95% 8%, rgba(44, 62, 80, 0.11), rgba(44, 62, 80, 0) 56%),
+    var(--bg-creme);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+  min-height: 100vh;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle at 20% 22%, rgba(255, 255, 255, 0.25) 1px, transparent 1px),
+    radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.2) 1px, transparent 1px);
+  background-size: 190px 190px, 250px 250px;
+  opacity: 0.35;
+  z-index: -1;
 }
 
 h1,
@@ -54,6 +71,11 @@ a {
   text-decoration: none;
   color: inherit;
   transition: var(--transition);
+}
+
+::selection {
+  background: rgba(212, 175, 55, 0.34);
+  color: #162331;
 }
 
 ul {
@@ -170,6 +192,156 @@ img {
   background: var(--bg-dark);
   transform: translateY(-3px);
   box-shadow: var(--shadow-medium);
+}
+
+/* Global button effects for storefront pages */
+.btn-luxury,
+[class*="btn-luxury"],
+.cat-btn-luxury,
+.toolbar-btn,
+.clear-search-btn,
+.action-circle,
+.btn-text-luxury {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  box-shadow: 0 10px 22px rgba(16, 29, 44, 0.12);
+  transition: transform 0.28s ease, box-shadow 0.28s ease, filter 0.28s ease;
+}
+
+.btn-luxury::before,
+[class*="btn-luxury"]::before,
+.cat-btn-luxury::before,
+.toolbar-btn::before,
+.clear-search-btn::before,
+.action-circle::before,
+.btn-text-luxury::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(120deg, transparent 18%, rgba(255, 255, 255, 0.22) 48%, transparent 82%);
+  transform: translateX(-120%);
+  transition: transform 0.62s ease;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.btn-luxury:hover,
+[class*="btn-luxury"]:hover,
+.cat-btn-luxury:hover,
+.toolbar-btn:hover,
+.clear-search-btn:hover,
+.action-circle:hover,
+.btn-text-luxury:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 30px rgba(16, 29, 44, 0.18);
+  filter: saturate(1.06);
+}
+
+.btn-luxury:hover::before,
+[class*="btn-luxury"]:hover::before,
+.cat-btn-luxury:hover::before,
+.toolbar-btn:hover::before,
+.clear-search-btn:hover::before,
+.action-circle:hover::before,
+.btn-text-luxury:hover::before {
+  transform: translateX(120%);
+}
+
+.btn-luxury:active,
+[class*="btn-luxury"]:active,
+.cat-btn-luxury:active,
+.toolbar-btn:active,
+.clear-search-btn:active,
+.action-circle:active,
+.btn-text-luxury:active {
+  transform: translateY(-1px) scale(0.985);
+  box-shadow: 0 8px 16px rgba(16, 29, 44, 0.14);
+}
+
+.btn-luxury:focus-visible,
+[class*="btn-luxury"]:focus-visible,
+.cat-btn-luxury:focus-visible,
+.toolbar-btn:focus-visible,
+.clear-search-btn:focus-visible,
+.action-circle:focus-visible,
+.btn-text-luxury:focus-visible {
+  outline: 2px solid rgba(212, 175, 55, 0.72);
+  outline-offset: 3px;
+}
+
+.app {
+  position: relative;
+}
+
+.route-shell {
+  animation: routeEnter 0.55s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@keyframes routeEnter {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+    filter: saturate(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: saturate(1);
+  }
+}
+
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(24px) scale(0.985);
+  transition: opacity 0.68s ease, transform 0.68s ease;
+  will-change: opacity, transform;
+}
+
+.reveal-on-scroll.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+main [class*="card"] {
+  transition: transform 0.34s ease, box-shadow 0.34s ease, border-color 0.34s ease;
+}
+
+main [class*="card"]:hover {
+  transform: translateY(-4px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .route-shell {
+    animation: none;
+  }
+
+  .reveal-on-scroll,
+  .reveal-on-scroll.is-visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .btn-luxury,
+  [class*="btn-luxury"],
+  .cat-btn-luxury,
+  .toolbar-btn,
+  .clear-search-btn,
+  .action-circle,
+  .btn-text-luxury {
+    transition: none;
+  }
+
+  .btn-luxury::before,
+  [class*="btn-luxury"]::before,
+  .cat-btn-luxury::before,
+  .toolbar-btn::before,
+  .clear-search-btn::before,
+  .action-circle::before,
+  .btn-text-luxury::before {
+    display: none;
+  }
 }
 
 /* Category Grid Utility */

@@ -26,7 +26,7 @@ class OrderCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         $statusField = ChoiceField::new('status')
-            ->setChoices(array_flip(Order::statusChoices()))
+            ->setChoices(Order::statusChoices())
             ->renderExpanded(false);
 
         return [

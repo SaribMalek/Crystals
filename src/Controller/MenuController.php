@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Announcement;
 use App\Entity\HeaderMenu;
+use App\Repository\AnnouncementRepository;
 use App\Repository\HeaderMenuRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -54,6 +56,31 @@ class MenuController extends AbstractController
                 'dropdown' => $children,
             ];
         }, $topLevelItems);
+
+        return $this->json($payload);
+    }
+
+    #[Route('/api/announcements', name: 'api_announcements', methods: ['GET'])]
+    public function announcements(AnnouncementRepository $announcementRepository): JsonResponse
+    {
+        try {
+            $items = $announcementRepository->findActiveForDisplay(new \DateTimeImmutable(), 3);
+        } catch (\Throwable) {
+            // Graceful fallback when DB schema is not ready yet.
+            return $this->json([]);
+        }
+
+        $payload = array_map(function (Announcement $item): array {
+            return [
+                'id' => $item->getId(),
+                'title' => (string) $item->getTitle(),
+                'message' => (string) $item->getMessage(),
+                'linkUrl' => $this->normalizePath($item->getLinkUrl()),
+                'openInNewTab' => $item->isOpenInNewTab(),
+                'backgroundColor' => $item->getBackgroundColor(),
+                'textColor' => $item->getTextColor(),
+            ];
+        }, $items);
 
         return $this->json($payload);
     }

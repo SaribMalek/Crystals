@@ -59,6 +59,28 @@ class Product
     #[ORM\Column(length: 40, options: ['default' => 'standard'])]
     private string $tax_class = 'standard';
 
+    #[ORM\ManyToOne]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?Vendor $vendor = null;
+
+    #[ORM\Column(options: ['default' => false])]
+    private bool $is_subscription = false;
+
+    #[ORM\Column(length: 20, nullable: true)]
+    private ?string $subscription_interval = null;
+
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 2, nullable: true)]
+    private ?string $subscription_price = null;
+
+    #[ORM\Column(options: ['default' => false])]
+    private bool $is_digital = false;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $digital_download_url = null;
+
+    #[ORM\Column(options: ['default' => false])]
+    private bool $license_key_required = false;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -192,6 +214,90 @@ class Product
     public function setTaxClass(string $tax_class): static
     {
         $this->tax_class = $tax_class;
+
+        return $this;
+    }
+
+    public function getVendor(): ?Vendor
+    {
+        return $this->vendor;
+    }
+
+    public function setVendor(?Vendor $vendor): static
+    {
+        $this->vendor = $vendor;
+
+        return $this;
+    }
+
+    public function isSubscription(): bool
+    {
+        return $this->is_subscription;
+    }
+
+    public function setIsSubscription(bool $is_subscription): static
+    {
+        $this->is_subscription = $is_subscription;
+
+        return $this;
+    }
+
+    public function getSubscriptionInterval(): ?string
+    {
+        return $this->subscription_interval;
+    }
+
+    public function setSubscriptionInterval(?string $subscription_interval): static
+    {
+        $this->subscription_interval = $subscription_interval;
+
+        return $this;
+    }
+
+    public function getSubscriptionPrice(): ?string
+    {
+        return $this->subscription_price;
+    }
+
+    public function setSubscriptionPrice(?string $subscription_price): static
+    {
+        $this->subscription_price = $subscription_price;
+
+        return $this;
+    }
+
+    public function isDigital(): bool
+    {
+        return $this->is_digital;
+    }
+
+    public function setIsDigital(bool $is_digital): static
+    {
+        $this->is_digital = $is_digital;
+
+        return $this;
+    }
+
+    public function getDigitalDownloadUrl(): ?string
+    {
+        return $this->digital_download_url;
+    }
+
+    public function setDigitalDownloadUrl(?string $digital_download_url): static
+    {
+        $this->digital_download_url = $digital_download_url;
+
+        return $this;
+    }
+
+    public function isLicenseKeyRequired(): bool
+    {
+        return $this->license_key_required;
+    }
+
+    public function setLicenseKeyRequired(bool $license_key_required): static
+    {
+        $this->license_key_required = $license_key_required;
 
         return $this;
     }

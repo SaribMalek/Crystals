@@ -1,4 +1,10 @@
 security:
+    role_hierarchy:
+        ROLE_SUPPORT: [ROLE_USER]
+        ROLE_MANAGER: [ROLE_SUPPORT]
+        ROLE_SUPER_ADMIN: [ROLE_MANAGER, ROLE_ALLOWED_TO_SWITCH]
+        ROLE_ADMIN: [ROLE_SUPER_ADMIN]
+
     # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
     password_hashers:
         Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: 'auto'
@@ -15,6 +21,9 @@ security:
         main:
             lazy: true
             provider: app_user_provider
+            login_throttling:
+                max_attempts: 5
+                interval: '15 minutes'
             form_login:
                 login_path: app_admin_login
                 check_path: app_admin_login
@@ -35,7 +44,7 @@ security:
     access_control:
         - { path: ^/admin/login$, roles: PUBLIC_ACCESS }
         - { path: ^/admin/logout$, roles: PUBLIC_ACCESS }
-        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/admin, roles: ROLE_SUPPORT }
         # - { path: ^/profile, roles: ROLE_USER }
 
 when@test:

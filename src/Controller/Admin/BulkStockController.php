@@ -5,16 +5,16 @@ namespace App\Controller\Admin;
 use App\Entity\StockHistory;
 use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
 use EasyCorp\Bundle\EasyAdminBundle\Router\AdminUrlGenerator;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 
 class BulkStockController extends AbstractController
 {
-    #[Route('/admin/inventory/bulk-stock', name: 'admin_bulk_stock_update', methods: ['GET', 'POST'])]
+    #[AdminRoute(path: '/inventory/bulk-stock', name: 'bulk_stock_update', options: ['methods' => ['GET', 'POST']])]
     public function index(
         Request $request,
         ProductRepository $productRepository,

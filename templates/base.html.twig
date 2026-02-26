@@ -45,11 +45,30 @@
             @keyframes siteLoaderSpin {
                 to { transform: rotate(360deg); }
             }
+            #site-announcement {
+                display: none;
+                position: sticky;
+                top: 0;
+                z-index: 1000;
+                padding: 10px 16px;
+                text-align: center;
+                font-family: Inter, sans-serif;
+                font-size: 14px;
+                line-height: 1.35;
+                font-weight: 500;
+            }
+            #site-announcement .announcement-link {
+                color: inherit;
+                text-decoration: underline;
+                font-weight: 600;
+                margin-left: 6px;
+            }
         </style>
         {% block stylesheets %}
         {% endblock %}
     </head>
     <body>
+        <div id="site-announcement" role="region" aria-label="Announcement"></div>
         <div id="site-loader" role="status" aria-live="polite" aria-label="Loading page">
             <div class="spinner"></div>
             <div class="label">Loading...</div>
@@ -91,6 +110,46 @@
                         setTimeout(hide, 1200);
                     }, { once: true });
                 }
+            })();
+
+            (function () {
+                var banner = document.getElementById('site-announcement');
+                if (!banner) return;
+
+                fetch('/api/announcements', { credentials: 'same-origin' })
+                    .then(function (response) { return response.ok ? response.json() : []; })
+                    .then(function (items) {
+                        if (!Array.isArray(items) || items.length === 0) return;
+
+                        var item = items[0];
+                        var title = (item.title || '').trim();
+                        var message = (item.message || '').trim();
+                        if (!title && !message) return;
+
+                        banner.style.background = (item.backgroundColor || '#0f4c81');
+                        banner.style.color = (item.textColor || '#ffffff');
+
+                        var textNode = document.createElement('span');
+                        textNode.textContent = title && message ? (title + ': ' + message) : (title || message);
+                        banner.appendChild(textNode);
+
+                        if (item.linkUrl && item.linkUrl !== '#') {
+                            var link = document.createElement('a');
+                            link.className = 'announcement-link';
+                            link.href = item.linkUrl;
+                            link.textContent = 'View';
+                            if (item.openInNewTab) {
+                                link.target = '_blank';
+                                link.rel = 'noopener noreferrer';
+                            }
+                            banner.appendChild(link);
+                        }
+
+                        banner.style.display = 'block';
+                    })
+                    .catch(function () {
+                        // Keep user pages working even if endpoint is unavailable.
+                    });
             })();
         </script>
 

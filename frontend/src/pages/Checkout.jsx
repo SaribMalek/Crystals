@@ -3,9 +3,11 @@ import { useLocation, Link } from 'react-router-dom'
 import { useCart } from '../context/CartContext'
 import { CreditCard, CheckCircle, X } from 'lucide-react'
 import { resolveProductImage } from '../utils/productImage'
+import { useAuth } from '../context/AuthContext'
 
 const Checkout = () => {
   const { cartItems, cartTotal, clearCart } = useCart()
+  const { customer, loading: authLoading } = useAuth()
   const location = useLocation()
   const queryParams = new URLSearchParams(location.search)
   const status = queryParams.get('status')
@@ -24,6 +26,25 @@ const Checkout = () => {
     city: '',
     zipCode: '',
   })
+
+  useEffect(() => {
+    if (!customer) {
+      return
+    }
+
+    setFormData((prev) => {
+      const fullName = (customer.full_name || '').trim()
+      const [firstName = '', ...rest] = fullName.split(/\s+/)
+      const lastName = rest.join(' ')
+
+      return {
+        ...prev,
+        email: customer.email || prev.email,
+        firstName: prev.firstName || firstName,
+        lastName: prev.lastName || lastName,
+      }
+    })
+  }, [customer])
 
   useEffect(() => {
     const verifyPayment = async () => {
@@ -168,6 +189,25 @@ const Checkout = () => {
     )
   }
 
+  if (authLoading) {
+    return (
+      <div className="container section-padding text-center success-page">
+        <h1>Loading...</h1>
+      </div>
+    )
+  }
+
+  if (!customer) {
+    return (
+      <div className="container section-padding text-center success-page">
+        <h1>Login Required</h1>
+        <p>Please signup or login before placing an order.</p>
+        <Link to="/login?redirect=/checkout" className="btn btn-primary" style={{ marginTop: '20px', marginRight: '10px' }}>Login</Link>
+        <Link to="/signup?redirect=/checkout" className="btn btn-primary" style={{ marginTop: '20px' }}>Signup</Link>
+      </div>
+    )
+  }
+
   return (
     <div className="checkout-page">
       <div className="container section-padding">
@@ -187,8 +227,8 @@ const Checkout = () => {
                   <h2 className="section-title-small">Shipping Details</h2>
                   <div className="form-grid-luxury">
                     <div className="form-group-luxury full">
-                      <label>Email</label>
-                      <input type="email" name="email" required value={formData.email} onChange={handleInputChange} />
+                      <label>Email (Account)</label>
+                      <input type="email" name="email" required value={formData.email} readOnly />
                     </div>
                     <div className="form-group-luxury">
                       <label>First Name</label>

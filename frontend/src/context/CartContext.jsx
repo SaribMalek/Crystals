@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useAuth } from './AuthContext';
 
 const CartContext = createContext();
 
@@ -21,30 +22,56 @@ const normalizeCartItem = (item) => ({
 });
 
 export const CartProvider = ({ children }) => {
-    const [cartItems, setCartItems] = useState(() => {
+    const { customer, isAuthenticated, loading: authLoading } = useAuth();
+    const [cartItems, setCartItems] = useState([]);
+
+    const cartStorageKey = isAuthenticated && customer?.email
+        ? `as_crystals_cart_${String(customer.email).toLowerCase()}`
+        : null;
+
+    useEffect(() => {
+        if (authLoading) {
+            return;
+        }
+
+        if (!cartStorageKey) {
+            setCartItems([]);
+            return;
+        }
+
         try {
-            const savedCart = localStorage.getItem('as_crystals_cart');
+            const savedCart = localStorage.getItem(cartStorageKey);
             if (!savedCart) {
-                return [];
+                setCartItems([]);
+                return;
             }
 
             const parsedCart = JSON.parse(savedCart);
             if (!Array.isArray(parsedCart)) {
-                return [];
+                setCartItems([]);
+                return;
             }
 
-            return parsedCart.map(normalizeCartItem);
+            setCartItems(parsedCart.map(normalizeCartItem));
         } catch (error) {
             console.error('Invalid cart data in localStorage:', error);
-            return [];
+            setCartItems([]);
         }
-    });
+    }, [authLoading, cartStorageKey]);
 
     useEffect(() => {
-        localStorage.setItem('as_crystals_cart', JSON.stringify(cartItems));
-    }, [cartItems]);
+        if (authLoading || !cartStorageKey) {
+            return;
+        }
+
+        localStorage.setItem(cartStorageKey, JSON.stringify(cartItems));
+    }, [authLoading, cartItems, cartStorageKey]);
 
     const addToCart = (product, quantity = 1) => {
+        if (!cartStorageKey) {
+            return;
+        }
+
         const normalizedProduct = normalizeCartItem({
             ...product,
             quantity

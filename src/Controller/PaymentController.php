@@ -8,6 +8,7 @@ use App\Entity\Customer;
 use App\Entity\PaymentFailureLog;
 use App\Entity\PaymentSettings;
 use App\Entity\PaymentTransaction;
+use App\Entity\WebhookLog;
 use App\Repository\CustomerRepository;
 use App\Repository\PaymentSettingsRepository;
 use App\Repository\ProductRepository;
@@ -56,7 +57,15 @@ class PaymentController extends AbstractController
     {
         $data = json_decode($request->getContent(), true) ?? [];
         $items = $data['items'] ?? [];
-        $customerEmail = trim((string) ($data['customer']['email'] ?? ''));
+        $customer = $this->getAuthenticatedCustomer($request, $customerRepository);
+        if ($customer === null) {
+            return $this->json(['error' => 'Please login before checkout.'], 401);
+        }
+        if ($customer->getAccountStatus() === Customer::STATUS_BLOCKED) {
+            return $this->json(['error' => 'This customer account is blocked. Contact support.'], 403);
+        }
+
+        $customerEmail = strtolower((string) $customer->getEmail());
         $shipping = $data['shipping'] ?? [];
         $shippingAddress = trim((string) ($shipping['address'] ?? ''));
         $shippingCity = trim((string) ($shipping['city'] ?? ''));
@@ -70,10 +79,6 @@ class PaymentController extends AbstractController
 
         if (empty($items)) {
             return $this->json(['error' => 'No items in cart'], 400);
-        }
-
-        if ($customerEmail === '') {
-            return $this->json(['error' => 'Customer email is required'], 400);
         }
 
         $settings = $paymentSettingsRepository->findOneBy([]) ?? new PaymentSettings();
@@ -96,19 +101,6 @@ class PaymentController extends AbstractController
 
         if ($selectedMethod !== 'card') {
             return $this->json(['error' => 'Only card method is currently configured for Stripe checkout.'], 400);
-        }
-
-        $normalizedEmail = strtolower($customerEmail);
-        /** @var Customer|null $customer */
-        $customer = $customerRepository->findOneBy(['email' => $normalizedEmail]);
-        if ($customer !== null && $customer->getAccountStatus() === Customer::STATUS_BLOCKED) {
-            return $this->json(['error' => 'This customer account is blocked. Contact support.'], 403);
-        }
-
-        if ($customer === null) {
-            $customer = new Customer();
-            $customer->setEmail($normalizedEmail);
-            $entityManager->persist($customer);
         }
 
         if ($customerFullName !== '') {
@@ -322,6 +314,25 @@ class PaymentController extends AbstractController
         }
     }
 
+    #[Route('/api/webhooks/stripe', name: 'api_webhook_stripe', methods: ['POST'])]
+    public function stripeWebhook(Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $payload = (string) $request->getContent();
+        $decoded = json_decode($payload, true);
+        $eventType = is_array($decoded) ? (string) ($decoded['type'] ?? 'unknown') : 'unknown';
+
+        $log = new WebhookLog();
+        $log->setProvider('stripe');
+        $log->setEventType($eventType);
+        $log->setStatusCode(200);
+        $log->setPayload($payload);
+        $log->setResponseMessage('Webhook received');
+        $entityManager->persist($log);
+        $entityManager->flush();
+
+        return $this->json(['received' => true, 'event' => $eventType]);
+    }
+
     private function isGatewayEnabled(PaymentSettings $settings, string $gateway): bool
     {
         return match ($gateway) {
@@ -350,6 +361,17 @@ class PaymentController extends AbstractController
         }
 
         return $this->getEnv('STRIPE_SECRET_KEY_TEST', $this->getEnv('STRIPE_SECRET_KEY'));
+    }
+
+    private function getAuthenticatedCustomer(Request $request, CustomerRepository $customerRepository): ?Customer
+    {
+        $session = $request->getSession();
+        $customerId = (int) $session->get('customer_auth_id', 0);
+        if ($customerId <= 0) {
+            return null;
+        }
+
+        return $customerRepository->find($customerId);
     }
 
     private function logPaymentFailure(

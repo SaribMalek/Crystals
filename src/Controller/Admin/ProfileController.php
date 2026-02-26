@@ -4,16 +4,16 @@ namespace App\Controller\Admin;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
+use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
 class ProfileController extends AbstractController
 {
-    #[Route('/admin/profile', name: 'admin_profile', methods: ['GET', 'POST'])]
+    #[AdminRoute(path: '/profile', name: 'profile', options: ['methods' => ['GET', 'POST']])]
     public function index(Request $request, EntityManagerInterface $entityManager): Response
     {
         $currentUser = $this->getUser();

@@ -1,0 +1,41 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Backup & Restore{% endblock %}
+
+{% block main %}
+    <section class="admin-recent-panel">
+        <div class="panel-head"><h4>Create Backup</h4></div>
+        <form method="post" action="{{ path('admin_system_backups_create') }}">
+            <button class="btn btn-primary">Create New Backup</button>
+        </form>
+    </section>
+
+    <section class="admin-recent-panel">
+        <div class="panel-head"><h4>Available Backups</h4></div>
+        {% if backups is empty %}
+            <p class="empty-state">No backups found.</p>
+        {% else %}
+            <div class="table-responsive">
+                <table class="table">
+                    <thead><tr><th>File</th><th>Size</th><th>Created</th><th>Restore</th></tr></thead>
+                    <tbody>
+                    {% for backup in backups %}
+                        <tr>
+                            <td>{{ backup.name }}</td>
+                            <td>{{ (backup.size / 1024 / 1024)|number_format(2, '.', ',') }} MB</td>
+                            <td>{{ backup.mtime|date('Y-m-d H:i') }}</td>
+                            <td>
+                                <form method="post" action="{{ path('admin_system_backups_restore') }}">
+                                    <input type="hidden" name="backup_file" value="{{ backup.name }}">
+                                    <button class="btn btn-warning btn-sm">Restore</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </section>
+{% endblock %}
+

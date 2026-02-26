@@ -1,0 +1,30 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Security & System{% endblock %}
+
+{% block main %}
+    <section class="admin-recent-panel">
+        <div class="panel-head">
+            <h4>Security Overview</h4>
+        </div>
+        <div class="inventory-control-grid">
+            <div class="inventory-control-item"><span class="inventory-label">2FA Enabled Admins</span><span class="inventory-value">{{ stats.twofa_enabled_users }}</span></div>
+            <div class="inventory-control-item"><span class="inventory-label">Webhook Logs</span><span class="inventory-value">{{ stats.webhook_logs }}</span></div>
+            <div class="inventory-control-item"><span class="inventory-label">Login Attempt Limit</span><span class="inventory-value">{{ stats.login_attempt_limit }}</span></div>
+            <div class="inventory-control-item"><span class="inventory-label">Lockout Window (minutes)</span><span class="inventory-value">{{ stats.login_lock_minutes }}</span></div>
+        </div>
+    </section>
+
+    <section class="admin-recent-panel">
+        <div class="panel-head"><h4>Actions</h4></div>
+        <div class="admin-action-grid">
+            <a href="{{ path('admin_change_password') }}" class="admin-action-btn">Change Admin Password</a>
+            <a href="{{ ea_url().setController('App\\Controller\\Admin\\UserCrudController').setAction('index') }}" class="admin-action-btn ghost">2FA (Recommended)</a>
+            <a href="{{ ea_url().setController('App\\Controller\\Admin\\ApiKeyCrudController').setAction('index') }}" class="admin-action-btn">API Keys Management</a>
+            <a href="{{ ea_url().setController('App\\Controller\\Admin\\WebhookLogCrudController').setAction('index') }}" class="admin-action-btn ghost">Webhook Logs</a>
+            <a href="{{ path('admin_system_backups') }}" class="admin-action-btn">Backup &amp; Restore</a>
+            <a href="{{ path('admin_error_logs') }}" class="admin-action-btn ghost">Error Logs</a>
+        </div>
+    </section>
+{% endblock %}
+

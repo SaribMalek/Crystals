@@ -1,0 +1,22 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Advanced Features{% endblock %}
+
+{% block main %}
+    <section class="admin-recent-panel">
+        <div class="panel-head">
+            <h4>Advanced (Optional but Powerful)</h4>
+        </div>
+        <div class="admin-action-grid">
+            <a href="{{ ea_url().setController('App\\Controller\\Admin\\VendorCrudController').setAction('index') }}" class="admin-action-btn">Multi-vendor Support</a>
+            <a href="{{ ea_url().setController('App\\Controller\\Admin\\LanguageSettingCrudController').setAction('index') }}" class="admin-action-btn ghost">Multi-language</a>
+            <a href="{{ ea_url().setController('App\\Controller\\Admin\\CurrencySettingCrudController').setAction('index') }}" class="admin-action-btn ghost">Multi-currency</a>
+            <a href="{{ ea_url().setController('App\\Controller\\Admin\\ProductCrudController').setAction('index') }}" class="admin-action-btn">Subscription Products</a>
+            <a href="{{ ea_url().setController('App\\Controller\\Admin\\ProductCrudController').setAction('index') }}" class="admin-action-btn ghost">Digital Products</a>
+            <a href="{{ ea_url().setController('App\\Controller\\Admin\\LicenseKeyCrudController').setAction('index') }}" class="admin-action-btn">License Keys</a>
+            <a href="{{ ea_url().setController('App\\Controller\\Admin\\AffiliatePartnerCrudController').setAction('index') }}" class="admin-action-btn ghost">Affiliate System</a>
+            <a href="{{ path('admin_pos_settings') }}" class="admin-action-btn">POS Integration</a>
+        </div>
+    </section>
+{% endblock %}
+

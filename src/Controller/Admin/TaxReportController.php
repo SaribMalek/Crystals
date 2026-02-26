@@ -4,13 +4,13 @@ namespace App\Controller\Admin;
 
 use App\Repository\OrderRepository;
 use App\Repository\TaxRuleRepository;
+use EasyCorp\Bundle\EasyAdminBundle\Attribute\AdminRoute;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
 class TaxReportController extends AbstractController
 {
-    #[Route('/admin/tax-reports', name: 'admin_tax_reports', methods: ['GET'])]
+    #[AdminRoute(path: '/tax-reports', name: 'tax_reports', options: ['methods' => ['GET']])]
     public function index(OrderRepository $orderRepository, TaxRuleRepository $taxRuleRepository): Response
     {
         $orders = $orderRepository->findBy([], ['created_at' => 'DESC']);

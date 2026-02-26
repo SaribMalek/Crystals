@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { BrowserRouter as Router, Routes, Route, useLocation, matchPath } from 'react-router-dom'
 import { CartProvider } from './context/CartContext'
+import { AuthProvider } from './context/AuthContext'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import Loader from './components/Loader'
@@ -23,6 +24,8 @@ import Services from './pages/Services'
 import Privacy from './pages/Privacy'
 import Terms from './pages/Terms'
 import MyOrders from './pages/MyOrders'
+import Login from './pages/Login'
+import Signup from './pages/Signup'
 
 const PAGE_TITLES = [
     { path: '/', title: 'Home | AS Crystals' },
@@ -31,6 +34,8 @@ const PAGE_TITLES = [
     { path: '/cart', title: 'Cart | AS Crystals' },
     { path: '/checkout', title: 'Checkout | AS Crystals' },
     { path: '/orders', title: 'My Orders | AS Crystals' },
+    { path: '/login', title: 'Login | AS Crystals' },
+    { path: '/signup', title: 'Signup | AS Crystals' },
     { path: '/about', title: 'About Us | AS Crystals' },
     { path: '/contact', title: 'Contact | AS Crystals' },
     { path: '/gifts', title: 'Gift Sets | AS Crystals' },
@@ -56,27 +61,59 @@ function AppRoutes() {
         updatePageTitle(location.pathname)
     }, [location.pathname])
 
-    return (
-        <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/shop" element={<Shop />} />
-            <Route path="/product/:id" element={<ProductDetails />} />
-            <Route path="/cart" element={<Cart />} />
-            <Route path="/checkout" element={<Checkout />} />
-            <Route path="/orders" element={<MyOrders />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
+    useEffect(() => {
+        const targets = Array.from(document.querySelectorAll(
+            'main section, main article, main [class*="card"], main .luxury-product-card, main .btn-luxury'
+        ))
 
-            <Route path="/gifts" element={<Gifts />} />
-            <Route path="/remedies" element={<Remedies />} />
-            <Route path="/healing-stones" element={<HealingStones />} />
-            <Route path="/reiki-tools" element={<ReikiTools />} />
-            <Route path="/crystal-jewelry" element={<CrystalJewelry />} />
-            <Route path="/trainings" element={<Trainings />} />
-            <Route path="/services" element={<Services />} />
-            <Route path="/privacy" element={<Privacy />} />
-            <Route path="/terms" element={<Terms />} />
-        </Routes>
+        if (targets.length === 0) {
+            return undefined
+        }
+
+        targets.forEach((el) => el.classList.add('reveal-on-scroll'))
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible')
+                        observer.unobserve(entry.target)
+                    }
+                })
+            },
+            { threshold: 0.14, rootMargin: '0px 0px -8% 0px' }
+        )
+
+        targets.forEach((el) => observer.observe(el))
+
+        return () => observer.disconnect()
+    }, [location.pathname])
+
+    return (
+        <div className="route-shell" key={location.pathname}>
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/shop" element={<Shop />} />
+                <Route path="/product/:id" element={<ProductDetails />} />
+                <Route path="/cart" element={<Cart />} />
+                <Route path="/checkout" element={<Checkout />} />
+                <Route path="/orders" element={<MyOrders />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
+
+                <Route path="/gifts" element={<Gifts />} />
+                <Route path="/remedies" element={<Remedies />} />
+                <Route path="/healing-stones" element={<HealingStones />} />
+                <Route path="/reiki-tools" element={<ReikiTools />} />
+                <Route path="/crystal-jewelry" element={<CrystalJewelry />} />
+                <Route path="/trainings" element={<Trainings />} />
+                <Route path="/services" element={<Services />} />
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/terms" element={<Terms />} />
+            </Routes>
+        </div>
     )
 }
 
@@ -100,17 +137,19 @@ function App() {
     }
 
     return (
-        <CartProvider>
-            <Router>
-                <div className="app">
-                    <Header />
-                    <main style={{ marginTop: '160px' }}>
-                        <AppRoutes />
-                    </main>
-                    <Footer />
-                </div>
-            </Router>
-        </CartProvider>
+        <AuthProvider>
+            <CartProvider>
+                <Router>
+                    <div className="app">
+                        <Header />
+                        <main style={{ marginTop: '160px' }}>
+                            <AppRoutes />
+                        </main>
+                        <Footer />
+                    </div>
+                </Router>
+            </CartProvider>
+        </AuthProvider>
     )
 }
 

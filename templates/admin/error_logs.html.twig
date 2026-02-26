@@ -1,0 +1,18 @@
+{% extends '@EasyAdmin/page/content.html.twig' %}
+
+{% block content_title %}Error Logs{% endblock %}
+
+{% block main %}
+    <section class="admin-recent-panel">
+        <div class="panel-head"><h4>prod.log</h4></div>
+        <p class="empty-state">{{ prod_path }}</p>
+        <pre style="background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;max-height:420px;overflow:auto;">{{ prod_log }}</pre>
+    </section>
+
+    <section class="admin-recent-panel">
+        <div class="panel-head"><h4>dev.log</h4></div>
+        <p class="empty-state">{{ dev_path }}</p>
+        <pre style="background:#0f172a;color:#e2e8f0;padding:12px;border-radius:8px;max-height:420px;overflow:auto;">{{ dev_log }}</pre>
+    </section>
+{% endblock %}
+
