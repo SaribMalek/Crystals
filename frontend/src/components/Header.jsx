@@ -85,6 +85,12 @@ const Header = () => {
 
   useEffect(() => {
     const updateCompactMode = () => {
+      const viewportWidth = window.innerWidth
+      if (viewportWidth >= 1200) {
+        setUseCompactNav(false)
+        return
+      }
+
       const layout = headerLayoutRef.current
       const logo = logoRef.current
       const nav = navRef.current
@@ -549,7 +555,7 @@ const Header = () => {
                     .nav-list { gap: 12px; }
                 }
                 
-                @media (max-width: 1360px) {
+                @media (max-width: 1024px) {
                     .desktop-nav { display: none; }
                     .mobile-toggle { display: block; }
                     .brand-logo-img {
@@ -568,33 +574,35 @@ const Header = () => {
                         position: fixed;
                         top: 0;
                         right: -100%;
-                        width: 80%;
+                        width: min(86vw, 360px);
                         height: 100vh;
                         background: white;
                         transition: var(--transition);
-                        padding: 100px 40px;
+                        padding: 86px 24px 30px;
                         z-index: 1000;
                         box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+                        overflow-y: auto;
                     }
                     .nav-open { right: 0; }
                     .mobile-nav-list { list-style: none; }
-                    .mobile-nav-list li { margin-bottom: 25px; }
+                    .mobile-nav-list li { margin-bottom: 18px; }
                     .mobile-nav-list a {
                         text-decoration: none;
                         color: var(--text-main);
                         font-family: var(--font-serif);
-                        font-size: 2rem;
+                        font-size: 1.35rem;
+                        line-height: 1.2;
                     }
                     .mobile-submenu-list {
                         list-style: none;
-                        margin-top: 10px;
-                        margin-left: 10px;
+                        margin-top: 8px;
+                        margin-left: 8px;
                     }
                     .mobile-submenu-list li {
-                        margin-bottom: 10px;
+                        margin-bottom: 8px;
                     }
                     .mobile-submenu-list a {
-                        font-size: 1rem;
+                        font-size: 0.92rem;
                         font-family: var(--font-sans);
                         color: var(--text-light);
                         letter-spacing: 1px;
@@ -604,7 +612,7 @@ const Header = () => {
                         background: none;
                         color: var(--text-main);
                         font-family: var(--font-serif);
-                        font-size: 2rem;
+                        font-size: 1.35rem;
                         cursor: pointer;
                         padding: 0;
                     }
@@ -615,6 +623,50 @@ const Header = () => {
                         letter-spacing: 1px;
                         text-transform: uppercase;
                         margin-top: -8px;
+                    }
+                }
+
+                @media (max-width: 768px) {
+                    .top-bar {
+                        font-size: 0.54rem;
+                        letter-spacing: 1.8px;
+                        gap: 10px;
+                        padding: 7px 8px;
+                    }
+                    .top-bar-sep { display: none; }
+                    .main-header { padding: 14px 0; gap: 12px; }
+                    .header-actions { gap: 10px; margin-left: 10px; padding-left: 0; }
+                    .icon-btn { padding: 2px; }
+                    .search-form {
+                        padding: 10px 16px;
+                        gap: 10px;
+                    }
+                    .search-form input {
+                        font-size: 0.86rem;
+                        padding: 9px 12px;
+                    }
+                    .search-form button {
+                        padding: 9px 12px;
+                        font-size: 0.64rem;
+                    }
+                }
+
+                @media (max-width: 480px) {
+                    .brand-logo-img {
+                        width: clamp(128px, 42vw, 165px);
+                        height: 38px;
+                    }
+                    .header-scrolled .brand-logo-img { height: 36px; }
+                    .mobile-nav {
+                        width: 100%;
+                        padding: 82px 18px 24px;
+                    }
+                    .mobile-nav-list a,
+                    .mobile-logout-link {
+                        font-size: 1.2rem;
+                    }
+                    .mobile-submenu-list a {
+                        font-size: 0.86rem;
                     }
                 }
             `}</style>

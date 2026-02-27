@@ -20,11 +20,17 @@ class EmailCampaignCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
+        $contentEditor = TextEditorField::new('content')->onlyOnForms();
+        $contentDetail = TextField::new('content')
+            ->onlyOnDetail()
+            ->renderAsHtml();
+
         return [
             IdField::new('id')->hideOnForm(),
             TextField::new('name'),
             TextField::new('subject'),
-            TextEditorField::new('content'),
+            $contentEditor,
+            $contentDetail,
             ChoiceField::new('status')->setChoices(EmailCampaign::statusChoices()),
             TextField::new('audience')->setRequired(false),
             IntegerField::new('total_recipients'),

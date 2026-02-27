@@ -142,7 +142,7 @@ function App() {
                 <Router>
                     <div className="app">
                         <Header />
-                        <main style={{ marginTop: '160px' }}>
+                        <main className="site-main">
                             <AppRoutes />
                         </main>
                         <Footer />

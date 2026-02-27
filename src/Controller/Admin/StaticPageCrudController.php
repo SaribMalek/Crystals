@@ -24,12 +24,18 @@ class StaticPageCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
+        $contentEditor = TextEditorField::new('content')->onlyOnForms();
+        $contentDetail = TextField::new('content')
+            ->onlyOnDetail()
+            ->renderAsHtml();
+
         return [
             IdField::new('id')->hideOnForm(),
             TextField::new('title'),
             TextField::new('slug'),
             ChoiceField::new('page_type', 'Page Type')->setChoices(StaticPage::pageTypeChoices()),
-            TextEditorField::new('content'),
+            $contentEditor,
+            $contentDetail,
             BooleanField::new('is_active', 'Active'),
             DateTimeField::new('created_at', 'Created')->hideOnForm(),
             DateTimeField::new('updated_at', 'Updated')->hideOnForm(),

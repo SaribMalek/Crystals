@@ -21,7 +21,8 @@ const Hero = () => {
 
       <style jsx="true">{`
         .hero {
-          height: 100vh;
+          min-height: 100vh;
+          min-height: 100svh;
           display: flex;
           align-items: center;
           background: linear-gradient(rgba(255,255,255,0.4), rgba(255,255,255,0.4)), url('https://images.unsplash.com/photo-1569144157591-c483197ec02c?q=80&w=2070&auto=format&fit=crop');
@@ -129,7 +130,20 @@ const Hero = () => {
 
         @media (max-width: 992px) {
           .hero-title { font-size: 3.5rem; }
-          .hero { height: 80vh; padding-top: 100px; }
+          .hero { min-height: 78svh; padding-top: 90px; }
+          .hero-actions { gap: 18px; }
+          .btn-luxury { padding: 14px 28px; }
+        }
+
+        @media (max-width: 640px) {
+          .hero { min-height: 72svh; padding-top: 84px; }
+          .hero-content { max-width: 100%; }
+          .hero-eyebrow { letter-spacing: 2.6px; }
+          .hero-title { font-size: 2.45rem; margin-bottom: 20px; }
+          .hero-desc { font-size: 0.95rem; margin-bottom: 26px; max-width: 100%; }
+          .hero-actions { flex-wrap: wrap; gap: 12px; }
+          .btn-luxury { padding: 12px 18px; font-size: 0.72rem; }
+          .btn-text { font-size: 0.72rem; }
         }
       `}</style>
     </section>

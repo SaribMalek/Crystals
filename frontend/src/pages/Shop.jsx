@@ -344,6 +344,9 @@ const Shop = () => {
                     border-radius: 10px;
                     font-weight: 600;
                     position: relative;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
                 }
                 .cat-btn-luxury::before {
                     content: '';

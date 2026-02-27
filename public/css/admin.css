@@ -1947,3 +1947,236 @@ body.ea table.datagrid {
     width: max-content !important;
     min-width: 100% !important;
 }
+
+/* EasyAdmin row action menu: avoid clipping inside scroll containers */
+body.ea .dropdown-menu {
+    z-index: 2050 !important;
+}
+
+/* Keep index header stable when row checkboxes are selected */
+body.ea .ea-index .content-header-title > .title.d-none {
+    display: block !important;
+}
+
+body.ea .ea-index .content .global-actions.d-none {
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+}
+
+body.ea .ea-index .content .batch-actions,
+body.ea .ea-index .content .batch-actions.d-block {
+    display: none !important;
+}
+
+/* Responsive baseline for all admin pages */
+@media (max-width: 1200px) {
+    body.ea .content-header-title .title {
+        font-size: 1.7rem;
+    }
+
+    body.ea .content-header .page-actions {
+        gap: 6px;
+    }
+}
+
+@media (max-width: 992px) {
+    body.ea .content-top {
+        flex-wrap: wrap;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    body.ea .content-top .content-search,
+    body.ea .content-top .global-search {
+        max-width: 100%;
+        flex: 1 1 100%;
+    }
+
+    body.ea .content-header .page-actions {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    body.ea .content-header .page-actions .btn {
+        width: 100%;
+    }
+
+    body.ea .table-responsive,
+    body.ea .content-panel-body,
+    body.ea .ea-datagrid-scroll-wrap,
+    body.ea .datagrid {
+        max-height: none !important;
+    }
+
+    body.ea .table th,
+    body.ea .table td,
+    body.ea table.datagrid th,
+    body.ea table.datagrid td {
+        white-space: nowrap;
+        font-size: 0.9rem;
+        padding: 0.56rem 0.58rem !important;
+    }
+
+    body.ea .ea-new form.ea-new-form,
+    body.ea .ea-edit form.ea-edit-form {
+        padding: 12px !important;
+    }
+}
+
+@media (max-width: 768px) {
+    body.ea .content-header-title .title {
+        font-size: 1.35rem;
+    }
+
+    body.ea .content-header .page-actions {
+        grid-template-columns: 1fr;
+    }
+
+    body.ea .table th,
+    body.ea .table td,
+    body.ea table.datagrid th,
+    body.ea table.datagrid td {
+        font-size: 0.83rem;
+        padding: 0.5rem 0.5rem !important;
+    }
+
+    body.ea .dropdown-menu {
+        min-width: 190px;
+    }
+}
+
+@media (max-width: 992px) {
+    body.ea .admin-actions-panel,
+    body.ea .admin-recent-panel,
+    body.ea .admin-chart-panel,
+    body.ea .admin-kpi-card {
+        padding: 14px !important;
+    }
+
+    body.ea .admin-action-btn {
+        width: 100%;
+        min-height: 40px;
+        text-align: center;
+    }
+
+    body.ea .inventory-control-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    body.ea .inventory-value {
+        width: 100%;
+        text-align: left;
+    }
+
+    body.ea .table-action-link {
+        margin-bottom: 6px;
+    }
+}
+
+@media (max-width: 576px) {
+    body.ea .content-wrapper {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+    }
+
+    body.ea .admin-overview {
+        gap: 12px;
+    }
+
+    body.ea .kpi-label {
+        font-size: 0.7rem;
+        letter-spacing: 0.06em;
+    }
+
+    body.ea .admin-kpi-card h3 {
+        font-size: 1.15rem;
+    }
+
+    body.ea .panel-link,
+    body.ea .table-action-link {
+        font-size: 0.74rem;
+    }
+}
+
+/* Mobile layout stabilization: force full-width admin content and cleaner responsive header */
+@media (max-width: 991.98px) {
+    body.ea .wrapper,
+    body.ea .content-wrapper,
+    body.ea .content,
+    body.ea #main {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+    }
+
+    body.ea .content-wrapper {
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+    }
+
+    body.ea .content-header {
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin-bottom: 10px !important;
+    }
+
+    body.ea .content-header-title .title {
+        font-size: 1.5rem !important;
+        line-height: 1.2 !important;
+    }
+
+    body.ea .responsive-header {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 10px 12px !important;
+        gap: 8px !important;
+        align-items: center !important;
+    }
+
+    body.ea #responsive-header-logo {
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        display: flex !important;
+        justify-content: center !important;
+    }
+
+    body.ea #responsive-header-logo .responsive-logo {
+        max-width: 100% !important;
+    }
+
+    body.ea #responsive-header-logo .ea-brand-full-logo {
+        width: clamp(128px, 44vw, 180px) !important;
+        max-width: 100% !important;
+        height: auto !important;
+    }
+}
+
+@media (max-width: 576px) {
+    body.ea .content-wrapper {
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+    }
+
+    body.ea .admin-actions-panel,
+    body.ea .admin-recent-panel,
+    body.ea .admin-chart-panel,
+    body.ea .admin-kpi-card {
+        border-radius: 12px !important;
+        padding: 12px !important;
+    }
+
+    body.ea .kpi-top {
+        gap: 8px;
+    }
+
+    body.ea .kpi-icon {
+        width: 30px;
+        height: 30px;
+    }
+}

@@ -65,6 +65,15 @@ const Login = () => {
         .auth-success { color: #1d6a3d; margin-bottom: 14px; font-size: 0.9rem; }
         .auth-link-row { margin-top: 16px; margin-bottom: 0; font-size: 0.9rem; }
         .auth-link-row a { color: var(--primary); text-decoration: underline; }
+        @media (max-width: 768px) {
+          .auth-page { min-height: auto; }
+          .auth-card { padding: 24px; border-radius: 10px; }
+        }
+        @media (max-width: 480px) {
+          .auth-card { padding: 18px; }
+          .auth-card h1 { font-size: 1.9rem; }
+          .auth-form input { font-size: 0.9rem; }
+        }
       `}</style>
     </div>
   )

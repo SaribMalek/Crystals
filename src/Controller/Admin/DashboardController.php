@@ -28,6 +28,7 @@ use App\Entity\OrderItem;
 use App\Entity\PaymentFailureLog;
 use App\Entity\PaymentSettings;
 use App\Entity\PaymentTransaction;
+use App\Entity\PosIntegrationSetting;
 use App\Entity\Product;
 use App\Entity\ProductReview;
 use App\Entity\PushNotification;
@@ -450,7 +451,8 @@ class DashboardController extends AbstractDashboardController
     public function configureAssets(): \EasyCorp\Bundle\EasyAdminBundle\Config\Assets
     {
         return parent::configureAssets()
-            ->addCssFile('css/admin.css?v=20260226t')
+            ->addCssFile('css/admin.css?v=20260227b')
+            ->addCssFile('css/admin-mobile-fix.css?v=20260227c')
             ->addJsFile('js/admin-force-light.js?v=20260226h');
     }
 
@@ -565,7 +567,7 @@ class DashboardController extends AbstractDashboardController
             MenuItem::linkToCrud('Currencies', 'fas fa-dollar-sign', CurrencySetting::class)->setPermission('ROLE_MANAGER'),
             MenuItem::linkToCrud('License Keys', 'fas fa-key', LicenseKey::class)->setPermission('ROLE_MANAGER'),
             MenuItem::linkToCrud('Affiliate Partners', 'fas fa-handshake', AffiliatePartner::class)->setPermission('ROLE_MANAGER'),
-            MenuItem::linkToRoute('POS Integration', 'fas fa-cash-register', 'admin_pos_settings')->setPermission('ROLE_MANAGER'),
+            MenuItem::linkToCrud('POS Integration', 'fas fa-cash-register', PosIntegrationSetting::class)->setPermission('ROLE_MANAGER'),
         ]);
 
         yield MenuItem::subMenu('Shortcuts', 'fas fa-external-link-alt')->setSubItems([

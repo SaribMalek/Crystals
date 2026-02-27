@@ -24,6 +24,11 @@ class BlogPostCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
+        $contentEditor = TextEditorField::new('content')->onlyOnForms();
+        $contentDetail = TextField::new('content')
+            ->onlyOnDetail()
+            ->renderAsHtml();
+
         return [
             IdField::new('id')->hideOnForm(),
             TextField::new('title'),
@@ -34,7 +39,8 @@ class BlogPostCrudController extends AbstractCrudController
                 ->setUploadDir('public/uploads/blog')
                 ->setBasePath('uploads/blog')
                 ->setRequired(false),
-            TextEditorField::new('content'),
+            $contentEditor,
+            $contentDetail,
             ChoiceField::new('status')->setChoices(BlogPost::statusChoices()),
             DateTimeField::new('published_at')->setRequired(false),
             DateTimeField::new('created_at', 'Created')->hideOnForm(),

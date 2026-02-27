@@ -240,6 +240,133 @@
         });
     };
 
+    const dropdownPortalState = new WeakMap();
+    const openDropdownPortals = new Set();
+
+    const positionPortaledDropdown = (dropdownRoot) => {
+        if (!(dropdownRoot instanceof HTMLElement)) {
+            return;
+        }
+
+        const state = dropdownPortalState.get(dropdownRoot);
+        if (!state || !(state.menu instanceof HTMLElement) || !(state.toggle instanceof HTMLElement)) {
+            return;
+        }
+
+        const toggleRect = state.toggle.getBoundingClientRect();
+        const menu = state.menu;
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        const menuRect = menu.getBoundingClientRect();
+        const menuWidth = menuRect.width;
+        const menuHeight = menuRect.height;
+        const edgePadding = 8;
+        const offset = 6;
+
+        let left = toggleRect.right - menuWidth;
+        left = Math.max(edgePadding, Math.min(left, viewportWidth - menuWidth - edgePadding));
+
+        let top = toggleRect.bottom + offset;
+        if (top + menuHeight > viewportHeight - edgePadding) {
+            top = Math.max(edgePadding, toggleRect.top - menuHeight - offset);
+        }
+
+        menu.style.left = `${left}px`;
+        menu.style.top = `${top}px`;
+    };
+
+    const updateAllPortaledDropdownPositions = () => {
+        openDropdownPortals.forEach((dropdownRoot) => {
+            positionPortaledDropdown(dropdownRoot);
+        });
+    };
+
+    const portalDropdownMenu = (dropdownRoot) => {
+        if (!(dropdownRoot instanceof HTMLElement)) {
+            return;
+        }
+
+        if (dropdownPortalState.has(dropdownRoot)) {
+            positionPortaledDropdown(dropdownRoot);
+            openDropdownPortals.add(dropdownRoot);
+            return;
+        }
+
+        const menu = dropdownRoot.querySelector('.dropdown-menu');
+        const toggle = dropdownRoot.querySelector('[data-bs-toggle="dropdown"], .dropdown-toggle');
+        if (!(menu instanceof HTMLElement) || !(toggle instanceof HTMLElement)) {
+            return;
+        }
+
+        const isDatagridDropdown = dropdownRoot.closest('table.datagrid, .table-responsive, .ea-datagrid-scroll-wrap') !== null;
+        if (!isDatagridDropdown) {
+            return;
+        }
+
+        const originalParent = menu.parentElement;
+        if (!(originalParent instanceof HTMLElement)) {
+            return;
+        }
+
+        const originalNextSibling = menu.nextSibling;
+        const originalStyle = menu.getAttribute('style');
+
+        menu.classList.add('ea-dropdown-portal');
+        menu.style.position = 'fixed';
+        menu.style.margin = '0';
+        menu.style.zIndex = '2060';
+        document.body.appendChild(menu);
+
+        dropdownPortalState.set(dropdownRoot, {
+            menu,
+            toggle,
+            originalParent,
+            originalNextSibling,
+            originalStyle
+        });
+
+        openDropdownPortals.add(dropdownRoot);
+        positionPortaledDropdown(dropdownRoot);
+    };
+
+    const restoreDropdownMenu = (dropdownRoot) => {
+        if (!(dropdownRoot instanceof HTMLElement)) {
+            return;
+        }
+
+        const state = dropdownPortalState.get(dropdownRoot);
+        if (!state || !(state.menu instanceof HTMLElement) || !(state.originalParent instanceof HTMLElement)) {
+            openDropdownPortals.delete(dropdownRoot);
+            return;
+        }
+
+        const { menu, originalParent, originalNextSibling, originalStyle } = state;
+        if (originalNextSibling && originalNextSibling.parentNode === originalParent) {
+            originalParent.insertBefore(menu, originalNextSibling);
+        } else {
+            originalParent.appendChild(menu);
+        }
+
+        menu.classList.remove('ea-dropdown-portal');
+        if (typeof originalStyle === 'string') {
+            menu.setAttribute('style', originalStyle);
+        } else {
+            menu.removeAttribute('style');
+        }
+
+        dropdownPortalState.delete(dropdownRoot);
+        openDropdownPortals.delete(dropdownRoot);
+    };
+
+    const syncDropdownOpenState = () => {
+        if (!document.body) {
+            return;
+        }
+
+        const isAnyDropdownOpen = document.querySelector('.dropdown-menu.show, .dropdown.show') !== null;
+        document.body.classList.toggle('ea-dropdown-open', isAnyDropdownOpen);
+    };
+
     const isLikelyDownloadRequest = (url, link) => {
         const href = `${url.pathname}${url.search}`.toLowerCase();
         const linkText = (link.textContent || '').trim().toLowerCase();
@@ -321,6 +448,7 @@
     ensureDatagridScrollContainer();
     normalizeSidebarActiveState();
     removeTomSelectPlaceholderInputs();
+    syncDropdownOpenState();
 
     window.addEventListener('DOMContentLoaded', () => {
         syncAdminThemeClass();
@@ -328,6 +456,7 @@
         ensureDatagridScrollContainer();
         normalizeSidebarActiveState();
         removeTomSelectPlaceholderInputs();
+        syncDropdownOpenState();
     });
     window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', syncAdminThemeClass);
     window.addEventListener('load', () => {
@@ -336,6 +465,7 @@
         ensureDatagridScrollContainer();
         normalizeSidebarActiveState();
         removeTomSelectPlaceholderInputs();
+        syncDropdownOpenState();
         hideAdminLoader();
     }, { once: true });
     window.addEventListener('pageshow', () => {
@@ -343,6 +473,7 @@
         ensureDatagridScrollContainer();
         normalizeSidebarActiveState();
         removeTomSelectPlaceholderInputs();
+        syncDropdownOpenState();
         hideAdminLoader();
     });
 
@@ -351,6 +482,7 @@
         ensureDatagridScrollContainer();
         normalizeSidebarActiveState();
         removeTomSelectPlaceholderInputs();
+        syncDropdownOpenState();
     });
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-bs-theme', 'class'] });
     if (document.body) {
@@ -401,6 +533,29 @@
 
         showAdminLoader();
     }, true);
+
+    document.addEventListener('shown.bs.dropdown', syncDropdownOpenState, true);
+    document.addEventListener('hidden.bs.dropdown', syncDropdownOpenState, true);
+    document.addEventListener('click', () => window.setTimeout(syncDropdownOpenState, 0), true);
+    document.addEventListener('keyup', () => window.setTimeout(syncDropdownOpenState, 0), true);
+    document.addEventListener('shown.bs.dropdown', (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) {
+            return;
+        }
+        const dropdownRoot = target.classList.contains('dropdown') ? target : target.closest('.dropdown');
+        portalDropdownMenu(dropdownRoot);
+    }, true);
+    document.addEventListener('hidden.bs.dropdown', (event) => {
+        const target = event.target;
+        if (!(target instanceof HTMLElement)) {
+            return;
+        }
+        const dropdownRoot = target.classList.contains('dropdown') ? target : target.closest('.dropdown');
+        restoreDropdownMenu(dropdownRoot);
+    }, true);
+    window.addEventListener('resize', updateAllPortaledDropdownPositions);
+    window.addEventListener('scroll', updateAllPortaledDropdownPositions, true);
 
     window.addEventListener('beforeunload', () => {
         if (suppressNextBeforeUnloadLoader) {

@@ -34,12 +34,18 @@ class ProductCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
+        $descriptionEditor = TextEditorField::new('description')->onlyOnForms();
+        $descriptionDetail = TextField::new('description')
+            ->onlyOnDetail()
+            ->renderAsHtml();
+
         return [
             IdField::new('id')->hideOnForm(),
             TextField::new('name'),
             AssociationField::new('category')
                 ->setFormTypeOption('placeholder', 'Select option'),
-            TextEditorField::new('description'),
+            $descriptionEditor,
+            $descriptionDetail,
             MoneyField::new('price')->setCurrency('USD'),
             MoneyField::new('old_price')->setCurrency('USD')->setRequired(false),
             NumberField::new('stock'),

@@ -68,6 +68,15 @@ const Signup = () => {
         .auth-error { color: #b3261e; margin: 6px 0; font-size: 0.86rem; }
         .auth-link-row { margin-top: 16px; margin-bottom: 0; font-size: 0.9rem; }
         .auth-link-row a { color: var(--primary); text-decoration: underline; }
+        @media (max-width: 768px) {
+          .auth-page { min-height: auto; }
+          .auth-card { padding: 24px; border-radius: 10px; }
+        }
+        @media (max-width: 480px) {
+          .auth-card { padding: 18px; }
+          .auth-card h1 { font-size: 1.85rem; }
+          .auth-form input { font-size: 0.9rem; }
+        }
       `}</style>
     </div>
   )

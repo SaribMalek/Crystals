@@ -22,10 +22,16 @@ class FaqItemCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
+        $answerEditor = TextEditorField::new('answer')->onlyOnForms();
+        $answerDetail = TextField::new('answer')
+            ->onlyOnDetail()
+            ->renderAsHtml();
+
         return [
             IdField::new('id')->hideOnForm(),
             TextField::new('question'),
-            TextEditorField::new('answer'),
+            $answerEditor,
+            $answerDetail,
             IntegerField::new('sort_order', 'Sort Order'),
             BooleanField::new('is_active', 'Active'),
         ];

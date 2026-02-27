@@ -22,6 +22,7 @@
   --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
   --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.05);
   --shadow-medium: 0 20px 40px rgba(0, 0, 0, 0.1);
+  --site-main-offset: 160px;
 }
 
 * {
@@ -274,6 +275,11 @@ img {
   position: relative;
 }
 
+.site-main {
+  margin-top: var(--site-main-offset);
+  width: 100%;
+}
+
 .route-shell {
   animation: routeEnter 0.55s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
@@ -382,5 +388,59 @@ main [class*="card"]:hover {
 
   .hero-title {
     font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --site-main-offset: 124px;
+  }
+
+  .container {
+    padding: 0 16px;
+  }
+
+  .section-padding {
+    padding: 62px 0;
+  }
+
+  .section-title-serif {
+    font-size: 2.15rem;
+    margin-bottom: 26px;
+  }
+}
+
+@media (max-width: 480px) {
+  :root {
+    --site-main-offset: 112px;
+  }
+
+  .hero-eyebrow {
+    font-size: 0.64rem;
+    letter-spacing: 2.4px;
+    margin-bottom: 14px;
+  }
+
+  .hero-title {
+    font-size: 2.1rem;
+  }
+
+  .btn-luxury {
+    padding: 12px 18px;
+    font-size: 0.72rem;
+    letter-spacing: 1.2px;
+  }
+}
+
+@media (max-width: 640px) {
+  .site-main {
+    overflow-x: hidden;
+  }
+
+  input,
+  select,
+  textarea,
+  button {
+    max-width: 100%;
   }
 }

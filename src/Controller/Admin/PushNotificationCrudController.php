@@ -19,10 +19,16 @@ class PushNotificationCrudController extends AbstractCrudController
 
     public function configureFields(string $pageName): iterable
     {
+        $messageEditor = TextEditorField::new('message')->onlyOnForms();
+        $messageDetail = TextField::new('message')
+            ->onlyOnDetail()
+            ->renderAsHtml();
+
         return [
             IdField::new('id')->hideOnForm(),
             TextField::new('title'),
-            TextEditorField::new('message'),
+            $messageEditor,
+            $messageDetail,
             ChoiceField::new('status')->setChoices(PushNotification::statusChoices()),
             TextField::new('target_url')->setRequired(false),
             TextField::new('audience')->setRequired(false),

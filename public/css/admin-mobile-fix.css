@@ -1,0 +1,263 @@
+/* Dashboard mobile overrides loaded after admin.css */
+
+@media (max-width: 991.98px) {
+    body.ea.page-content {
+        max-width: none !important;
+    }
+
+    body.ea,
+    body.ea .wrapper,
+    body.ea .sidebar-wrapper,
+    body.ea .content-wrapper,
+    body.ea .content,
+    body.ea #main,
+    body.ea .content-body {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+    }
+
+    body.ea .wrapper,
+    body.ea .sidebar-wrapper,
+    body.ea .content-wrapper {
+        display: block !important;
+        min-width: 0 !important;
+        flex: 1 1 100% !important;
+    }
+
+    body.ea .content-wrapper {
+        padding: 10px 12px 18px !important;
+    }
+
+    body.ea .content-header {
+        margin-bottom: 10px !important;
+        padding: 0 !important;
+    }
+
+    body.ea .content-header-title .title {
+        margin: 0 !important;
+        font-size: 1.42rem !important;
+        line-height: 1.2 !important;
+    }
+
+    body.ea .responsive-header {
+        width: 100% !important;
+        max-width: 100% !important;
+        padding: 10px 12px !important;
+        gap: 8px !important;
+        align-items: center !important;
+    }
+
+    body.ea #navigation-toggler,
+    body.ea .dropdown-settings-button,
+    body.ea .user-details {
+        min-width: 36px !important;
+        min-height: 36px !important;
+    }
+
+    body.ea #responsive-header-logo {
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
+        margin: 0 !important;
+        display: flex !important;
+        justify-content: center !important;
+    }
+
+    body.ea #responsive-header-logo .ea-brand-full-logo {
+        width: clamp(128px, 46vw, 182px) !important;
+        max-width: 100% !important;
+        height: auto !important;
+    }
+
+    body.ea .admin-overview {
+        gap: 12px !important;
+    }
+
+    body.ea .admin-overview > section {
+        margin: 0 !important;
+    }
+
+    body.ea .admin-kpi-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 10px !important;
+    }
+
+    body.ea .admin-action-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+        gap: 8px !important;
+    }
+
+    body.ea .admin-chart-grid,
+    body.ea .inventory-control-grid {
+        grid-template-columns: 1fr !important;
+        gap: 10px !important;
+    }
+
+    body.ea .admin-kpi-card.full,
+    body.ea .admin-chart-panel.full {
+        grid-column: auto !important;
+    }
+
+    body.ea .admin-kpi-card,
+    body.ea .admin-actions-panel,
+    body.ea .admin-recent-panel,
+    body.ea .admin-chart-panel {
+        padding: 12px !important;
+        border-radius: 12px !important;
+    }
+
+    body.ea .kpi-top {
+        gap: 8px !important;
+        margin-bottom: 6px !important;
+    }
+
+    body.ea .kpi-label {
+        font-size: 0.66rem !important;
+        letter-spacing: 0.06em !important;
+        line-height: 1.2 !important;
+    }
+
+    body.ea .admin-kpi-card h3 {
+        font-size: 1.15rem !important;
+    }
+
+    body.ea .kpi-icon {
+        width: 30px !important;
+        height: 30px !important;
+    }
+
+    body.ea .admin-actions-panel h4,
+    body.ea .admin-recent-panel h4,
+    body.ea .admin-chart-panel h4 {
+        margin: 0 0 12px !important;
+        font-size: 0.98rem !important;
+    }
+
+    body.ea .admin-action-btn {
+        width: 100% !important;
+        min-height: 40px !important;
+        padding: 10px !important;
+        font-size: 0.76rem !important;
+        line-height: 1.25 !important;
+        text-align: center !important;
+        white-space: normal !important;
+        word-break: break-word !important;
+    }
+
+    body.ea .panel-head {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 8px !important;
+        margin-bottom: 10px !important;
+    }
+
+    body.ea .panel-link-group {
+        width: 100% !important;
+        flex-wrap: wrap !important;
+        gap: 8px !important;
+    }
+
+    body.ea .status-flow-wrap {
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        padding-bottom: 4px !important;
+        gap: 6px !important;
+    }
+
+    body.ea .status-flow-pill {
+        flex: 0 0 auto !important;
+        white-space: nowrap !important;
+        font-size: 0.68rem !important;
+    }
+
+    body.ea .inventory-control-item {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 6px !important;
+    }
+
+    body.ea .inventory-label,
+    body.ea .inventory-value {
+        width: 100% !important;
+        text-align: left !important;
+    }
+
+    body.ea .admin-chart-panel {
+        min-height: auto !important;
+    }
+
+    body.ea .admin-chart-panel canvas {
+        height: 210px !important;
+    }
+
+    body.ea .admin-chart-panel.full canvas {
+        height: 230px !important;
+    }
+
+    body.ea .empty-state {
+        font-size: 0.84rem !important;
+    }
+
+    body.ea .table-responsive,
+    body.ea .datagrid {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: auto !important;
+    }
+
+    body.ea .table-responsive > .table,
+    body.ea table.table,
+    body.ea table.datagrid {
+        min-width: 620px !important;
+    }
+
+    body.ea .table th,
+    body.ea .table td,
+    body.ea table.datagrid th,
+    body.ea table.datagrid td {
+        white-space: nowrap !important;
+        font-size: 0.8rem !important;
+        padding: 0.46rem 0.44rem !important;
+    }
+
+    body.ea .table-action-link {
+        margin-bottom: 6px !important;
+        font-size: 0.72rem !important;
+    }
+}
+
+@media (max-width: 767.98px) {
+    body.ea .admin-kpi-grid,
+    body.ea .admin-action-grid {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+@media (max-width: 575.98px) {
+    body.ea .content-wrapper {
+        padding: 8px 8px 16px !important;
+    }
+
+    body.ea .content-header-title .title {
+        font-size: 1.24rem !important;
+    }
+
+    body.ea #responsive-header-logo .ea-brand-full-logo {
+        width: clamp(116px, 44vw, 156px) !important;
+    }
+
+    body.ea .admin-kpi-card,
+    body.ea .admin-actions-panel,
+    body.ea .admin-recent-panel,
+    body.ea .admin-chart-panel {
+        padding: 11px !important;
+    }
+
+    body.ea .admin-chart-panel canvas {
+        height: 190px !important;
+    }
+
+    body.ea .admin-chart-panel.full canvas {
+        height: 210px !important;
+    }
+}
