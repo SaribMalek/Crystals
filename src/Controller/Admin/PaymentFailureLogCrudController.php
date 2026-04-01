@@ -19,7 +19,7 @@ class PaymentFailureLogCrudController extends AbstractCrudController
     public static function getEntityFqcn(): string
     {
         return PaymentFailureLog::class;
-    }
+    }   
 
     public function configureFields(string $pageName): iterable
     {

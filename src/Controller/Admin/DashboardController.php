@@ -449,7 +449,7 @@ class DashboardController extends AbstractDashboardController
     }
 
     public function configureAssets(): \EasyCorp\Bundle\EasyAdminBundle\Config\Assets
-    {
+        {
         return parent::configureAssets()
             ->addCssFile('css/admin.css?v=20260227b')
             ->addCssFile('css/admin-mobile-fix.css?v=20260227c')
